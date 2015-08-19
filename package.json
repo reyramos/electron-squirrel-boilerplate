@@ -1,0 +1,17 @@
+{
+  "name": "electon-web-ui",
+  "version": "1.0.0",
+  "description": "Create asar file ",
+  "main": "package.js",
+  "dependencies": {
+    "asar": "^0.7.2"
+  },
+  "devDependencies": {
+    "asar": "^0.7.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

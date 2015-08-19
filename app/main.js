@@ -10,9 +10,8 @@ var mainWindow = null;
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
-    // On OSX it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform != 'darwin') {
+    // force app termination on OSX when mainWindow has been closed
+    if (process.platform == 'darwin') {
         app.quit();
     }
 });
@@ -35,7 +34,7 @@ app.on('ready', function () {
     mainWindow.loadUrl('file://' + __dirname + '/index.html');
 
     // Open the devtools.
-    //mainWindow.openDevTools();
+    mainWindow.openDevTools();
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {

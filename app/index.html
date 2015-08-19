@@ -1,67 +1,4 @@
 <!DOCTYPE html>
-<html ng-app="phxApp">
-<head>
-    <meta charset="utf-8">
-    <title>Phoenix</title>
-    <!--  TODO revisit this META Tags  -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible"
-          content="IE=10; IE=9; IE=8; IE=7; IE=EDGE"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <script src="https://demo-phoenix.labcorp.com/web-ui/vendor-style.js"></script>
-</head>
-
-<body style="overflow: hidden;" ui-view="pageBody" lcp-droppable>
-
-<!---------< TOP NAV >-------------------->
-<div ui-view="topNavView"></div>
-<!---------< /TOP NAV >-------------------->
-
-<div id="pageShell" lc-leftnav-toggle="true" class="container leftnav-open"
-     style="width: 100%; height: 100%; padding-top: 50px;">
-    <div class="row" style="height: 100%;">
-        <!---------< LEFT NAV >-------------------->
-        <div id="sideCol" class="col-xs-1 sideCol" ui-view="leftNavView"></div>
-
-        <!---------< LEFT NAV >-------------------->
-        <!---------<  Body Content   >------------->
-        <div class="col-xs-100%" style="height:100%;">
-            <!------------------------< Content >------------ -->
-            <!--//905-->
-            <div style="height:100%;overflow: auto;" id="innerBodyContent">
-                <div class="container-fluid lcpPageContainer" ui-view="pageContainer"></div>
-
-            </div>
-            <!-------------------------< Footer >------------ -->
-            <!--
-            <footer style="margin-top:-40px;height: 40px;background-color:gray;overflow:hidden;">
-                footer
-            </footer> -->
-        </div>
-
-        <!---------<  Body Content   >------------->
-    </div>
-
-
-</div>
-
-<!---------<  FOOTER >------------->
-<div ui-view="footerView"></div>
-<!---------<  FOOTER >------------->
-
-
-<script src="https://demo-phoenix.labcorp.com/web-ui/commons.js"></script>
-<script src="https://demo-phoenix.labcorp.com/web-ui/vendor.js"></script>
-<script src="https://demo-phoenix.labcorp.com/web-ui/phxapp.js"></script>
-
-
-</body>
-</html>
-
-
-<!--
-
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -86,4 +23,4 @@
 <body>
 <iframe id="main" src="https://demo-phoenix.labcorp.com/web-ui/" height="100%"></iframe>
 </body>
-</html>-->
+</html>

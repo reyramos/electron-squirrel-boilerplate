@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+    <Product Name='Sample App' Id='ba0b72bf-3f92-426f-9321-98cd82fb8c2f'
+             UpgradeCode='f73ec54e-3d68-4dd0-95ae-11cce3e6b854'
+             Language='1033' Version='1.0' Manufacturer='LabCorp'>
+
+        <Package Id='*' InstallerVersion='200' Compressed='yes'/>
+
+        <Media Id='1' Cabinet='phoenix.cab' EmbedCab='yes'/>
+
+        <Directory Id='TARGETDIR' Name='SourceDir'>
+
+            <Directory Id='ProgramFilesFolder'>
+                <Directory Id='INSTALLDIR' Name='LabCorp Phoenix'>
+                    <Component Id="phoenix.exe" Guid="PUT-GUID-HERE">
+                        <File Id="phoenix.exe" Source="MySourceFiles\MyApplication.exe" KeyPath="yes" Checksum="yes"/>
+                    </Component>
+                    <Component Id="documentation.html" Guid="PUT-GUID-HERE">
+                        <File Id="documentation.html" Source="MySourceFiles\documentation.html" KeyPath="yes"/>
+                    </Component>
+
+
+                <!--    <Component Id='MainExecutable' Guid='59c02107-a8a2-41db-8d04-d2f9158e56b8'>
+                        <File Id='LabCorpPhoenix' Name='phoenix.exe'
+                              Source='electron\' Vital='yes'>
+                            <Shortcut Id="LabCorp Phoenix" Directory="ProgramMenuDir"
+                                      Name="LabCorp Phoenix" WorkingDirectory='INSTALLDIR'
+                                      Icon="LabCorpPhx.ico" IconIndex="0" Advertise='yes' />
+                        </File>
+                        <RemoveFolder Id="INSTALLDIR" On="uninstall" />
+                    </Component>-->
+                </Directory>
+            </Directory>
+
+
+
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ProgramMenuDir" Name="LabCorp Phoenix">
+                    <Component Id='ProgramMenuDir' Guid='b00bc527-cdfd-4308-acd4-9d65f74c0d75'>
+                        <RegistryValue Root='HKCU' Key='SOFTWARE\you\LabCorpPhoenix'
+                                       Type='string' Value='Phoenix' KeyPath='yes'/>
+                        <RemoveFolder Id="ProgramMenuDir" On="uninstall"/>
+                    </Component>
+                </Directory>
+            </Directory>
+        </Directory>
+
+
+        <Feature Id='Complete' Level="1">
+            <ComponentRef Id='MainExecutable'/>
+        </Feature>
+
+    </Product>
+</Wix>
+

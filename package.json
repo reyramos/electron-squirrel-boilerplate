@@ -7,10 +7,18 @@
     "asar": "^0.7.2"
   },
   "devDependencies": {
+    "grunt": "^0.4.5",
+    "load-grunt-tasks": "^0.4.0",
+    "grunt-concurrent": "0.5.0",
+    "grunt-contrib-clean": "0.5.0",
+    "grunt-contrib-copy": "0.4.1",
     "asar": "^0.7.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=0.10.0"
   },
   "author": "",
   "license": "ISC"

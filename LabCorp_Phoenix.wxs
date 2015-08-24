@@ -1,97 +1,398 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-    <Product Name='{{APP_NAME}}' Id='4b364ee0-4a69-11e5-b14d-4b50db3c7524'
-             UpgradeCode='4b364ee1-4a69-11e5-b14d-4b50db3c7524'
+    <Product Name='LabCorp Phoenix' Id='19c55c80-4a72-11e5-929c-ad62a4c9dbbe'
+             UpgradeCode='19c55c81-4a72-11e5-929c-ad62a4c9dbbe'
              Language='1033' Version='1.0' Manufacturer='LabCorp'>
 
-        <Package Id='*' InstallerVersion='200' Compressed='yes'/>
-        <Media Id='1' Cabinet='phoenix.cab' EmbedCab='yes'/>
+        <Package Id='*' InstallerVersion='300' Compressed='yes'/>
+        <Media Id='1' Cabinet='LabCorpPhoenix.cab' EmbedCab='yes'/>
 
-        <Directory Id='TARGETDIR' Name='SourceDir'>
-            <Directory Id='ProgramFilesFolder'>
-                <Directory Id='INSTALLDIR' Name='LabCorp Phoenix'>
-                    <Component Id='ElectronContentResources2Percent' Guid='4b36c410-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronContentResources2Percent' Name='content_resources_200_percent.pak' Source='electron\content_resources_200_percent.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronContentShell' Guid='4b36c411-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronContentShell' Name='content_shell.pak' Source='electron\content_shell.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronD3dcompiler47' Guid='4b36c412-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronD3dcompiler47' Name='d3dcompiler_47.dll' Source='electron\d3dcompiler_47.dll' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronFfmpegsumo' Guid='4b36c413-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronFfmpegsumo' Name='ffmpegsumo.dll' Source='electron\ffmpegsumo.dll' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronIcudtl' Guid='4b36c414-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronIcudtl' Name='icudtl.dat' Source='electron\icudtl.dat' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLibEGL' Guid='4b36c415-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLibEGL' Name='libEGL.dll' Source='electron\libEGL.dll' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLibGLESv2' Guid='4b36c416-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLibGLESv2' Name='libGLESv2.dll' Source='electron\libGLESv2.dll' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLICENSE' Guid='4b36c417-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLICENSE' Name='LICENSE' Source='electron\LICENSE' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesAm' Guid='4b36eb20-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesAm' Name='am.pak' Source='electron\locales\am.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesAr' Guid='4b36eb21-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesAr' Name='ar.pak' Source='electron\locales\ar.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesBg' Guid='4b36eb22-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesBg' Name='bg.pak' Source='electron\locales\bg.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesBn' Guid='4b36eb23-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesBn' Name='bn.pak' Source='electron\locales\bn.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesCa' Guid='4b36eb24-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesCa' Name='ca.pak' Source='electron\locales\ca.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesCs' Guid='4b36eb25-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesCs' Name='cs.pak' Source='electron\locales\cs.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesDa' Guid='4b36eb26-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesDa' Name='da.pak' Source='electron\locales\da.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesDe' Guid='4b36eb27-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesDe' Name='de.pak' Source='electron\locales\de.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesEl' Guid='4b36eb28-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesEl' Name='el.pak' Source='electron\locales\el.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesEnGB' Guid='4b36eb29-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesEnGB' Name='en-GB.pak' Source='electron\locales\en-GB.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesEnUS' Guid='4b36eb2a-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesEnUS' Name='en-US.pak' Source='electron\locales\en-US.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesEs419' Guid='4b36eb2b-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesEs419' Name='es-419.pak' Source='electron\locales\es-419.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesEs' Guid='4b36eb2c-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesEs' Name='es.pak' Source='electron\locales\es.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesEt' Guid='4b36eb2d-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesEt' Name='et.pak' Source='electron\locales\et.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesFa' Guid='4b36eb2e-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesFa' Name='fa.pak' Source='electron\locales\fa.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesFi' Guid='4b36eb2f-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesFi' Name='fi.pak' Source='electron\locales\fi.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesFil' Guid='4b36eb30-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesFil' Name='fil.pak' Source='electron\locales\fil.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesFr' Guid='4b371230-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesFr' Name='fr.pak' Source='electron\locales\fr.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesGu' Guid='4b371231-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesGu' Name='gu.pak' Source='electron\locales\gu.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesHe' Guid='4b371232-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesHe' Name='he.pak' Source='electron\locales\he.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesHi' Guid='4b371233-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesHi' Name='hi.pak' Source='electron\locales\hi.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesHr' Guid='4b371234-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesHr' Name='hr.pak' Source='electron\locales\hr.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesHu' Guid='4b371235-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesHu' Name='hu.pak' Source='electron\locales\hu.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesId' Guid='4b371236-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesId' Name='id.pak' Source='electron\locales\id.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesIt' Guid='4b371237-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesIt' Name='it.pak' Source='electron\locales\it.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesJa' Guid='4b371238-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesJa' Name='ja.pak' Source='electron\locales\ja.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesKn' Guid='4b371239-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesKn' Name='kn.pak' Source='electron\locales\kn.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesKo' Guid='4b37123a-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesKo' Name='ko.pak' Source='electron\locales\ko.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesLt' Guid='4b37123b-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesLt' Name='lt.pak' Source='electron\locales\lt.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesLv' Guid='4b37123c-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesLv' Name='lv.pak' Source='electron\locales\lv.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesMl' Guid='4b37123d-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesMl' Name='ml.pak' Source='electron\locales\ml.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesMr' Guid='4b37123e-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesMr' Name='mr.pak' Source='electron\locales\mr.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesMs' Guid='4b373940-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesMs' Name='ms.pak' Source='electron\locales\ms.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesNb' Guid='4b373941-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesNb' Name='nb.pak' Source='electron\locales\nb.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesNl' Guid='4b373942-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesNl' Name='nl.pak' Source='electron\locales\nl.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesPl' Guid='4b373943-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesPl' Name='pl.pak' Source='electron\locales\pl.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesPtBR' Guid='4b373944-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesPtBR' Name='pt-BR.pak' Source='electron\locales\pt-BR.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesPtPT' Guid='4b373945-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesPtPT' Name='pt-PT.pak' Source='electron\locales\pt-PT.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesRo' Guid='4b373946-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesRo' Name='ro.pak' Source='electron\locales\ro.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesRu' Guid='4b373947-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesRu' Name='ru.pak' Source='electron\locales\ru.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesSk' Guid='4b376050-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesSk' Name='sk.pak' Source='electron\locales\sk.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesSl' Guid='4b376051-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesSl' Name='sl.pak' Source='electron\locales\sl.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesSr' Guid='4b376052-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesSr' Name='sr.pak' Source='electron\locales\sr.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesSv' Guid='4b376053-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesSv' Name='sv.pak' Source='electron\locales\sv.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesSw' Guid='4b376054-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesSw' Name='sw.pak' Source='electron\locales\sw.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesTa' Guid='4b376055-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesTa' Name='ta.pak' Source='electron\locales\ta.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesTe' Guid='4b376056-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesTe' Name='te.pak' Source='electron\locales\te.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesTh' Guid='4b376057-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesTh' Name='th.pak' Source='electron\locales\th.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesTr' Guid='4b376058-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesTr' Name='tr.pak' Source='electron\locales\tr.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesUk' Guid='4b376059-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesUk' Name='uk.pak' Source='electron\locales\uk.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesVi' Guid='4b37605a-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesVi' Name='vi.pak' Source='electron\locales\vi.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesZhCN' Guid='4b37605b-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesZhCN' Name='zh-CN.pak' Source='electron\locales\zh-CN.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronLocalesZhTW' Guid='4b37605c-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronLocalesZhTW' Name='zh-TW.pak' Source='electron\locales\zh-TW.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronMsvcp12' Guid='4b37605d-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronMsvcp12' Name='msvcp120.dll' Source='electron\msvcp120.dll' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronMsvcr12' Guid='4b378760-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronMsvcr12' Name='msvcr120.dll' Source='electron\msvcr120.dll' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronNativesBlob' Guid='4b378761-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronNativesBlob' Name='natives_blob.bin' Source='electron\natives_blob.bin' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronNode' Guid='4b378762-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronNode' Name='node.dll' Source='electron\node.dll' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronPdf' Guid='4b378763-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronPdf' Name='pdf.dll' Source='electron\pdf.dll' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='MainExecutable' Guid='4b378764-4a69-11e5-b14d-4b50db3c7524'> <File Id='LabCorpPhoenixEXE' Name='phoenix.exe' Source='electron\phoenix.exe' KeyPath="yes" Checksum="yes" Vital='yes'/> <RemoveFolder Id="INSTALLDIR" On="uninstall"/> </Component>
-<Component Id='ElectronResourcesApp' Guid='4b378765-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronResourcesApp' Name='app.asar' Source='electron\resources\app.asar' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronResourcesAtom' Guid='4b378766-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronResourcesAtom' Name='atom.asar' Source='electron\resources\atom.asar' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronSnapshotBlob' Guid='4b378767-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronSnapshotBlob' Name='snapshot_blob.bin' Source='electron\snapshot_blob.bin' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronUiResources2Percent' Guid='4b378768-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronUiResources2Percent' Name='ui_resources_200_percent.pak' Source='electron\ui_resources_200_percent.pak' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronVccorlib12' Guid='4b37ae70-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronVccorlib12' Name='vccorlib120.dll' Source='electron\vccorlib120.dll' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronVersion' Guid='4b37ae71-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronVersion' Name='version' Source='electron\version' KeyPath="yes" Vital='yes'/> </Component>
-<Component Id='ElectronXinput13' Guid='4b37ae72-4a69-11e5-b14d-4b50db3c7524'> <File Id='ElectronXinput13' Name='xinput1_3.dll' Source='electron\xinput1_3.dll' KeyPath="yes" Vital='yes'/> </Component>
+        <!-- Step 1: Define the directory structure -->
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="APPLICATIONROOTDIRECTORY" Name="LabCorp Phoenix"/>
 
-                </Directory>
+
             </Directory>
         </Directory>
 
-        <Feature Id='Complete' Level="1">
-            <ComponentRef Id='MainExecutable'/>
+        <!-- Step 2: Add files to your installer package -->
+        <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+            <Component Id='ElectronContentResources2Percent' Guid='19c5aaa0-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronContentResources2Percent' Name='content_resources_200_percent.pak'
+                      Source='electron\content_resources_200_percent.pak' KeyPath="yes" Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronContentShell' Guid='19c5aaa1-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronContentShell' Name='content_shell.pak' Source='electron\content_shell.pak'
+                      KeyPath="yes" Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronD3dcompiler47' Guid='19c5d1b0-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronD3dcompiler47' Name='d3dcompiler_47.dll' Source='electron\d3dcompiler_47.dll'
+                      KeyPath="yes" Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronFfmpegsumo' Guid='19c5d1b1-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronFfmpegsumo' Name='ffmpegsumo.dll' Source='electron\ffmpegsumo.dll' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronIcudtl' Guid='19c5d1b2-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronIcudtl' Name='icudtl.dat' Source='electron\icudtl.dat' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLibEGL' Guid='19c5d1b3-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLibEGL' Name='libEGL.dll' Source='electron\libEGL.dll' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLibGLESv2' Guid='19c5f8c0-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLibGLESv2' Name='libGLESv2.dll' Source='electron\libGLESv2.dll' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLICENSE' Guid='19c5f8c1-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLICENSE' Name='LICENSE' Source='electron\LICENSE' KeyPath="yes" Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesAm' Guid='19c5f8c2-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesAm' Name='am.pak' Source='electron\locales\am.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesAr' Guid='19c5f8c3-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesAr' Name='ar.pak' Source='electron\locales\ar.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesBg' Guid='19c61fd0-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesBg' Name='bg.pak' Source='electron\locales\bg.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesBn' Guid='19c61fd1-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesBn' Name='bn.pak' Source='electron\locales\bn.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesCa' Guid='19c61fd2-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesCa' Name='ca.pak' Source='electron\locales\ca.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesCs' Guid='19c61fd3-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesCs' Name='cs.pak' Source='electron\locales\cs.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesDa' Guid='19c646e0-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesDa' Name='da.pak' Source='electron\locales\da.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesDe' Guid='19c646e1-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesDe' Name='de.pak' Source='electron\locales\de.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesEl' Guid='19c646e2-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesEl' Name='el.pak' Source='electron\locales\el.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesEnGB' Guid='19c646e3-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesEnGB' Name='en-GB.pak' Source='electron\locales\en-GB.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesEnUS' Guid='19c646e4-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesEnUS' Name='en-US.pak' Source='electron\locales\en-US.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesEs419' Guid='19c66df0-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesEs419' Name='es-419.pak' Source='electron\locales\es-419.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesEs' Guid='19c66df1-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesEs' Name='es.pak' Source='electron\locales\es.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesEt' Guid='19c66df2-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesEt' Name='et.pak' Source='electron\locales\et.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesFa' Guid='19c66df3-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesFa' Name='fa.pak' Source='electron\locales\fa.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesFi' Guid='19c66df4-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesFi' Name='fi.pak' Source='electron\locales\fi.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesFil' Guid='19c69500-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesFil' Name='fil.pak' Source='electron\locales\fil.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesFr' Guid='19c69501-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesFr' Name='fr.pak' Source='electron\locales\fr.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesGu' Guid='19c69502-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesGu' Name='gu.pak' Source='electron\locales\gu.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesHe' Guid='19c69503-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesHe' Name='he.pak' Source='electron\locales\he.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesHi' Guid='19c69504-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesHi' Name='hi.pak' Source='electron\locales\hi.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesHr' Guid='19c6bc10-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesHr' Name='hr.pak' Source='electron\locales\hr.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesHu' Guid='19c6bc11-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesHu' Name='hu.pak' Source='electron\locales\hu.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesId' Guid='19c6bc12-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesId' Name='id.pak' Source='electron\locales\id.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesIt' Guid='19c6bc13-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesIt' Name='it.pak' Source='electron\locales\it.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesJa' Guid='19c6bc14-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesJa' Name='ja.pak' Source='electron\locales\ja.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesKn' Guid='19c6bc15-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesKn' Name='kn.pak' Source='electron\locales\kn.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesKo' Guid='19c6bc16-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesKo' Name='ko.pak' Source='electron\locales\ko.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesLt' Guid='19c6e320-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesLt' Name='lt.pak' Source='electron\locales\lt.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesLv' Guid='19c6e321-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesLv' Name='lv.pak' Source='electron\locales\lv.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesMl' Guid='19c6e322-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesMl' Name='ml.pak' Source='electron\locales\ml.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesMr' Guid='19c6e323-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesMr' Name='mr.pak' Source='electron\locales\mr.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesMs' Guid='19c6e324-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesMs' Name='ms.pak' Source='electron\locales\ms.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesNb' Guid='19c6e325-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesNb' Name='nb.pak' Source='electron\locales\nb.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesNl' Guid='19c70a30-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesNl' Name='nl.pak' Source='electron\locales\nl.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesPl' Guid='19c70a31-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesPl' Name='pl.pak' Source='electron\locales\pl.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesPtBR' Guid='19c70a32-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesPtBR' Name='pt-BR.pak' Source='electron\locales\pt-BR.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesPtPT' Guid='19c70a33-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesPtPT' Name='pt-PT.pak' Source='electron\locales\pt-PT.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesRo' Guid='19c70a34-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesRo' Name='ro.pak' Source='electron\locales\ro.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesRu' Guid='19c70a35-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesRu' Name='ru.pak' Source='electron\locales\ru.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesSk' Guid='19c73140-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesSk' Name='sk.pak' Source='electron\locales\sk.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesSl' Guid='19c73141-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesSl' Name='sl.pak' Source='electron\locales\sl.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesSr' Guid='19c73142-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesSr' Name='sr.pak' Source='electron\locales\sr.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesSv' Guid='19c73143-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesSv' Name='sv.pak' Source='electron\locales\sv.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesSw' Guid='19c73144-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesSw' Name='sw.pak' Source='electron\locales\sw.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesTa' Guid='19c73145-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesTa' Name='ta.pak' Source='electron\locales\ta.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesTe' Guid='19c75850-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesTe' Name='te.pak' Source='electron\locales\te.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesTh' Guid='19c75851-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesTh' Name='th.pak' Source='electron\locales\th.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesTr' Guid='19c75852-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesTr' Name='tr.pak' Source='electron\locales\tr.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesUk' Guid='19c75853-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesUk' Name='uk.pak' Source='electron\locales\uk.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesVi' Guid='19c77f60-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesVi' Name='vi.pak' Source='electron\locales\vi.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesZhCN' Guid='19c77f61-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesZhCN' Name='zh-CN.pak' Source='electron\locales\zh-CN.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronLocalesZhTW' Guid='19c77f62-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronLocalesZhTW' Name='zh-TW.pak' Source='electron\locales\zh-TW.pak' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronMsvcp12' Guid='19c77f63-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronMsvcp12' Name='msvcp120.dll' Source='electron\msvcp120.dll' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronMsvcr12' Guid='19c7a670-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronMsvcr12' Name='msvcr120.dll' Source='electron\msvcr120.dll' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronNativesBlob' Guid='19c7a671-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronNativesBlob' Name='natives_blob.bin' Source='electron\natives_blob.bin' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronNode' Guid='19c7a672-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronNode' Name='node.dll' Source='electron\node.dll' KeyPath="yes" Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronPdf' Guid='19c7a673-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronPdf' Name='pdf.dll' Source='electron\pdf.dll' KeyPath="yes" Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronPhoenix' Guid='19c7cd80-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronPhoenix' Name='phoenix.exe' Source='electron\phoenix.exe' KeyPath="yes" Checksum="yes"
+                      Vital='yes'/>
+                <RemoveFolder Id="INSTALLDIR" On="uninstall"/>
+            </Component>
+            <Component Id='ElectronResourcesApp' Guid='19c7f490-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronResourcesApp' Name='app.asar' Source='electron\resources\app.asar' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronResourcesAtom' Guid='19c7f491-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronResourcesAtom' Name='atom.asar' Source='electron\resources\atom.asar' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronSnapshotBlob' Guid='19c81ba0-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronSnapshotBlob' Name='snapshot_blob.bin' Source='electron\snapshot_blob.bin'
+                      KeyPath="yes" Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronUiResources2Percent' Guid='19c81ba1-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronUiResources2Percent' Name='ui_resources_200_percent.pak'
+                      Source='electron\ui_resources_200_percent.pak' KeyPath="yes" Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronVccorlib12' Guid='19c842b0-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronVccorlib12' Name='vccorlib120.dll' Source='electron\vccorlib120.dll' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronVersion' Guid='19c869c0-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronVersion' Name='version' Source='electron\version' KeyPath="yes" Vital='yes'></File>
+            </Component>
+            <Component Id='ElectronXinput13' Guid='19c869c1-4a72-11e5-929c-ad62a4c9dbbe'>
+                <File Id='ElectronXinput13' Name='xinput1_3.dll' Source='electron\xinput1_3.dll' KeyPath="yes"
+                      Vital='yes'></File>
+            </Component>
+
+        </DirectoryRef>
+
+        <!-- Step 3: Tell WiX to install the files -->
+        <Feature Id="MainApplication" Title="Main Application" Level="1">
+            <ComponentRef Id="ElectronContentResources2Percent"/>
+            <ComponentRef Id="ElectronContentShell"/>
+            <ComponentRef Id="ElectronD3dcompiler47"/>
+            <ComponentRef Id="ElectronFfmpegsumo"/>
+            <ComponentRef Id="ElectronIcudtl"/>
+            <ComponentRef Id="ElectronLibEGL"/>
+            <ComponentRef Id="ElectronLibGLESv2"/>
+            <ComponentRef Id="ElectronLICENSE"/>
+            <ComponentRef Id="ElectronLocalesAm"/>
+            <ComponentRef Id="ElectronLocalesAr"/>
+            <ComponentRef Id="ElectronLocalesBg"/>
+            <ComponentRef Id="ElectronLocalesBn"/>
+            <ComponentRef Id="ElectronLocalesCa"/>
+            <ComponentRef Id="ElectronLocalesCs"/>
+            <ComponentRef Id="ElectronLocalesDa"/>
+            <ComponentRef Id="ElectronLocalesDe"/>
+            <ComponentRef Id="ElectronLocalesEl"/>
+            <ComponentRef Id="ElectronLocalesEnGB"/>
+            <ComponentRef Id="ElectronLocalesEnUS"/>
+            <ComponentRef Id="ElectronLocalesEs419"/>
+            <ComponentRef Id="ElectronLocalesEs"/>
+            <ComponentRef Id="ElectronLocalesEt"/>
+            <ComponentRef Id="ElectronLocalesFa"/>
+            <ComponentRef Id="ElectronLocalesFi"/>
+            <ComponentRef Id="ElectronLocalesFil"/>
+            <ComponentRef Id="ElectronLocalesFr"/>
+            <ComponentRef Id="ElectronLocalesGu"/>
+            <ComponentRef Id="ElectronLocalesHe"/>
+            <ComponentRef Id="ElectronLocalesHi"/>
+            <ComponentRef Id="ElectronLocalesHr"/>
+            <ComponentRef Id="ElectronLocalesHu"/>
+            <ComponentRef Id="ElectronLocalesId"/>
+            <ComponentRef Id="ElectronLocalesIt"/>
+            <ComponentRef Id="ElectronLocalesJa"/>
+            <ComponentRef Id="ElectronLocalesKn"/>
+            <ComponentRef Id="ElectronLocalesKo"/>
+            <ComponentRef Id="ElectronLocalesLt"/>
+            <ComponentRef Id="ElectronLocalesLv"/>
+            <ComponentRef Id="ElectronLocalesMl"/>
+            <ComponentRef Id="ElectronLocalesMr"/>
+            <ComponentRef Id="ElectronLocalesMs"/>
+            <ComponentRef Id="ElectronLocalesNb"/>
+            <ComponentRef Id="ElectronLocalesNl"/>
+            <ComponentRef Id="ElectronLocalesPl"/>
+            <ComponentRef Id="ElectronLocalesPtBR"/>
+            <ComponentRef Id="ElectronLocalesPtPT"/>
+            <ComponentRef Id="ElectronLocalesRo"/>
+            <ComponentRef Id="ElectronLocalesRu"/>
+            <ComponentRef Id="ElectronLocalesSk"/>
+            <ComponentRef Id="ElectronLocalesSl"/>
+            <ComponentRef Id="ElectronLocalesSr"/>
+            <ComponentRef Id="ElectronLocalesSv"/>
+            <ComponentRef Id="ElectronLocalesSw"/>
+            <ComponentRef Id="ElectronLocalesTa"/>
+            <ComponentRef Id="ElectronLocalesTe"/>
+            <ComponentRef Id="ElectronLocalesTh"/>
+            <ComponentRef Id="ElectronLocalesTr"/>
+            <ComponentRef Id="ElectronLocalesUk"/>
+            <ComponentRef Id="ElectronLocalesVi"/>
+            <ComponentRef Id="ElectronLocalesZhCN"/>
+            <ComponentRef Id="ElectronLocalesZhTW"/>
+            <ComponentRef Id="ElectronMsvcp12"/>
+            <ComponentRef Id="ElectronMsvcr12"/>
+            <ComponentRef Id="ElectronNativesBlob"/>
+            <ComponentRef Id="ElectronNode"/>
+            <ComponentRef Id="ElectronPdf"/>
+            <ComponentRef Id="ElectronPhoenix"/>
+            <ComponentRef Id="ElectronResourcesApp"/>
+            <ComponentRef Id="ElectronResourcesAtom"/>
+            <ComponentRef Id="ElectronSnapshotBlob"/>
+            <ComponentRef Id="ElectronUiResources2Percent"/>
+            <ComponentRef Id="ElectronVccorlib12"/>
+            <ComponentRef Id="ElectronVersion"/>
+            <ComponentRef Id="ElectronXinput13"/>
+
         </Feature>
+
     </Product>
 </Wix>
 

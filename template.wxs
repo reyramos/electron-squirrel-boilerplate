@@ -2,22 +2,32 @@
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
     <Product Name='{{APP_NAME}}' Id='{{PRODUCT_GUID}}'
              UpgradeCode='{{UPGRADE_GUID}}'
-             Language='1033' Version='{{APP_VERSION}}' Manufacturer='LabCorp'>
+             Language='1033' Version='{{APP_VERSION}}' Manufacturer='{{MANUFACTURER}}'>
 
-        <Package Id='*' InstallerVersion='200' Compressed='yes'/>
-        <Media Id='1' Cabinet='phoenix.cab' EmbedCab='yes'/>
+        <Package Id='*' InstallerVersion='300' Compressed='yes'/>
+        <Media Id='1' Cabinet='{{APP_CAB}}' EmbedCab='yes'/>
 
-        <Directory Id='TARGETDIR' Name='SourceDir'>
-            <Directory Id='ProgramFilesFolder'>
-                <Directory Id='INSTALLDIR' Name='LabCorp Phoenix'>
-                    {{COMPONENTS}}
-                </Directory>
+        <!-- Step 1: Define the directory structure -->
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="APPLICATIONROOTDIRECTORY" Name="{{APP_NAME}}"/>
+
+
+
+
             </Directory>
         </Directory>
 
-        <Feature Id='Complete' Level="1">
-            <ComponentRef Id='MainExecutable'/>
+        <!-- Step 2: Add files to your installer package -->
+        <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+            {{COMPONENTS}}
+        </DirectoryRef>
+
+        <!-- Step 3: Tell WiX to install the files -->
+        <Feature Id="MainApplication" Title="Main Application" Level="1">
+            {{COMPONENTS_REFS}}
         </Feature>
+
     </Product>
 </Wix>
 

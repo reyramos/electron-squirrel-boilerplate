@@ -1,4 +1,5 @@
 var APP_NAME = "LabCorp Phoenix",
+    MANUFACTURER = 'LabCorp',
     APP_VERSION = '1.0';
 
 //path of your source files
@@ -22,9 +23,15 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
     console.log('Electron Package Created');
     console.log('Writting to package file, for wixtoolset');
     var COMPONENTS = "",
+        COMPONENTS_REFS = "",
         FILE_WXS = "",
         PRODUCT_GUID = uuid.v1(),
         UPGRADE_GUID = uuid.v1();
+
+    var APP_CAB = APP_NAME.split(" ");
+    APP_CAB.forEach(function (ele, index, array) {
+        array[index] = ele.capitalize();
+    });
 
 
     fs.readFile('template.wxs', 'utf8', function (err, data) {
@@ -34,6 +41,10 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
 
         FILE_WXS = data;
 
+        //replace the APP_CAB
+        FILE_WXS = FILE_WXS.replace(/{{APP_CAB}}/g, (APP_CAB).join("") + ".cab");
+        //replace the MANUFACTURER
+        FILE_WXS = FILE_WXS.replace(/{{MANUFACTURER}}/g, MANUFACTURER);
         //replace the APP_NAME
         FILE_WXS = FILE_WXS.replace(/{{APP_NAME}}/g, APP_NAME);
         //replace the PRODUCT_GUID
@@ -43,12 +54,19 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
         //replace the APP_VERSION
         FILE_WXS = FILE_WXS.replace(/{{APP_VERSION}}/g, APP_VERSION);
 
-
         walk(ELECTRON_PATH, function (filePath, stat) {
 
             var filename = filePath.substr((~-filePath.lastIndexOf("\\") >>> 0) + 2),
                 ext = filename.substr((~-filename.lastIndexOf(".") >>> 0) + 2),
-                id = (filePath.replace('.' + ext, "")).split(/[\s{0,}\\\-_\.]/g);
+                id = (filePath.replace('.' + ext, "")).split(/[\s{0,}\\\-_\.]/g),
+                destination = filePath.substr((~-filePath.indexOf('\\') >>> 0) + 2);
+
+
+            console.log('destination', destination)
+
+
+
+
 
             id.forEach(function (ele, index, array) {
                 array[index] = ele.capitalize();
@@ -64,9 +82,9 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
                     });
 
                     COMPONENTS += ['<Component',
-                        'Id=\'MainExecutable\'',
+                        'Id=\'' + id + '\'',
                         'Guid=\'' + uuid.v1() + '\'>',
-                        '<File Id=\'' + appName.join("") + 'EXE' + '\'',
+                        '<File Id=\'' + id + '\'',
                         'Name=\'' + filename + '\'',
                         'Source=\'' + filePath + '\'',
                         'KeyPath="yes" Checksum="yes"',
@@ -77,21 +95,37 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
 
                     break;
                 default :
+
+
+
                     COMPONENTS += ['<Component',
                         'Id=\'' + id + '\'',
                         'Guid=\'' + uuid.v1() + '\'>',
-                        '<File Id=\'' + id + '\'',
+                        '<File ' +
+                        'Id=\'' + id + '\'',
                         'Name=\'' + filename + '\'',
                         'Source=\'' + filePath + '\'',
-                        'KeyPath="yes" Vital=\'yes\'/>',
+                        'KeyPath="yes" Vital=\'yes\'>',
+
+                        //'<CopyFile',
+                        //'Id=\'' + id + 'XML' + '\'',
+                        ////'SourceDirectory=\'' + filePath + '\'',
+                        //'DestinationProperty=\'' + destination + '\' />',
+
+
+                        '</File>',
                         '</Component>\r\n'].join(" ");
                     break;
             }
+
+            COMPONENTS_REFS += '<ComponentRef Id="' + id + '" />\r\n';
+
 
         });
 
         //replace the APP_VERSION
         FILE_WXS = FILE_WXS.replace(/{{COMPONENTS}}/g, COMPONENTS);
+        FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
 
         fs.writeFile((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS, function (err) {
             if (err) return console.log(err);

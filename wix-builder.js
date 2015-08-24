@@ -27,13 +27,15 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
         UPGRADE_GUID = uuid.v1();
 
 
-    fs.readFile('sample.wxs', 'utf8', function (err, data) {
+    fs.readFile('template.wxs', 'utf8', function (err, data) {
         if (err) {
             return console.log(err);
         }
 
         FILE_WXS = data;
 
+        //replace the APP_NAME
+        FILE_WXS = FILE_WXS.replace(/{{APP_NAME}}/g, APP_NAME);
         //replace the PRODUCT_GUID
         FILE_WXS = FILE_WXS.replace(/{{PRODUCT_GUID}}/g, PRODUCT_GUID);
         //replace the UPGRADE_GUID
@@ -45,13 +47,26 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
         walk(ELECTRON_PATH, function (filePath, stat) {
 
             var filename = filePath.substr((~-filePath.lastIndexOf("\\") >>> 0) + 2),
-                ext = filename.substr((~-filename.lastIndexOf(".") >>> 0) + 2);
+                ext = filename.substr((~-filename.lastIndexOf(".") >>> 0) + 2),
+                id = (filePath.replace('.' + ext, "")).split(/[\s{0,}\\\-_\.]/g);
+
+            id.forEach(function (ele, index, array) {
+                array[index] = ele.capitalize();
+            });
+
+            id = id.join("");
+
             switch (ext) {
                 case 'exe':
+                    var appName = APP_NAME.split(" ");
+                    appName.forEach(function (ele, index, array) {
+                        array[index] = ele.capitalize();
+                    });
+
                     COMPONENTS += ['<Component',
                         'Id=\'MainExecutable\'',
                         'Guid=\'' + uuid.v1() + '\'>',
-                        '<File Id=\'' + (APP_NAME.split(" ")).join("") + 'EXE' + '\'',
+                        '<File Id=\'' + appName.join("") + 'EXE' + '\'',
                         'Name=\'' + filename + '\'',
                         'Source=\'' + filePath + '\'',
                         'KeyPath="yes" Checksum="yes"',
@@ -60,13 +75,12 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
                         'On="uninstall"/>',
                         '</Component>\r\n'].join(" ");
 
-
                     break;
                 default :
                     COMPONENTS += ['<Component',
-                        'Id=\'' + filename + '\'',
+                        'Id=\'' + id + '\'',
                         'Guid=\'' + uuid.v1() + '\'>',
-                        '<File Id=\'' + filename + '\'',
+                        '<File Id=\'' + id + '\'',
                         'Name=\'' + filename + '\'',
                         'Source=\'' + filePath + '\'',
                         'KeyPath="yes" Vital=\'yes\'/>',
@@ -109,4 +123,8 @@ function walk(currentDirPath, callback) {
     });
 }
 
-
+String.prototype.capitalize = function () {
+    return this.replace(/(?:^|\s)\S/g, function (a) {
+        return a.toUpperCase();
+    });
+};

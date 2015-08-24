@@ -55,6 +55,9 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
         //replace the APP_VERSION
         FILE_WXS = FILE_WXS.replace(/{{APP_VERSION}}/g, APP_VERSION);
 
+        var referenceTable = [];
+
+
         walk(ELECTRON_PATH, function (filePath, stat) {
 
             var filename = filePath.substr((~-filePath.lastIndexOf("\\") >>> 0) + 2),
@@ -70,7 +73,27 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
             id = id.join("");
 
             if (dirLayers.length > 1) {
+
                 console.log('dirLayers', dirLayers)
+
+                //dirLayers.forEach(function (obj, index) {
+                //
+
+                //    if (refTable) {
+                //        refTable.push(objFormat)
+                //    } else {
+                //
+                //        referenceTable.push({
+                //            Name: filename,
+                //            Id: id,
+                //            Guid: uuid.v1(),
+                //            Source: filePath
+                //        });
+                //    }
+                //
+                //
+                //})
+
             } else {
                 rootFiles.push({
                     Name: dirLayers[0],
@@ -83,7 +106,7 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
         });
 
 
-        //console.log('rootFiles', rootFiles)
+        console.log('rootFiles', rootFiles)
         //
         //
         ////replace the APP_VERSION
@@ -101,6 +124,25 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
 
 });
 
+
+function grep(elems, callback, invert) {
+    var callbackInverse,
+        matches = [],
+        i = 0,
+        length = elems.length,
+        callbackExpect = !invert;
+
+    // Go through the array, only saving the items
+    // that pass the validator function
+    for (; i < length; i++) {
+        callbackInverse = !callback(elems[i], i);
+        if (callbackInverse !== callbackExpect) {
+            matches.push(elems[i]);
+        }
+    }
+
+    return matches;
+}
 
 /**
  * Simple function to walk into a directory and return the file path

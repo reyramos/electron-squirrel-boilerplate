@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+    <Product Name='{{APP_NAME}}' Id='{{PRODUCT_GUID}}'
+             UpgradeCode='{{UPGRADE_GUID}}'
+             Language='1033' Version='{{APP_VERSION}}' Manufacturer='LabCorp'>
+
+        <Package Id='*' InstallerVersion='200' Compressed='yes'/>
+        <Media Id='1' Cabinet='phoenix.cab' EmbedCab='yes'/>
+
+        <Directory Id='TARGETDIR' Name='SourceDir'>
+            <Directory Id='ProgramFilesFolder'>
+                <Directory Id='INSTALLDIR' Name='LabCorp Phoenix'>
+                    {{COMPONENTS}}
+                </Directory>
+            </Directory>
+        </Directory>
+
+        <Feature Id='Complete' Level="1">
+            <ComponentRef Id='MainExecutable'/>
+        </Feature>
+    </Product>
+</Wix>
+

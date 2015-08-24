@@ -1,8 +1,12 @@
+var APP_NAME = "LabCorp Phoenix",
+    APP_VERSION = '1.0';
+
 //path of your source files
 var APPLICATION_SRC = './app';
 //path to electron files
 var ELECTRON_PATH = './electron';
 var BUILD_DESTINATION = ELECTRON_PATH + '/resources/app.asar';
+
 
 /*******************************************************************
  APPLICATION VARIABLES
@@ -17,11 +21,72 @@ var uuid = require('node-uuid'), //generate unique UUID <https://github.com/broo
 asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
     console.log('Electron Package Created');
     console.log('Writting to package file, for wixtoolset');
+    var COMPONENTS = "",
+        FILE_WXS = "",
+        PRODUCT_GUID = uuid.v1(),
+        UPGRADE_GUID = uuid.v1();
 
-    walk(APPLICATION_PATH, function (filePath, stat) {
-        console.log(filePath, ':', uuid.v1())
+
+    fs.readFile('sample.wxs', 'utf8', function (err, data) {
+        if (err) {
+            return console.log(err);
+        }
+
+        FILE_WXS = data;
+
+        //replace the PRODUCT_GUID
+        FILE_WXS = FILE_WXS.replace(/{{PRODUCT_GUID}}/g, PRODUCT_GUID);
+        //replace the UPGRADE_GUID
+        FILE_WXS = FILE_WXS.replace(/{{UPGRADE_GUID}}/g, UPGRADE_GUID);
+        //replace the APP_VERSION
+        FILE_WXS = FILE_WXS.replace(/{{APP_VERSION}}/g, APP_VERSION);
+
+
+        walk(ELECTRON_PATH, function (filePath, stat) {
+
+            var filename = filePath.substr((~-filePath.lastIndexOf("\\") >>> 0) + 2),
+                ext = filename.substr((~-filename.lastIndexOf(".") >>> 0) + 2);
+            switch (ext) {
+                case 'exe':
+                    COMPONENTS += ['<Component',
+                        'Id=\'MainExecutable\'',
+                        'Guid=\'' + uuid.v1() + '\'>',
+                        '<File Id=\'' + (APP_NAME.split(" ")).join("") + 'EXE' + '\'',
+                        'Name=\'' + filename + '\'',
+                        'Source=\'' + filePath + '\'',
+                        'KeyPath="yes" Checksum="yes"',
+                        'Vital=\'yes\'/>',
+                        '<RemoveFolder Id="INSTALLDIR"',
+                        'On="uninstall"/>',
+                        '</Component>\r\n'].join(" ");
+
+
+                    break;
+                default :
+                    COMPONENTS += ['<Component',
+                        'Id=\'' + filename + '\'',
+                        'Guid=\'' + uuid.v1() + '\'>',
+                        '<File Id=\'' + filename + '\'',
+                        'Name=\'' + filename + '\'',
+                        'Source=\'' + filePath + '\'',
+                        'KeyPath="yes" Vital=\'yes\'/>',
+                        '</Component>\r\n'].join(" ");
+                    break;
+            }
+
+        });
+
+        //replace the APP_VERSION
+        FILE_WXS = FILE_WXS.replace(/{{COMPONENTS}}/g, COMPONENTS);
+
+        fs.writeFile((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS, function (err) {
+            if (err) return console.log(err);
+
+            console.log('CREATED => ', (APP_NAME.split(" ")).join("_") + '.wxs')
+        });
 
     });
+
 
 });
 

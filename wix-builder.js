@@ -4,6 +4,7 @@ var APP_NAME = "LabCorp Phoenix",
 
 //path of your source files
 var APPLICATION_SRC = './app';
+var APPLICATION_BUILD_DIR = './build';
 //path to electron files
 var ELECTRON_PATH = './electron';
 var BUILD_DESTINATION = ELECTRON_PATH + '/resources/app.asar';
@@ -16,18 +17,27 @@ var BUILD_DESTINATION = ELECTRON_PATH + '/resources/app.asar';
 var uuid = require('node-uuid'), //generate unique UUID <https://github.com/broofa/node-uuid>
     asar = require('asar'), //create electron build from the application source files
     fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    child = require('child_process');
+
+
+if (!mkdir(APPLICATION_BUILD_DIR)) {
+    rmdir(APPLICATION_BUILD_DIR, function () {
+        mkdir(APPLICATION_BUILD_DIR);
+    });
+}
 
 
 asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
     console.log('Electron Package Created');
     console.log('Writting to package file, for wixtoolset');
-    var COMPONENTS = "",
+    var ROOT_DIRECTORY_REFERENCE = "",
         COMPONENTS_REFS = "",
+        DIRECTORY_REF = "",
+        DIRECTORY = "",
         FILE_WXS = "",
         PRODUCT_GUID = uuid.v1(),
-        UPGRADE_GUID = uuid.v1(),
-        rootFiles = [];
+        UPGRADE_GUID = uuid.v1();
 
     var APP_CAB = APP_NAME.split(" ");
     APP_CAB.forEach(function (ele, index, array) {
@@ -55,67 +65,36 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
         //replace the APP_VERSION
         FILE_WXS = FILE_WXS.replace(/{{APP_VERSION}}/g, APP_VERSION);
 
-        var referenceTable = [];
 
-
-        walk(ELECTRON_PATH, function (filePath, stat) {
-
-            var filename = filePath.substr((~-filePath.lastIndexOf("\\") >>> 0) + 2),
-                ext = filename.substr((~-filename.lastIndexOf(".") >>> 0) + 2),
-                id = (filePath.replace('.' + ext, "")).split(/[\s{0,}\\\-_\.]/g),
-                destination = filePath.substr((~-filePath.indexOf('\\') >>> 0) + 2),
-                dirLayers = destination.split("\\");
-
+        walk(ELECTRON_PATH, function (obj) {
+            //console.log('walk ===>', obj)
+            var id = (obj.filePath.replace(/\\/g, " ")).split(/[\s{0,}\\\-_\.]/g),
+                components = getComponents(obj.files, obj.filePath);
             id.forEach(function (ele, index, array) {
                 array[index] = ele.capitalize();
             });
-
             id = id.join("");
 
-            if (dirLayers.length > 1) {
 
-                console.log('dirLayers', dirLayers)
-
-                //dirLayers.forEach(function (obj, index) {
-                //
-
-                //    if (refTable) {
-                //        refTable.push(objFormat)
-                //    } else {
-                //
-                //        referenceTable.push({
-                //            Name: filename,
-                //            Id: id,
-                //            Guid: uuid.v1(),
-                //            Source: filePath
-                //        });
-                //    }
-                //
-                //
-                //})
-
+            if (obj.dirname !== obj.root) {
+                DIRECTORY += '<Directory Id="' + id + '" Name="' + obj.dirname + '" />\r\n';
+                DIRECTORY_REF += '<DirectoryRef Id="' + id + '">' + components[0] + '</DirectoryRef>';
             } else {
-                rootFiles.push({
-                    Name: dirLayers[0],
-                    Id: id,
-                    Guid: uuid.v1(),
-                    Source: filePath
-                })
+                ROOT_DIRECTORY_REFERENCE = '<DirectoryRef Id="APPLICATIONROOTDIRECTORY">' + components[0] + '</DirectoryRef>';
             }
 
+            COMPONENTS_REFS += components[1];
         });
 
+        DIRECTORY_REF = ROOT_DIRECTORY_REFERENCE + DIRECTORY_REF;
 
-        console.log('rootFiles', rootFiles)
-        //
-        //
-        ////replace the APP_VERSION
-        //FILE_WXS = FILE_WXS.replace(/{{COMPONENTS}}/g, COMPONENTS);
-        //FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
+        FILE_WXS = FILE_WXS.replace(/{{DIRECTORY}}/g, DIRECTORY);
+        FILE_WXS = FILE_WXS.replace(/{{DIRECTORY_REF}}/g, DIRECTORY_REF);
+        FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
 
-        fs.writeFile((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS, function (err) {
+
+        fs.writeFile(APPLICATION_BUILD_DIR + '/' + (APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS, function (err) {
             if (err) return console.log(err);
-
             console.log('CREATED => ', (APP_NAME.split(" ")).join("_") + '.wxs')
         });
 
@@ -124,6 +103,84 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
 
 });
 
+
+function getComponents(files, filePath) {
+
+    var COMPONENTS = "",
+        COMPONENTS_REFS = "";
+
+
+    for (var i in files) {
+        var file = files[i],
+            ext = file.substr((~-file.lastIndexOf(".") >>> 0) + 2),
+            id = (file.replace('.' + ext, " ")).split(/[\s{0,}\\\-_\.]/g);
+
+        id.forEach(function (ele, index, array) {
+            array[index] = ele.capitalize();
+        });
+        id = id.join("") + "COMP";
+
+        switch (ext) {
+            case 'exe':
+                var appName = APP_NAME.split(" ");
+                appName.forEach(function (ele, index, array) {
+                    array[index] = ele.capitalize();
+                });
+
+                COMPONENTS += ['<Component',
+                    'Id=\'' + id + '\'',
+                    'Guid=\'' + uuid.v1() + '\'>',
+                    '<File Id=\'' + id + '\'',
+                    'Name=\'' + file + '\'',
+                    'Source=\'' + filePath + file + '\'',
+                    'KeyPath="yes" Checksum="yes"',
+                    'Vital=\'yes\'/>',
+                    '<RemoveFolder Id="APPLICATIONROOTDIRECTORY"',
+                    'On="uninstall"/>',
+                    '</Component>\r\n'].join(" ");
+
+                break;
+            default :
+                COMPONENTS += ['<Component',
+                    'Id=\'' + id + '\'',
+                    'Guid=\'' + uuid.v1() + '\'>',
+                    '<File ' +
+                    'Id=\'' + id + '\'',
+                    'Name=\'' + file + '\'',
+                    'Source=\'' + filePath + file + '\'',
+                    'KeyPath="yes" Vital=\'yes\' />',
+                    '</Component>\r\n'].join(" ");
+                break;
+        }
+
+        COMPONENTS_REFS += '<ComponentRef Id="' + id + '" />\r\n';
+
+
+    }
+
+    return [COMPONENTS, COMPONENTS_REFS];
+
+}
+
+
+function mkdir(dir) {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+        return true;
+    }
+
+    return false;
+}
+
+
+var rmdir = function (directories, callback) {
+    if (typeof directories === 'string') {
+        directories = [directories];
+    }
+    var args = directories;
+    args.unshift('-rf');
+    child.execFile('rm', args, {env: process.env}, callback);
+};
 
 function grep(elems, callback, invert) {
     var callbackInverse,
@@ -150,16 +207,46 @@ function grep(elems, callback, invert) {
  * @param callback
  */
 function walk(currentDirPath, callback) {
-
+    var handler = [],
+        referenceTable = [];
     fs.readdirSync(currentDirPath).forEach(function (name) {
-        var filePath = path.join(currentDirPath, name);
+        var filePath = path.join(currentDirPath, name),
+            filename = filePath.substr((~-filePath.lastIndexOf("\\") >>> 0) + 2),
+            root = filePath.substr(0, (~-filePath.indexOf("\\") >>> 0) + 1),
+            dirname = currentDirPath.substr((~-currentDirPath.lastIndexOf("\\") >>> 0) + 2) || currentDirPath.substr((~-currentDirPath.lastIndexOf("/") >>> 0) + 2);
+
         var stat = fs.statSync(filePath);
         if (stat.isFile()) {
-            callback(filePath, stat);
+            this.push({
+                filename: filename,
+                dirname: dirname,
+                root: root,
+                filePath: filePath.replace(filename, ""),
+                files: [filename]
+            })
+            //callback(filePath, stat);
         } else if (stat.isDirectory()) {
             walk(filePath, callback);
         }
-    });
+    }, handler);
+
+    for (var i in handler) {
+        if (handler.hasOwnProperty(i)) {
+            var dirname = handler[i].dirname,
+                refTable = grep(referenceTable, function (val) {
+                    return val['dirname'] === dirname;
+                })[0],
+                obj = handler[i];
+            if (refTable) {
+                refTable.files.push(obj.filename);
+            } else {
+                referenceTable.push(obj);
+            }
+        }
+    }
+
+    callback(referenceTable[0]);
+
 }
 
 String.prototype.capitalize = function () {

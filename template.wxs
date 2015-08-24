@@ -10,14 +10,13 @@
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="ProgramFilesFolder">
                 <Directory Id="APPLICATIONROOTDIRECTORY" Name="{{APP_NAME}}">
-                    {{DIRECTORIES}}
+                    {{DIRECTORY}}
                 </Directory>
             </Directory>
         </Directory>
 
-        <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
-            {{COMPONENTS}}
-        </DirectoryRef>
+        {{DIRECTORY_REF}}
+
 
         <Feature Id="MainApplication" Title="Main Application" Level="1">
             {{COMPONENTS_REFS}}

@@ -26,7 +26,8 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
         COMPONENTS_REFS = "",
         FILE_WXS = "",
         PRODUCT_GUID = uuid.v1(),
-        UPGRADE_GUID = uuid.v1();
+        UPGRADE_GUID = uuid.v1(),
+        rootFiles = [];
 
     var APP_CAB = APP_NAME.split(" ");
     APP_CAB.forEach(function (ele, index, array) {
@@ -59,14 +60,8 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
             var filename = filePath.substr((~-filePath.lastIndexOf("\\") >>> 0) + 2),
                 ext = filename.substr((~-filename.lastIndexOf(".") >>> 0) + 2),
                 id = (filePath.replace('.' + ext, "")).split(/[\s{0,}\\\-_\.]/g),
-                destination = filePath.substr((~-filePath.indexOf('\\') >>> 0) + 2);
-
-
-            console.log('destination', destination)
-
-
-
-
+                destination = filePath.substr((~-filePath.indexOf('\\') >>> 0) + 2),
+                dirLayers = destination.split("\\");
 
             id.forEach(function (ele, index, array) {
                 array[index] = ele.capitalize();
@@ -74,58 +69,26 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
 
             id = id.join("");
 
-            switch (ext) {
-                case 'exe':
-                    var appName = APP_NAME.split(" ");
-                    appName.forEach(function (ele, index, array) {
-                        array[index] = ele.capitalize();
-                    });
-
-                    COMPONENTS += ['<Component',
-                        'Id=\'' + id + '\'',
-                        'Guid=\'' + uuid.v1() + '\'>',
-                        '<File Id=\'' + id + '\'',
-                        'Name=\'' + filename + '\'',
-                        'Source=\'' + filePath + '\'',
-                        'KeyPath="yes" Checksum="yes"',
-                        'Vital=\'yes\'/>',
-                        '<RemoveFolder Id="INSTALLDIR"',
-                        'On="uninstall"/>',
-                        '</Component>\r\n'].join(" ");
-
-                    break;
-                default :
-
-
-
-                    COMPONENTS += ['<Component',
-                        'Id=\'' + id + '\'',
-                        'Guid=\'' + uuid.v1() + '\'>',
-                        '<File ' +
-                        'Id=\'' + id + '\'',
-                        'Name=\'' + filename + '\'',
-                        'Source=\'' + filePath + '\'',
-                        'KeyPath="yes" Vital=\'yes\'>',
-
-                        //'<CopyFile',
-                        //'Id=\'' + id + 'XML' + '\'',
-                        ////'SourceDirectory=\'' + filePath + '\'',
-                        //'DestinationProperty=\'' + destination + '\' />',
-
-
-                        '</File>',
-                        '</Component>\r\n'].join(" ");
-                    break;
+            if (dirLayers.length > 1) {
+                console.log('dirLayers', dirLayers)
+            } else {
+                rootFiles.push({
+                    Name: dirLayers[0],
+                    Id: id,
+                    Guid: uuid.v1(),
+                    Source: filePath
+                })
             }
-
-            COMPONENTS_REFS += '<ComponentRef Id="' + id + '" />\r\n';
-
 
         });
 
-        //replace the APP_VERSION
-        FILE_WXS = FILE_WXS.replace(/{{COMPONENTS}}/g, COMPONENTS);
-        FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
+
+        //console.log('rootFiles', rootFiles)
+        //
+        //
+        ////replace the APP_VERSION
+        //FILE_WXS = FILE_WXS.replace(/{{COMPONENTS}}/g, COMPONENTS);
+        //FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
 
         fs.writeFile((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS, function (err) {
             if (err) return console.log(err);

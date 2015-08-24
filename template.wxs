@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='windows-1252'?>
-<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wix'>
     <Product Name='{{APP_NAME}}' Id='{{PRODUCT_GUID}}'
              UpgradeCode='{{UPGRADE_GUID}}'
              Language='1033' Version='{{APP_VERSION}}' Manufacturer='{{MANUFACTURER}}'>

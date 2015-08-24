@@ -4,7 +4,6 @@ var APP_NAME = "LabCorp Phoenix",
 
 //path of your source files
 var APPLICATION_SRC = './app';
-var APPLICATION_BUILD_DIR = './build';
 //path to electron files
 var ELECTRON_PATH = './electron';
 var BUILD_DESTINATION = ELECTRON_PATH + '/resources/app.asar';
@@ -19,13 +18,6 @@ var uuid = require('node-uuid'), //generate unique UUID <https://github.com/broo
     fs = require('fs'),
     path = require('path'),
     child = require('child_process');
-
-
-if (!mkdir(APPLICATION_BUILD_DIR)) {
-    rmdir(APPLICATION_BUILD_DIR, function () {
-        mkdir(APPLICATION_BUILD_DIR);
-    });
-}
 
 
 asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
@@ -93,7 +85,7 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
         FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
 
 
-        fs.writeFile(APPLICATION_BUILD_DIR + '/' + (APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS, function (err) {
+        fs.writeFile((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS, function (err) {
             if (err) return console.log(err);
             console.log('CREATED => ', (APP_NAME.split(" ")).join("_") + '.wxs')
         });
@@ -173,7 +165,7 @@ function mkdir(dir) {
 }
 
 
-var rmdir = function (directories, callback) {
+function rmdir(directories, callback) {
     if (typeof directories === 'string') {
         directories = [directories];
     }

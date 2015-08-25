@@ -146,12 +146,12 @@ function getComponents(files, filePath) {
 
         switch (ext) {
             case 'exe':
+                idComponent = file;
 
                 COMPONENTS += ['<Component',
-                    'Id=\'' + idComponent + '\'',
+                    'Id=\'' + file + '\'',
                     'Guid=\'' + uuid.v1() + '\'>',
-                    '<File Id=\'' + idFile + '\'',
-                    'Name=\'' + file + '\'',
+                    '<File Id=\'' + file + '\'',
                     'Source=\'' + filePath + file + '\'',
                     'KeyPath="yes" Checksum="yes"',
                     'Vital=\'yes\'/>',
@@ -169,7 +169,7 @@ function getComponents(files, filePath) {
                     '<Shortcut Id="ApplicationStartMenuShortcut"',
                     'Name="' + APP_NAME + '"',
                     'Description="' + APP_DESCRIPTION + '"',
-                    'Target="[#' + idFile + ']"',
+                    'Target="[#' + file + ']"',
                     'WorkingDirectory="APPLICATIONROOTDIRECTORY"/>' +
                     '<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>',
                     '<RegistryValue Root="HKCU" Key="Software\\Microsoft\\' + appName + '"',
@@ -188,7 +188,7 @@ function getComponents(files, filePath) {
                     'Guid=\'' + uuid.v1() + '\'>',
                     '<File ' +
                     'Id=\'' + idFile + '\'',
-                    'Name=\'' + file + '\'',
+                    //'Name=\'' + file + '\'',
                     'Source=\'' + filePath + file + '\'',
                     'KeyPath="yes" Vital=\'yes\' />',
                     '</Component>'].join(" ");

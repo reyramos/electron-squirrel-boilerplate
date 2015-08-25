@@ -13,7 +13,16 @@
                     {{DIRECTORY}}
                 </Directory>
             </Directory>
+
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="{{APP_NAME}}"/>
+            </Directory>
+
         </Directory>
+
+
+
+
 
         {{DIRECTORY_REF}}
 

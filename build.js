@@ -1,4 +1,5 @@
 var APP_NAME = "LabCorp Phoenix",
+    APP_DESCRIPTION = 'My application description',
     MANUFACTURER = 'LabCorp',
     APP_VERSION = '1.0';
 
@@ -84,7 +85,15 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
             }
 
             COMPONENTS_REFS += components[1];
+
+            if (components[2]) {
+                //if this exist then lets add it
+                DIRECTORY_REF += components[2];
+
+            }
+
         });
+
 
         DIRECTORY_REF = ROOT_DIRECTORY_REFERENCE + DIRECTORY_REF;
 
@@ -109,8 +118,16 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
 function getComponents(files, filePath) {
 
     var COMPONENTS = "",
-        COMPONENTS_REFS = "";
+        DIRECTORY_REF = "",
+        COMPONENTS_REFS = "",
+        appName = APP_NAME.split(" ");
 
+
+    appName.forEach(function (ele, index, array) {
+        array[index] = ele.capitalize();
+    });
+
+    appName = appName.join("");
 
     for (var i in files) {
         var file = files[i],
@@ -142,6 +159,28 @@ function getComponents(files, filePath) {
                     'On="uninstall"/>',
                     '</Component>'].join(" ");
 
+
+                /**************************************************************
+                 * CREATE THE APPLICATION SHORTCUT ON START MENU
+                 **************************************************************/
+
+                DIRECTORY_REF += ['<DirectoryRef Id="ApplicationProgramsFolder">',
+                    '<Component Id="ApplicationShortcut" Guid="' + uuid.v1() + '">',
+                    '<Shortcut Id="ApplicationStartMenuShortcut"',
+                    'Name="' + APP_NAME + '"',
+                    'Description="' + APP_DESCRIPTION + '"',
+                    'Target="[#' + idFile + ']"',
+                    'WorkingDirectory="APPLICATIONROOTDIRECTORY"/>' +
+                    '<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>',
+                    '<RegistryValue Root="HKCU" Key="Software\\Microsoft\\' + appName + '"',
+                    'Name="installed"',
+                    'Type="integer" Value="1"',
+                    'KeyPath="yes"/></Component>',
+                    '</DirectoryRef>'].join(" ");
+
+                COMPONENTS_REFS += '<ComponentRef Id="ApplicationShortcut" />';
+
+
                 break;
             default :
                 COMPONENTS += ['<Component',
@@ -161,7 +200,7 @@ function getComponents(files, filePath) {
 
     }
 
-    return [COMPONENTS, COMPONENTS_REFS];
+    return [COMPONENTS, COMPONENTS_REFS, DIRECTORY_REF];
 
 }
 

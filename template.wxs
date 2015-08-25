@@ -18,6 +18,9 @@
         {{DIRECTORY_REF}}
 
 
+        <!--<Icon Id="{{APPLICATION_ICON_ID}}" SourceFile="{{APPLICATION_ICON_SOURCE}}"/>-->
+
+
         <Feature Id="MainApplication" Title="Main Application" Level="1">
             {{COMPONENTS_REFS}}
         </Feature>

@@ -2,6 +2,9 @@ var APP_NAME = "LabCorp Phoenix",
     MANUFACTURER = 'LabCorp',
     APP_VERSION = '1.0';
 
+var APPLICATION_ICON_SOURCE = "";
+
+
 //path of your source files
 var APPLICATION_SRC = './app';
 //path to electron files
@@ -33,6 +36,11 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
 
     var APP_CAB = APP_NAME.split(" ");
     APP_CAB.forEach(function (ele, index, array) {
+        array[index] = ele.capitalize();
+    });
+
+    var APPLICATION_ICON_ID = APP_NAME.split(" ");
+    APPLICATION_ICON_ID.forEach(function (ele, index, array) {
         array[index] = ele.capitalize();
     });
 
@@ -69,7 +77,7 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
 
 
             if (obj.dirname !== obj.root) {
-                DIRECTORY += '<Directory Id="' + id + '" Name="' + obj.dirname + '" />\r\n';
+                DIRECTORY += '<Directory Id="' + id + '" Name="' + obj.dirname + '" />';
                 DIRECTORY_REF += '<DirectoryRef Id="' + id + '">' + components[0] + '</DirectoryRef>';
             } else {
                 ROOT_DIRECTORY_REFERENCE = '<DirectoryRef Id="APPLICATIONROOTDIRECTORY">' + components[0] + '</DirectoryRef>';
@@ -83,6 +91,8 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
         FILE_WXS = FILE_WXS.replace(/{{DIRECTORY}}/g, DIRECTORY);
         FILE_WXS = FILE_WXS.replace(/{{DIRECTORY_REF}}/g, DIRECTORY_REF);
         FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
+        FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_ID}}/g, (APPLICATION_ICON_ID).join("") + ".icon");
+        FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_SOURCE}}/g, APPLICATION_ICON_SOURCE);
 
 
         fs.writeFile((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS, function (err) {
@@ -110,42 +120,43 @@ function getComponents(files, filePath) {
         id.forEach(function (ele, index, array) {
             array[index] = ele.capitalize();
         });
-        id = id.join("") + "COMP";
+        id = id.join("");
+
+
+        var idComponent = id + "COMP";
+        var idFile = id + "FILE";
+
 
         switch (ext) {
             case 'exe':
-                var appName = APP_NAME.split(" ");
-                appName.forEach(function (ele, index, array) {
-                    array[index] = ele.capitalize();
-                });
 
                 COMPONENTS += ['<Component',
-                    'Id=\'' + id + '\'',
+                    'Id=\'' + idComponent + '\'',
                     'Guid=\'' + uuid.v1() + '\'>',
-                    '<File Id=\'' + id + '\'',
+                    '<File Id=\'' + idFile + '\'',
                     'Name=\'' + file + '\'',
                     'Source=\'' + filePath + file + '\'',
                     'KeyPath="yes" Checksum="yes"',
                     'Vital=\'yes\'/>',
                     '<RemoveFolder Id="APPLICATIONROOTDIRECTORY"',
                     'On="uninstall"/>',
-                    '</Component>\r\n'].join(" ");
+                    '</Component>'].join(" ");
 
                 break;
             default :
                 COMPONENTS += ['<Component',
-                    'Id=\'' + id + '\'',
+                    'Id=\'' + idComponent + '\'',
                     'Guid=\'' + uuid.v1() + '\'>',
                     '<File ' +
-                    'Id=\'' + id + '\'',
+                    'Id=\'' + idFile + '\'',
                     'Name=\'' + file + '\'',
                     'Source=\'' + filePath + file + '\'',
                     'KeyPath="yes" Vital=\'yes\' />',
-                    '</Component>\r\n'].join(" ");
+                    '</Component>'].join(" ");
                 break;
         }
 
-        COMPONENTS_REFS += '<ComponentRef Id="' + id + '" />\r\n';
+        COMPONENTS_REFS += '<ComponentRef Id="' + idComponent + '" />';
 
 
     }

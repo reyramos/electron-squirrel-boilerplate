@@ -2,4 +2,7 @@
 node_modules/
 npm-debug.log
 *.wxs
+*.msi
+*.wixobj
+*.wixpdb
 build/

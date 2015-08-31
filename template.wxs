@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Name='{{APP_NAME}}' Id='{{PRODUCT_GUID}}'
-             UpgradeCode='{{UPGRADE_GUID}}'
+    <Product Name='{{APP_NAME}}' Id='8291b2b0-4b33-11e5-975d-29a7531f1924'
+             UpgradeCode='8291b2b1-4b33-11e5-975d-29a7531f1924'
              Language='1033' Version='{{APP_VERSION}}' Manufacturer='{{MANUFACTURER}}'>
 
         <Package Id='*' InstallerVersion='300' Compressed='yes'/>
@@ -13,19 +13,15 @@
                     {{DIRECTORY}}
                 </Directory>
             </Directory>
-
             <Directory Id="ProgramMenuFolder">
                 <Directory Id="ApplicationProgramsFolder" Name="{{APP_NAME}}"/>
             </Directory>
-
         </Directory>
 
 
         {{DIRECTORY_REF}}
 
-
         <!--<Icon Id="{{APPLICATION_ICON_ID}}" SourceFile="{{APPLICATION_ICON_SOURCE}}"/>-->
-
 
         <Feature Id="MainApplication" Title="Main Application" Level="1">
             {{COMPONENTS_REFS}}

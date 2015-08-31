@@ -2,7 +2,18 @@ var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
 
 // Report crashes to our server.
-require('crash-reporter').start();
+//require('crash-reporter').start();
+
+
+var Menu = require('menu');
+var MenuItem = require('menu-item');
+
+var menu = new Menu();
+menu.append(new MenuItem({ label: 'MenuItem1', click: function() { console.log('item 1 clicked'); } }));
+menu.append(new MenuItem({ type: 'separator' }));
+menu.append(new MenuItem({ label: 'MenuItem2', type: 'checkbox', checked: true }));
+
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
@@ -22,10 +33,10 @@ app.on('window-all-closed', function () {
 app.on('ready', function () {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        'min-width': 1250,
-        'width': 1250,
-        'min-height': 800,
-        'height': 800,
+        //'min-width': 1250,
+        //'width': 1250,
+        //'min-height': 800,
+        //'height': 800,
         'resizable': true,
         //'fullscreen': true,
         //'frame': false,
@@ -35,7 +46,7 @@ app.on('ready', function () {
     mainWindow.loadUrl('file://' + __dirname + '/index.html');
 
     // Open the devtools.
-    //mainWindow.openDevTools();
+    mainWindow.openDevTools();
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {

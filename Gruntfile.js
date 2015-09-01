@@ -12,6 +12,7 @@ module.exports = function (grunt) {
                 app: 'app',
                 dist: 'dist'
             },
+            appConfig:this.yeoman,
             buildtag: '-dev-' + grunt.template.today('yyyy-mm-dd'),
             watch: {
                 options: {
@@ -53,7 +54,10 @@ module.exports = function (grunt) {
                     sourceMap: true
                 },
                 dist: {
-                    src: ['app/**/*.js'],
+                    src: [
+                        '<%= yeoman.app %>/**/*.js'
+                        ,'!<%= yeoman.app %>/main.js' //dont add this to the compile scripts
+                    ],
                     dest: ".tmp/scripts.js"
                 }
             },
@@ -133,7 +137,7 @@ module.exports = function (grunt) {
                     }
                 }
             },
-            clean: ['build']
+            clean: ['<%= yeoman.dist %>']
         }
     );
     grunt.registerTask('default', ['build']);

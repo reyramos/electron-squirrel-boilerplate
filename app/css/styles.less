@@ -1,34 +1,58 @@
-@import "bootstrap";
+@import "libraries";
+//FRAMEWORK LESS FILES
+@import "../app_components/less/variables.less";
+@import "../app_components/less/mixins.less";
+@import "../app_components/less/messages.less";
+@import "../app_components/less/loading.less";
+@import "../app_components/less/loading-bar.less";
+@import "../app_components/less/modal.less";
+@import "../app_components/less/popup2Search.less";
+@import "../app_components/less/dws.less";
+@import "../app_components/less/contextMenu.less";
+@import "../app_components/less/helpers.less";
+@import "../app_components/less/notifications.less";
+@import "../app_components/less/animated.less";
+@import "../app_components/less/dropdown-select.less";
+@import "../app_components/less/datepicker.less";
+//commons
+@import "../js/commons/styles";
+
+
+
+//CSS FOLDER FOR APPLICATION
+//varialbes/mixins
 @import "variables";
+@import "mixins/mixins";
+//OVERRIDES
+@import "bootstrap/form";
+@import "bootstrap/panels";
+@import "bootstrap/callout";
+@import "bootstrap/buttons";
+@import "angular/validate";
+@import "helpers";
+@import "mixins/animation";
+@import "mixins/scrollbar";
+//core architecture
+@import "core/body";
+@import "core/main";
+@import "core/aside";
+@import "core/footer";
+//components
+@import "components/content-table";
+@import "components/datepicker";
+@import "components/circle";
+@import "components/box";
+//theme
+@import "theme/halo-light";
+@import "theme/font-awesome";
+//@import "theme/halo-dark";
+//custom styles
+@import "views/index";
+@import "views/signin";
+//Application
+@import "../js/application/application";
+@import "../js/collection/collection";
+@import "../js/models/models";
+@import "../js/eventLog/eventLog";
 
-body {
-  margin: 0px;
-  padding: 0px;
 
-}
-
-.app-header {
-  width: 100%;
-  font-family: @font-family-phx-regular;
-  background-color: @gray-darker;
-  color: #ffffff;
-  z-index: 1;
-  font-size: 17px;
-  height: 25px;
-  line-height: 25px;
-
-}
-
-.app-body {
-  position: relative;  height: 100%;
-  width: 100%;
-  z-index: -1;
-
-  iframe, webview {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border: none;
-  }
-}

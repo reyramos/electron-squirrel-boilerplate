@@ -4,7 +4,11 @@
   "description": "Create asar file ",
   "main": "package.js",
   "dependencies": {
-    "asar": "^0.7.2"
+    "asar": "^0.7.2",
+    "time-grunt": "^0.3.1",
+    "less-plugin-autoprefix": "*",
+    "less-plugin-clean-css": "*",
+    "karma": "^0.12.16"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -15,6 +19,10 @@
     "grunt-contrib-less": "0.12.0",
     "grunt-contrib-uglify": "^0.6.0",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-angular-templates": "~0.5.7",
+    "grunt-contrib-htmlmin": "^0.3.0",
+    "grunt-ng-annotate": "1.0.1",
+    "grunt-requirejs": "^0.4.2",
     "grunt-env": "^0.4.2",
     "grunt-hustler": "4.0.6",
     "matchdep": "~0.3.0",

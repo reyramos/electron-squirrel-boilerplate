@@ -1,0 +1,66 @@
+.input-group-addon {
+    .border-radius(0);
+}
+
+.dropdown-menu {
+    padding: 5px;
+    .border-radius(0);
+
+    table {
+        width: 228px;
+        tr {
+            td {
+
+                .btn-default {
+                    border: none;
+                }
+
+                .btn{
+                    &.active{
+                        .text-info {
+                            color: #fff;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .calendar-month, .calendar-year {
+        tbody {
+            tr {
+                &:first-child {
+                    td {
+                        padding-top: 2px;
+                    }
+                }
+            }
+        }
+    }
+
+    .calendar-day {
+        thead {
+            tr {
+                th {
+                    &:nth-child(2) {
+                        text-align: center !important;
+                        button {
+                            width: 97% !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .calendar-month {
+        tr {
+            td {
+                width: 70px;
+                .btn {
+                    padding: 5px 5px;
+                }
+            }
+        }
+    }
+}

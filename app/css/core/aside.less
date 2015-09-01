@@ -1,0 +1,138 @@
+.anchor-decorate() {
+    &:before {
+        display: block;
+        content: "";
+        position: absolute;
+        top: -1px;
+        bottom: 0;
+        left: 0;
+        width: 3px;
+        max-width: 3px;
+        overflow: hidden;
+    }
+    outline: none;
+    border: 0px solid transparent;
+    text-decoration: none;
+    background-color: #ffffff;
+}
+
+aside {
+    nav {
+        width: 100%;
+        height: 100%;
+        ul {
+            -webkit-margin-before: 0em;
+            -webkit-margin-after: 0em;
+            -webkit-padding-start: 0px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        ul {
+            li {
+                display: block;
+                padding: 0;
+                margin: 0;
+                border: 0;
+                position: relative;
+
+                &.open, &.active {
+                    > ul {
+                        height: 100%;
+                    }
+
+                    > a i.fa-folder {
+                        &:before {
+                            content: "\f07c";
+                        }
+                    }
+                    > a {
+                        .collapse-sign {
+                            .fa:before {
+                                content: "\f146";
+                            }
+                        }
+                    }
+                }
+
+                a {
+                    display: block;
+                    height: 38px;
+                    line-height: 36px;
+                    padding: 0 16px 0 7px;
+                    font-size: 13px;
+                    text-decoration: none;
+                    margin: 0;
+                    position: relative;
+                    width: 100%;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    letter-spacing: 1px;
+                    &:hover, &:focus {
+                        text-decoration: none;
+                    }
+                    .collapse-sign {
+                        float: right;
+                    }
+
+                    > .fa {
+                        width: 35px;
+                        margin-left: -7px;
+                    }
+
+                    .pull-right{
+                        .fa{
+                            font-size: 15px;
+                        }
+                    }
+
+                }
+                &.header {
+                    a {
+                        height: 28px;
+                        line-height: 28px;
+                        &:hover, &:focus {
+                            text-decoration: none;
+                        }
+                    }
+                }
+                > ul {
+                    display: none;
+                    overflow: hidden;
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+                    position: relative;
+
+                    //.transition(height 200ms ease)
+                }
+            }
+        }
+    }
+    .folder-active() {
+    }
+
+    &.user-status {
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+        background-color: @greyDark;
+        a {
+            color: @brand-bg-white;
+        }
+    }
+
+}
+
+ul.flush {
+    -webkit-margin-before: 0em;
+    -webkit-margin-after: 0em;
+    -webkit-padding-start: 0px;
+    margin: 0;
+    list-style: none;
+    list-style: none outside none;
+    box-sizing: border-box;
+}
+
+

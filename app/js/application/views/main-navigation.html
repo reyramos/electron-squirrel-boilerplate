@@ -1,0 +1,29 @@
+<ul data-jarvis-menu="_bc.jarvisMenu">
+    <li ui-sref-active="active">
+        <a ui-sref="starred">
+            <i class="fa fa-lg fa-fw fa-star"></i>
+            <span class="menu-item-parent">Starred Collection</span>
+        </a>
+    </li>
+    <li ui-sref-active="active">
+        <a ui-sref="groups">
+            <i class="fa fa-lg fa-fw fa-users"></i>
+            <span class="menu-item-parent">Groups</span>
+        </a>
+    </li>
+    <li ui-sref-active="active">
+        <a ui-sref="collection">
+            <i class="fa fa-lg fa-fw fa-folder"></i>
+            <span class="menu-item-parent">Collection</span>
+        </a>
+        <ul id="categoryLists" ui-view="collectionNavigation"></ul>
+    </li>
+    <li>
+        <a>
+            <i class="fa fa-lg fa-fw fa-question"></i>
+            <span class="menu-item-parent">Help</span>
+        </a>
+    </li>
+</ul>
+
+

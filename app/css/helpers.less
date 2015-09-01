@@ -1,0 +1,45 @@
+.spacer {
+    display: block;
+    padding: 5px 0px;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.relative {
+    position: relative;
+}
+
+.center {
+    text-align: center;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0px;
+
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.arrow {
+    cursor: default;
+}
+
+table {
+    &:focus {
+        outline: none;
+
+    }
+}
+
+a {
+    color: @font-color-default;
+
+    &:hover, &:active, &:focus {
+        color: @font-color-default;
+        text-decoration: none;
+    }
+}

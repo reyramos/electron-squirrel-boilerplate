@@ -1,0 +1,36 @@
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="brand-primary-bar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a ui-sref="root">myBreyer Guide</a>
+            </div>
+            <div id="navbar" class="pull-right">
+                <ul class="nav navbar-nav">
+                    <li ui-sref-active="active">
+                        <a ui-sref="explore"><i class="fa fa-globe"></i></a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="profile"><i class="fa fa-cog"></i></a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="signing"><i class="fa fa-sign-out"></i></a>
+                    </li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </div>
+    <div class="brand-secondary-bar">
+        <div class="container-fluid">
+            <div class="selection-row">
+                <div class="search-box pull-right">
+                    <div class="input-group">
+                        <input type="text" class="form-control" data-ng-model="$parent.query" name="search"
+                               placeholder="Search">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

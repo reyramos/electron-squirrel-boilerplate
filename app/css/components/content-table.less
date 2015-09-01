@@ -1,0 +1,61 @@
+.content-table {
+    position: relative;
+    display: table;
+    width: 100%;
+}
+
+.content-row {
+    display: table-row;
+}
+
+.content-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+table.c-Header {
+    width: 100%;
+    min-width: 660px;
+    background-color: @white;
+    thead tr {
+        td {
+            padding: 0px;
+            border-bottom: thin solid @brand-border;
+            color: #444444;
+            white-space: nowrap;
+            text-align: center;
+        }
+    }
+    .scroll-bar {
+        overflow-x: hidden;
+    }
+}
+
+.content-row {
+    display: table-row;
+    width: 100%;
+    font-size: 13px;
+    text-decoration: none;
+    position: relative;
+    margin: 0;
+    border-top: 1px solid #fcfcfc;
+    color: #585858;;
+
+    &.c-header {
+        height: 38px;
+        line-height: 40px;
+        text-align: left;
+    }
+
+}
+
+.content-box {
+    text-align: center;
+    height: 40px;
+    width: 40px;
+    display: inline-block;
+    line-height: 42px;
+    float: left;
+    top: 0px;
+    z-index: 1;
+}

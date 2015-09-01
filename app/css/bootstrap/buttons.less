@@ -1,0 +1,32 @@
+.btn {
+    .border-radius(0px);
+}
+
+.newCatBtn-container {
+    height: 40px;
+}
+
+.btn-addNewCat {
+    position: absolute;
+    left: 50%;
+    width: 200px;
+    margin-left: -100px;
+    .border-radius(0);
+}
+
+.btn-addNewModel {
+    float: left;
+    margin: 6px;
+    width: 35px;
+    height: 35px;
+    font-size: 20px;
+    padding: 1px 0px;
+    .border-radius(100px);
+    &:focus, &:active {
+        outline: 0 !important;
+    }
+}
+
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn{
+    .opacity(80);
+}

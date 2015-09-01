@@ -4,17 +4,6 @@ var BrowserWindow = require('browser-window');  // Module to create native brows
 // Report crashes to our server.
 //require('crash-reporter').start();
 
-
-var Menu = require('menu');
-var MenuItem = require('menu-item');
-
-var menu = new Menu();
-menu.append(new MenuItem({ label: 'MenuItem1', click: function() { console.log('item 1 clicked'); } }));
-menu.append(new MenuItem({ type: 'separator' }));
-menu.append(new MenuItem({ label: 'MenuItem2', type: 'checkbox', checked: true }));
-
-
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
 var mainWindow = null;
@@ -33,17 +22,18 @@ app.on('window-all-closed', function () {
 app.on('ready', function () {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        //'min-width': 1250,
-        //'width': 1250,
-        //'min-height': 800,
-        //'height': 800,
+        'height': true,
         'resizable': true,
-        //'fullscreen': true,
-        //'frame': false,
+        'frame': false
     });
 
-    // and load the index.html of the app.
+    //Since we are making the application frameless we are going to create a frame within the index.html file
     mainWindow.loadUrl('file://' + __dirname + '/index.html');
+
+    //mainWindow.loadUrl('https://demo-phoenix.labcorp.com/web-ui/');
+    //mainWindow.show();
+
+
 
     // Open the devtools.
     mainWindow.openDevTools();

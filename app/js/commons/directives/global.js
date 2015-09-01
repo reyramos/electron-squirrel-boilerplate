@@ -23,26 +23,6 @@
         };
     }
 
-
-	//function ngRepeatDone() {
-	//    return function(scope, element, attrs) {
-	//        if (scope.$last) {
-	//
-	//            var _parent = element.parent()
-	//            angular.forEach(_parent.find('li'), function(value, index) {
-	//
-	//                ! function outer(index) {
-	//                    var _this = angular.element(value)
-	//                    _this.data('position', _this[0].offsetTop)
-	//
-	//                }(index);
-	//
-	//            });
-	//
-	//        }
-	//    };
-	//}
-
     function PasswordMatch() {
         return {
             restrict: 'A',

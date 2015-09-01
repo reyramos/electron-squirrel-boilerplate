@@ -1,45 +1,83 @@
 .spacer {
-    display: block;
-    padding: 5px 0px;
+  display: block;
+  padding: 5px 0px;
 }
 
 .text-uppercase {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 .relative {
-    position: relative;
+  position: relative;
 }
 
 .center {
-    text-align: center;
+  text-align: center;
 }
 
 .no-margin-bottom {
-    margin-bottom: 0px;
+  margin-bottom: 0px;
 
 }
 
 .pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .arrow {
-    cursor: default;
+  cursor: default;
 }
 
 table {
-    &:focus {
-        outline: none;
+  &:focus {
+    outline: none;
 
-    }
+  }
 }
 
 a {
-    color: @font-color-default;
+  color: @font-color-default;
 
-    &:hover, &:active, &:focus {
-        color: @font-color-default;
-        text-decoration: none;
-    }
+  &:hover, &:active, &:focus {
+    color: @font-color-default;
+    text-decoration: none;
+  }
+}
+
+.scroll-y {
+  overflow-y: auto;
+}
+
+.scroll-x {
+  overflow-x: auto;
+}
+
+.scroll {
+  overflow: auto;
+}
+
+.hand {
+  cursor: pointer !important;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.single-select {
+  pointer-events: none; //simple class to remove pointer events to dropdown if there is only one option
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.highlight {
+  &:hover, &.selected {
+    background-color: #FF9;
+  }
+}
+
+.no-border {
+  border: none;
 }

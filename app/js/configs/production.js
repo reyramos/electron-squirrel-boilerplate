@@ -7,9 +7,9 @@
 
 	angular.module('app').factory('APP_OVERRIDE', AppOverride);
 
-	AppOverride.$inject = ['utilities','$templateCache', '$http'];
+	//AppOverride.$inject = [];
 
-	function AppOverride(utilities, $templateCache, $http) {
+	function AppOverride() {
 
 		var override = {
 			//loggerHost:"localhost" //used to override the debug functionality

@@ -9,11 +9,11 @@
 
 	ApplicationModule.factory('APP_OVERRIDE', AppOverride)
 
-	AppOverride.$inject = ['templates', 'localStorage', '$q', '$rootScope', 'utilities'];
+	AppOverride.$inject = ['$rootScope', 'utilities'];
 
 
 
-	function AppOverride(templates, localStorage, $q, $rootScope, utilities) {
+	function AppOverride($rootScope, utilities) {
 
 
 		var override = {

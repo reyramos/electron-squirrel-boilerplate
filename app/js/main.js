@@ -20,10 +20,10 @@ require
 
 
 			//FACTORIES
-			'utilities': '../app_components/src/factories/utilities',
+			'utilities': 'commons/factory/utilities',
 
 			//PROVIDERS
-			'client': '../app_components/src/providers/client',
+			'client': 'commons/provider/client',
 
 			/* CONFIGS */
 			'development': 'configs/development'
@@ -72,7 +72,6 @@ require
 			'development': {'deps': ['app']},
 			'application/appSettings': {'deps': ['app']},
 			'application/baseController': {'deps': ['app']},
-
 
 
 			//COMMONS

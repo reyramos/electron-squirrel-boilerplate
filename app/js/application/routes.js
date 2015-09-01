@@ -38,17 +38,6 @@
                         //controller: 'dashboardController',
                         //controllerAs: '_dc'
                     },
-                    'sidebar@root': {
-                        templateUrl: path + 'sidebar-left.html'
-                    },
-                    'leftNavContainer@root': {
-                        templateUrl: path + 'main-navigation.html'
-                    },
-                    'collectionNavigation@root': {
-                        template: '<li><a ng-click="_bc.addNewCategory($event)"><span class="menu-item-parent">Add a New Collection</span></a></li>',
-                        //controller: 'collectionNavigation',
-                        //controllerAs: 'ctrl'
-                    },
                     'eventLog@root': {
                         //templateUrl: 'js/eventLog/views/logger.html'
                     }

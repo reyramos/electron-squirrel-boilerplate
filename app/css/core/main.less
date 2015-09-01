@@ -1,60 +1,28 @@
 #templateContainer,
-[ui-view="leftNavContainer"],
 [ui-view="mainContent"] {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    left: 0px;
-    top: 0px;
-    bottom: 0px;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
 }
 
-[ui-view="leftNavContainer"],
 [ui-view="mainContent"] {
-    overflow: auto;
+  overflow: auto;
 }
 
 #templateContainer {
+  overflow: hidden;
+  #mainContent {
     overflow: hidden;
-    #mainContent,
-    #sidebar {
-        overflow: hidden;
-        position: absolute;
-        top: @navbar-height;
-        bottom: 20px;
-
-        .transform(translate3D(0px, 0px, 0px));
-    }
-
-    #sidebar {
-        top: @navbar-height;
-        //background-color: @brand-white;
-        border-right: thin solid @brand-border;
-        width: 225px;
-        left: 0;
-
-        > [ui-view="sidebar"] {
-            overflow: hidden;
-            position: absolute;
-            width: 100%;
-            top: 40px;
-            bottom: 40px;
-        }
-
-        [ui-view="leftNavContainer"] {
-            //top: 40px;
-        }
-        + #mainContent {
-            left: 225px;
-            right: 0px;
-        }
-
-        &:not(.mousedown-resizer) {
-            .transition(width 238ms ease-in-out);
-            + #mainContent {
-                .transition(left 238ms ease-in-out);
-            }
-        }
-    }
+    position: absolute;
+    top: @navbar-height;
+    bottom: 20px;
+  }
+  #mainContent {
+    left: 0px;
+    right: 0px;
+  }
 }
 

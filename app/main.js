@@ -24,7 +24,7 @@ app.on('ready', function () {
     mainWindow = new BrowserWindow({
         'height': true,
         'resizable': true,
-        'frame': false
+        //'frame': false
     });
 
     //Since we are making the application frameless we are going to create a frame within the index.html file

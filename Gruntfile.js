@@ -298,7 +298,6 @@ module.exports = function (grunt) {
     );
     grunt.registerTask(
         'dist', [
-            'socket',
             'connect:dist:keepalive'
         ]
     );

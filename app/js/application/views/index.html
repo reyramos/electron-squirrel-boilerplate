@@ -6,38 +6,6 @@
 
                     <div data-rr-offset style="position: relative;" id="masterContainer">
                         <div class="container">
-                            <div id="sidebar" data-resizer="::_bc.sidebarResizerOptions" class="s-column" data-jarvis-resizer>
-                                <aside>
-                                    <nav>
-                                        <ul data-dashboard-jarvis="_bc.jarvisMenu">
-                                            <li ui-sref-active="active">
-                                                <a ui-sref="root">
-                                                    <i class="fa fa-lg fa-fw fa-hdd-o"></i>
-                                                    <span class="menu-item-parent">Dashboard</span>
-                                                    <span class=" pull-right">
-                                                        <i class="fa fa-cog" data-drop-down-options="::_bc.faCogOpts"></i>
-                                                    </span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </aside>
-                                <div ui-view="sidebar"></div>
-                                <aside class="user-status">
-                                    <nav>
-                                        <ul data-dashboard-jarvis="_bc.jarvisMenu">
-                                            <li>
-                                                <a ui-sref="u({email:'{{::_bc.user.email}}'})">
-                                                    <span class="menu-item-parent" ng-bind="::_bc.displayName"></span>
-                                                    <span class="minifyme" data-minify-menu>
-                                                        <i class="fa fa-arrow-circle-left"></i>
-                                                    </span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </aside>
-                            </div>
                             <div id="mainContent" class="s-column">
                                 <div ui-view="mainContent"></div>
                             </div>
@@ -47,7 +15,7 @@
                         <div id="footerContainer">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <div id="eventLog" class="pull-right" data-event-log="_bc.footerResizerOptions">
+                                    <div id="eventLog" class="pull-right">
                                         <i class="glyphicon glyphicon-comment"></i> Event Log
                                     </div>
                                 </div>
@@ -55,7 +23,6 @@
                             </div>
                         </div>
                     </footer>
-
                 </div>
             </div>
         </div>

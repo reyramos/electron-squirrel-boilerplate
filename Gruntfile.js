@@ -42,7 +42,7 @@ module.exports = function (grunt) {
                         compress: true
                     },
                     files: {
-                        ".tmp/styles.css": "css/styles.less"
+                        ".tmp/styles.css": "<%= yeoman.app %>/css/styles.less"
                     }
                 }
             },
@@ -70,7 +70,7 @@ module.exports = function (grunt) {
                 },
                 dist: {
                     files: {
-                        "<%= yeoman.dist %>/index.html": "<%= yeoman.app %>/index.html"
+                        "dist/index.html": "<%= yeoman.app %>/index.html"
                     },
                     environment: "dist",
                     css_sources: '<%= grunt.file.read(".tmp/styles.css") %>',
@@ -113,21 +113,14 @@ module.exports = function (grunt) {
             uglify: {
                 options: {
                     preserveComments: false,
-                    mangle: false,
+                    mangle: true,
                     compress: {
-                        sequences: true,
-                        dead_code: true,
-                        conditionals: true,
-                        booleans: true,
-                        unused: true,
-                        if_return: true,
-                        join_vars: true,
-                        drop_console: false
+                        drop_console: true
                     },
                 },
                 dist: {
                     options: {
-                        mangle: true,
+                        mangle: false,
                         compress: {
                             drop_console: true
                         }
@@ -137,7 +130,7 @@ module.exports = function (grunt) {
                     }
                 }
             },
-            clean: ['<%= yeoman.dist %>']
+            clean: ['<%= yeoman.dist %>', '.tmp']
         }
     );
     grunt.registerTask('default', ['build']);
@@ -154,7 +147,7 @@ module.exports = function (grunt) {
             , 'concat'
             , 'uglify'
             , 'less'
-            , 'template:dist' //concat all the compile files into index.html
+            , 'template:dist'
         ]
     );
     grunt.registerTask(

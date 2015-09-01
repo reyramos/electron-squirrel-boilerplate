@@ -3,6 +3,6 @@
  */
 (function(){
 
-    console.log('THIS IS A TEST')
+    alert('THIS IS A TEST')
 
 })();

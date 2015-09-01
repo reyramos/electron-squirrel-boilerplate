@@ -1,3 +1,34 @@
+@import "bootstrap";
+@import "variables";
+
 body {
-  background-color: red;
+  margin: 0px;
+  padding: 0px;
+
+}
+
+.app-header {
+  width: 100%;
+  font-family: @font-family-phx-regular;
+  background-color: @gray-darker;
+  color: #ffffff;
+  z-index: 1;
+  font-size: 17px;
+  height: 25px;
+  line-height: 25px;
+
+}
+
+.app-body {
+  position: relative;  height: 100%;
+  width: 100%;
+  z-index: -1;
+
+  iframe, webview {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border: none;
+  }
 }

@@ -7,7 +7,7 @@ var APPLICATION_ICON_SOURCE = "";
 
 
 //path of your source files
-var APPLICATION_SRC = './app';
+var APPLICATION_SRC = './dist';
 //path to electron files
 var ELECTRON_PATH = './electron';
 var BUILD_DESTINATION = ELECTRON_PATH + '/resources/app.asar';

@@ -19,14 +19,22 @@
 <% } %>
 
 <body>
-<!--<webview id="main" src="https://demo-phoenix.labcorp.com/web-ui/" height="100%" autosize="on" nodeintegration></webview>-->
-<div class="app-header"></div>
-<div class="app-body"></div>
+<div class="app-header">
+    LabCorp Phoenix
+</div>
+<div class="app-body">
+    <!--<iframe id="main" src="https://demo-phoenix.labcorp.com/web-ui/" height="100%" autosize="on" nodeintegration></iframe>-->
+</div>
 
 
 
 <% if (config.environment === 'dist') { %>
 <script type="text/javascript"><%print(config.js_sources);%></script>
+<% }else{ %>
+
+<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="js/scripts.js"></script>
+
 <% } %>
 
 </body>

@@ -8,11 +8,6 @@ module.exports = function (grunt) {
     grunt.initConfig(
         {
             pkg: grunt.file.readJSON('package.json'),
-            yeoman: {
-                app: 'app',
-                dist: 'dist'
-            },
-            appConfig:this.yeoman,
             buildtag: '-dev-' + grunt.template.today('yyyy-mm-dd'),
             watch: {
                 options: {
@@ -21,8 +16,8 @@ module.exports = function (grunt) {
                 },
                 less: {
                     files: [
-                        "{.tmp,<%= yeoman.app %>}/css/**/*.less",
-                        "{.tmp,<%= yeoman.app %>}/**/*.less"
+                        "{.tmp,app}/css/**/*.less",
+                        "{.tmp,app}/**/*.less"
                     ],
                     options: {
                         livereload: true,
@@ -33,7 +28,7 @@ module.exports = function (grunt) {
                     options: {
                         livereload: '<%= connect.options.livereload %>'
                     },
-                    files: ['<%= yeoman.app %>/*.html']
+                    files: ['app/*.html']
                 }
             },
             less: {
@@ -42,7 +37,7 @@ module.exports = function (grunt) {
                         compress: true
                     },
                     files: {
-                        ".tmp/styles.css": "<%= yeoman.app %>/css/styles.less"
+                        ".tmp/styles.css": "app/css/styles.less"
                     }
                 }
             },
@@ -55,8 +50,8 @@ module.exports = function (grunt) {
                 },
                 dist: {
                     src: [
-                        '<%= yeoman.app %>/**/*.js'
-                        ,'!<%= yeoman.app %>/main.js' //dont add this to the compile scripts
+                        'app/**/*.js'
+                        , '!app/main.js' //dont add this to the compile scripts
                     ],
                     dest: ".tmp/scripts.js"
                 }
@@ -64,19 +59,34 @@ module.exports = function (grunt) {
             template: {
                 dev: {
                     files: {
-                        ".tmp/index.html": "<%= yeoman.app %>/index.html"
+                        ".tmp/index.html": "app/index.html"
                     },
                     environment: "dev"
                 },
                 dist: {
                     files: {
-                        "dist/index.html": "<%= yeoman.app %>/index.html"
+                        "dist/index.html": "app/index.html"
                     },
                     environment: "dist",
                     css_sources: '<%= grunt.file.read(".tmp/styles.css") %>',
                     js_sources: '<%= grunt.file.read(".tmp/scripts.min.js") %>'
                 }
-            }, // The actual grunt server settingscop
+            },
+            copy: {
+                app: {
+                    files: [{
+                        expand: true,
+                        dot: true,
+                        cwd: 'app',
+                        dest: 'dist',
+                        src: [
+                            'main.js'
+                            ,'package.json'
+                            , 'fonts/**/*.*'
+                        ]
+                    }]
+                }
+            },
             connect: {
                 options: {
                     port: 9000,
@@ -91,20 +101,20 @@ module.exports = function (grunt) {
                                 connect().use(
                                     '/lib', connect.static('./lib')
                                 ),
-                                connect.static(appConfig.app)
+                                connect.static('app')
                             ];
                         }
                     }
                 },
                 dist: {
                     options: {
-                        base: '<%= yeoman.dist %>',
+                        base: 'dist',
                         middleware: function (connect, options) {
                             return [
                                 connect().use(
-                                    '/app', connect.static(appConfig.app)
+                                    '/app', connect.static('app')
                                 ),
-                                connect.static(appConfig.dist)
+                                connect.static('dist')
                             ];
                         }
                     }
@@ -130,7 +140,7 @@ module.exports = function (grunt) {
                     }
                 }
             },
-            clean: ['<%= yeoman.dist %>', '.tmp']
+            clean: ['dist', '.tmp']
         }
     );
     grunt.registerTask('default', ['build']);
@@ -141,13 +151,13 @@ module.exports = function (grunt) {
             'watch'
         ]
     );
-    grunt.registerTask(
-        'build', [
-            , 'clean'
+    grunt.registerTask('build', [
+            'clean'
             , 'concat'
             , 'uglify'
             , 'less'
             , 'template:dist'
+            , 'copy'
         ]
     );
     grunt.registerTask(

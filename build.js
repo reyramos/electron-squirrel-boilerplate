@@ -10,9 +10,10 @@ var APPLICATION_ICON_SOURCE = "";
 var APPLICATION_SRC = './dist';
 //path to electron files
 var ELECTRON_PATH = './electron';
-var BUILD_DESTINATION = ELECTRON_PATH + '/resources/app.asar';
 
+var ELECTRON_BUILD_DESTINATION = ELECTRON_PATH + '/resources/app.asar';
 
+var BUILD_DESTINATION = 'build';
 /*******************************************************************
  APPLICATION VARIABLES
  *******************************************************************/
@@ -23,8 +24,9 @@ var uuid = require('node-uuid'), //generate unique UUID <https://github.com/broo
     path = require('path'),
     child = require('child_process');
 
+mkdir(BUILD_DESTINATION);
 
-asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
+asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
     console.log('Electron Package Created');
     console.log('Writting to package file, for wixtoolset');
     var ROOT_DIRECTORY_REFERENCE = "",
@@ -104,15 +106,27 @@ asar.createPackage(APPLICATION_SRC, BUILD_DESTINATION, function () {
         FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_SOURCE}}/g, APPLICATION_ICON_SOURCE);
 
 
-        fs.writeFile((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS, function (err) {
-            if (err) return console.log(err);
-            console.log('CREATED => ', (APP_NAME.split(" ")).join("_") + '.wxs')
-        });
+
+        if(fs.existsSync(BUILD_DESTINATION)){
+            file_put_content(BUILD_DESTINATION + "/" +(APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS)
+        }else{
+            file_put_content((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS)
+        }
 
     });
 
 
 });
+
+
+function file_put_content (filename, text){
+
+    fs.writeFile(filename, text, function (err) {
+        if (err) return console.log(err);
+        console.log('CREATED => ', filename)
+    });
+
+}
 
 
 function getComponents(files, filePath) {

@@ -37,6 +37,7 @@ require
 					'ui-router',
 					'angular-resource',
 					'angular-sanitize',
+					'angular-animate',
 					'utilities',
 					'client'
 				]
@@ -45,6 +46,7 @@ require
 			'ui-router': {'deps': ['angular']},
 			'angular-resource': {'deps': ['angular']},
 			'angular-sanitize': {'deps': ['angular']},
+			'angular-animate': {'deps': ['angular']},
 			'jquery': {
 				init: function ($) {
 					return $.noConflict(true);

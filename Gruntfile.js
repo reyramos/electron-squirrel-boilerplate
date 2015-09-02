@@ -212,6 +212,7 @@ module.exports = function (grunt) {
                     dot: true,
                     src: [
                         '.tmp',
+                        'build',
                         '<%= yeoman.dist %>/*',
                         '!<%= yeoman.dist %>/.git*'
                     ]
@@ -246,7 +247,12 @@ module.exports = function (grunt) {
                     "<%= yeoman.dist %>/index.html": ".tmp/index-concat.html"
                 }
             }
-        }, // Copies remaining files to places other tasks can use, do not override the index.html file
+        },
+        execute: {
+            'electron-build': {
+                src: ['build.js']
+            }
+        },
         copy: {
             app: {
                 files: [{
@@ -260,20 +266,15 @@ module.exports = function (grunt) {
                         'main.js',
                         'package.json'
                     ]
-                }/*,
-                    {
-                        expand: true,
-                        dot: true,
-                        cwd: '.tmp',
-                        dest: '<%= yeoman.dist %>',
-                        src: [
-                            'scripts.js',
-                            'styles.css'
-                        ]
-                    }*/]
+                }]
             }
         }
     });
+
+
+    grunt.registerTask(
+        'electron-build', ['execute:electron-build']
+    );
 
     grunt.registerTask(
         'serve', [
@@ -299,6 +300,7 @@ module.exports = function (grunt) {
             , 'template:dist' //concat all the compile files into index.html
             , 'htmlmin' //clean html
             , 'copy:app'
+            , 'electron-build'
         ]
     );
     grunt.registerTask(

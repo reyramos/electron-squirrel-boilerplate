@@ -13,7 +13,7 @@ module.exports = function (grunt) {
     );
 
     var appConfig = {
-        app: require('./bower.json').appPath || 'app',
+        app: require('./app/bower.json').appPath || 'app',
         dist: 'dist'
     };
 
@@ -185,7 +185,7 @@ module.exports = function (grunt) {
                         return [
                             connect.static('.tmp'),
                             connect().use(
-                                '/lib', connect.static('./lib')
+                                '/lib', connect.static('./<%= yeoman.app %>/lib')
                             ),
                             connect.static(appConfig.app)
                         ];
@@ -262,9 +262,11 @@ module.exports = function (grunt) {
                     dest: '<%= yeoman.dist %>',
                     src: [
                         '*.{ico,png,txt}',
-                        'fonts/*.{png,jpg,jpeg,gif,webp,svg,eot,ttf,woff,woff2,otf}',
+                        'fonts/**',
                         'main.js',
-                        'package.json'
+                        'package.json',
+                        'lib/**',
+                        'node_modules/**'
                     ]
                 }]
             }

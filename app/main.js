@@ -1,8 +1,9 @@
 var app = require('app');  // Module to control application life.
+var ipc = require('ipc');
+var Menu = require('menu');
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
+var angular = require('./lib/ng-electron/ng-bridge');
 
-// Report crashes to our server.
-//require('crash-reporter').start();
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
@@ -29,10 +30,6 @@ app.on('ready', function () {
 
     //Since we are making the application frameless we are going to create a frame within the index.html file
     mainWindow.loadUrl('file://' + __dirname + '/index.html');
-
-    //mainWindow.loadUrl('https://demo-phoenix.labcorp.com/web-ui/');
-    //mainWindow.show();
-
 
 
     // Open the devtools.

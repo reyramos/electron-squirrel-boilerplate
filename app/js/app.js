@@ -6,6 +6,7 @@
         'ngResource',
         'ngSanitize',
         'ngAnimate',
+        'ngElectron',
         'reyramos.utilities',
         'reyramos.client',
     ]).factory('APP_ENV', appOverride).factory('APP_OVERRIDE', function () {

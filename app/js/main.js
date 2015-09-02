@@ -6,12 +6,14 @@ require
 		removeCombined: true,
 		paths: {
 			//BOWER COMPONENTS
-			'angular': '../../lib/angular/angular',
-			'ui-router': '../../lib/ui-router/release/angular-ui-router',
-			'angular-resource': '../../lib/angular-resource/index',
-			'angular-sanitize': '../../lib/angular-sanitize/index',
-			'angular-animate': '../../lib/angular-animate/index',
-			'jquery': '../../lib/jquery/dist/jquery',
+			'angular': '../lib/angular/angular',
+			'ui-router': '../lib/ui-router/release/angular-ui-router',
+			'angular-resource': '../lib/angular-resource/index',
+			'angular-sanitize': '../lib/angular-sanitize/index',
+			'angular-animate': '../lib/angular-animate/index',
+			'jquery': '../lib/jquery/dist/jquery',
+			//'electron': '../lib/ng-electron/ng-electron',
+			'electron': 'vendor/ng-electron',
 
 			//VENDORS
 			'UAParser': 'vendor/ua-parser',
@@ -37,6 +39,7 @@ require
 					'angular-resource',
 					'angular-sanitize',
 					'angular-animate',
+					'electron',
 					'utilities',
 					'client'
 				]
@@ -46,6 +49,7 @@ require
 			'angular-resource': {'deps': ['angular']},
 			'angular-sanitize': {'deps': ['angular']},
 			'angular-animate': {'deps': ['angular']},
+			'electron': {'deps': ['angular']},
 			'jquery': {
 				init: function ($) {
 					return $.noConflict(true);

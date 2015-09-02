@@ -7,6 +7,7 @@
 (function(angular) {
     'use strict';
 
+
     console.log('===================BOOTSTRAPING======================');
     angular.bootstrap(document, ["app"]);
 

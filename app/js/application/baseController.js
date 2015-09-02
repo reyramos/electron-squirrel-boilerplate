@@ -10,9 +10,9 @@
 
     angular.module('app').controller('baseController', BaseController);
 
-    BaseController.$inject = ['$log', '$state', 'appSettings', 'clientService'];
+    BaseController.$inject = ['$state', 'clientService'];
 
-    function BaseController($log, $state, appSettings, clientService) {
+    function BaseController($state, clientService) {
 
 
         var self = this,
@@ -20,7 +20,7 @@
         //the application user-agent classes
             client = clientService.info;
 
-        $log.info('client', client)
+        console.info('client', client)
 
         self.faCogOpts = [
             [{

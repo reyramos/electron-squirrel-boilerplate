@@ -48,7 +48,7 @@
 
 			resize()
 
-			$($window).on("resize", resize)
+			angular.element($window).on("resize", resize)
 
 		}
 

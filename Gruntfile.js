@@ -149,7 +149,7 @@ module.exports = function (grunt) {
         }, //minify Angular Js, html files with $templateCache
         ngtemplates: {
             options: {
-                //prefix: '/',
+                module:'app',
                 htmlmin: {
                     collapseBooleanAttributes: true,
                     collapseWhitespace: true,

@@ -52,21 +52,14 @@ app.on('will-quit', function () {
 
 app.on('ready', function () {
     mainWindow = createMainWindow();
-    console.log('<====================================>');
-    console.log("Electron says, \"Let's Code Awesome!\"");
-    console.log('<====================================>');
     mainWindow.webContents.on('dom-ready', function (e) {
         //try and manually bootstrap AngularJS
         //var code = "angular.bootstrap(document, ['app']);"
         //mainWindow.webContents.executeJavaScript( code );
-        console.log('<====================================>');
-        console.log("Electron says, \"Application is already Bootstrapped!\"");
-        console.log('<====================================>');
-
         angular.send("Hello from Electron");
     });
 
-    mainWindow.openDevTools();
+    //mainWindow.openDevTools();
     mainWindow.webContents.on('did-finish-load', function (e) {
         //Start listening for client messages
         angular.listen(function (msg) {

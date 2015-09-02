@@ -6,10 +6,8 @@
   "dependencies": {
     "asar": "^0.7.2",
     "diskdb": "^0.1.14",
-    "karma": "^0.12.16",
     "less-plugin-autoprefix": "*",
-    "less-plugin-clean-css": "*",
-    "time-grunt": "^0.3.1"
+    "less-plugin-clean-css": "*"
   },
   "devDependencies": {
     "asar": "^0.7.2",
@@ -33,9 +31,6 @@
     "load-grunt-tasks": "^0.4.0",
     "matchdep": "~0.3.0",
     "node-uuid": "^1.4.3"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
     "node": ">=0.10.0"

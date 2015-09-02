@@ -28,15 +28,16 @@
                 views: {
                     'applicationContainer@': {
                         templateUrl: path + 'index.html',
-                        controller: 'baseController',
-                        controllerAs: 'bc'
+                        controller: 'appController',
+                        controllerAs: 'app'
                     },
-                    'appHeader@': {
+                    'appHeader@root': {
                         templateUrl: path + 'header.html',
-                        controller: 'headerController',
-                        controllerAs: 'hc'
+
                     },
-                    'mainContent@root': {},
+                    'mainContent@root': {
+                        templateUrl: path + 'iframe.html',
+                    },
                     'eventLog@root': {}
                 }
             }];

@@ -42,7 +42,7 @@ module.exports = function (grunt) {
                 },
                 tasks: ['template:dev'],
                 files: [
-                    '<%= yeoman.app %>/*.template',
+                    '<%= yeoman.app %>/*.html',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
             }
@@ -134,13 +134,13 @@ module.exports = function (grunt) {
         template: {
             dev: {
                 files: {
-                    ".tmp/index.html": "<%= yeoman.app %>/index.template"
+                    ".tmp/index.html": "<%= yeoman.app %>/index.html"
                 },
                 environment: "dev"
             },
             dist: {
                 files: {
-                    ".tmp/index-concat.html": "<%= yeoman.app %>/index.template"
+                    ".tmp/index-concat.html": "<%= yeoman.app %>/index.html"
                 },
                 environment: "dist",
                 css_sources: '<%= grunt.file.read(".tmp/styles.css") %>',

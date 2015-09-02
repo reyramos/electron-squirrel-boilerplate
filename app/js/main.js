@@ -67,8 +67,7 @@ require
 			//APPLICATION
 			'development': {'deps': ['app']},
 			'application/appSettings': {'deps': ['app']},
-			'application/baseController': {'deps': ['app']},
-			'application/headerController': {'deps': ['app']},
+			'application/appController': {'deps': ['app']},
 
 
 			//COMMONS
@@ -86,8 +85,7 @@ require
 		//APPLICATION
 		'development',
 		'application/appSettings',
-		'application/baseController',
-		'application/headerController',
+		'application/appController',
 
 
 		//COMMONS

@@ -38,10 +38,10 @@
 			'/bgDropDownButtons/bgDropDownButtons.html',
 			[
 				'<div id="bgDropDownButtons"><div class="dropdown-buttons" ><ul data-ng-repeat="ul in ctrl.unorder.ul"><li data-ng-repeat="li in ul">',
-				'<div data-ng-click="li.callback({{::li}}, $event);ctrl.forceClose($event)"><i class="{{::li.icon}}"></i>{{::li.name}}',
+				'<div data-ng-click="li.callback(li, $event);ctrl.forceClose($event)"><i class="{{::li.icon}}"></i>{{::li.name}}',
 				'<i class="fa fa-caret-right pull-right" data-ng-show="li.list"></i></div>',
 				'<ul data-ng-show="li.list"><li data-ng-repeat="subli in li.list">',
-				'<div data-ng-click="subli.callback({{::subli}}, $event)"><i class="{{::subli.icon}}"></i>{{::subli.name}}</div>',
+				'<div data-ng-click="subli.callback(subli, $event)"><i class="{{::subli.icon}}"></i>{{::subli.name}}</div>',
 				'</li></ul>',
 				'</li></ul></div></div>'
 			].join(''))

@@ -2,6 +2,7 @@
  * Amy is Awesome!
  */
 'use strict';
+var path = require('path');
 var app = require('app');
 var ipc = require('ipc');
 
@@ -12,13 +13,11 @@ var angular = require('./lib/ng-electron/ng-bridge');
 
 function createMainWindow() {
     const win = new BrowserWindow({
-        'min-width': 1250,
         'width': 1250,
-        'min-height': 800,
         'height': 800,
         'resizable': true,
-        //'fullscreen': true,
-        //'frame': false,
+        icon: path.join(__dirname, 'icon.png'),
+        title: 'LabCorp Phoenix' //this is set by the index file
     });
 
     win.loadUrl('file://' + __dirname + '/index.html');
@@ -64,7 +63,7 @@ app.on('ready', function () {
         console.log("Electron says, \"Application is already Bootstrapped!\"");
         console.log('<====================================>');
 
-        angular.send( "Hello from Electron" );
+        angular.send("Hello from Electron");
     });
 
     mainWindow.openDevTools();

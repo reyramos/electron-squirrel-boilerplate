@@ -1,19 +1,28 @@
-var APP_NAME = "LabCorp Phoenix",
-    APP_DESCRIPTION = 'My application description',
-    MANUFACTURER = 'LabCorp',
-    APP_VERSION = '1.0';
+var path = require('path'),
+    config = require('./package.json');
 
-var APPLICATION_ICON_SOURCE = "";
+var APP_NAME = config.msi.app_name,
+    APP_DESCRIPTION = config.msi.app_description,
+    MANUFACTURER = config.msi.manufacturer,
+    APP_VERSION = config.version,
+    APPLICATION_SRC = path.join(__dirname, config.msi.source),
+    BUILD_DESTINATION = path.join(__dirname, config.msi.distribution);
 
+var APPLICATION_ICON_SOURCE = path.join(__dirname, APPLICATION_SRC, 'icon.png');
 
-//path of your source files
-var APPLICATION_SRC = './dist';
 //path to electron files
 var ELECTRON_PATH = './electron';
+var ELECTRON_BUILD_DESTINATION = path.join(__dirname, ELECTRON_PATH, '/resources/app.asar');
 
-var ELECTRON_BUILD_DESTINATION = ELECTRON_PATH + '/resources/app.asar';
 
-var BUILD_DESTINATION = 'build';
+console.log('APPLICATION_SRC', APPLICATION_SRC)
+console.log('BUILD_DESTINATION', BUILD_DESTINATION)
+console.log('ELECTRON_BUILD_DESTINATION', ELECTRON_BUILD_DESTINATION)
+
+
+
+
+
 /*******************************************************************
  APPLICATION VARIABLES
  *******************************************************************/
@@ -70,7 +79,6 @@ asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
 
 
         walk(ELECTRON_PATH, function (obj) {
-            //console.log('walk ===>', obj)
             var id = (obj.filePath.replace(/\\/g, " ")).split(/[\s{0,}\\\-_\.]/g),
                 components = getComponents(obj.files, obj.filePath);
             id.forEach(function (ele, index, array) {
@@ -106,10 +114,10 @@ asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
         FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_SOURCE}}/g, APPLICATION_ICON_SOURCE);
 
 
-
-        if(fs.existsSync(BUILD_DESTINATION)){
-            file_put_content(BUILD_DESTINATION + "/" +(APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS)
-        }else{
+        if (fs.existsSync(BUILD_DESTINATION)) {
+            var FILE_DESTINATION = path.join(BUILD_DESTINATION, (APP_NAME.split(" ")).join("_") + '.wxs');
+            file_put_content(FILE_DESTINATION, FILE_WXS)
+        } else {
             file_put_content((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS)
         }
 
@@ -119,7 +127,7 @@ asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
 });
 
 
-function file_put_content (filename, text){
+function file_put_content(filename, text) {
 
     fs.writeFile(filename, text, function (err) {
         if (err) return console.log(err);
@@ -130,19 +138,17 @@ function file_put_content (filename, text){
 
 
 function getComponents(files, filePath) {
-
+    filePath = path.join(__dirname, filePath);
     var COMPONENTS = "",
         DIRECTORY_REF = "",
         COMPONENTS_REFS = "",
         appName = APP_NAME.split(" ");
-
 
     appName.forEach(function (ele, index, array) {
         array[index] = ele.capitalize();
     });
 
     appName = appName.join("");
-
     for (var i in files) {
         var file = files[i],
             ext = file.substr((~-file.lastIndexOf(".") >>> 0) + 2),
@@ -153,10 +159,8 @@ function getComponents(files, filePath) {
         });
         id = id.join("");
 
-
         var idComponent = id + "COMP";
         var idFile = id + "FILE";
-
 
         switch (ext) {
             case 'exe':

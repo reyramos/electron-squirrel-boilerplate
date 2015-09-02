@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "description": "Create asar file ",
   "main": "package.js",
+  "msi": {
+    "app_name": "LabCorp Phoenix",
+    "app_description": "LabCorp Application",
+    "manufacturer": "LabCorp Inc",
+    "source": "dist",
+    "distribution": "build"
+  },
   "dependencies": {
     "asar": "^0.7.2",
     "diskdb": "^0.1.14",
@@ -24,6 +31,7 @@
     "grunt-contrib-uglify": "^0.6.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-env": "^0.4.2",
+    "grunt-exec": "^0.4.6",
     "grunt-execute": "^0.2.2",
     "grunt-hustler": "4.0.6",
     "grunt-ng-annotate": "1.0.1",

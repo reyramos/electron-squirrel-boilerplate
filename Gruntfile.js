@@ -1,3 +1,6 @@
+var fs = require('fs'),
+    path = require('path');
+
 'use strict';
 module.exports = function (grunt) {
 
@@ -13,7 +16,7 @@ module.exports = function (grunt) {
     );
 
     var appConfig = {
-        app: require('./app/bower.json').appPath || 'app',
+        app: 'app',
         dist: 'dist'
     };
 
@@ -119,7 +122,7 @@ module.exports = function (grunt) {
                     unused: true,
                     if_return: true,
                     join_vars: true,
-                    drop_console: false
+                    drop_console: true
                 },
             },
             scripts: {
@@ -149,7 +152,7 @@ module.exports = function (grunt) {
         }, //minify Angular Js, html files with $templateCache
         ngtemplates: {
             options: {
-                module:'app',
+                module: 'app',
                 htmlmin: {
                     collapseBooleanAttributes: true,
                     collapseWhitespace: true,
@@ -253,6 +256,24 @@ module.exports = function (grunt) {
                 src: ['build.js']
             }
         },
+        exec: {
+            'candle': {
+                cmd: function () {
+                    var pkg = grunt.file.readJSON('package.json'),
+                        APP_NAME = pkg.msi.app_name,
+                        BUILD_DESTINATION = path.join(__dirname, pkg.msi.distribution),
+                        READ_FILE = (APP_NAME.split(" ")).join("_") + '.wxs',
+                        FILE_DESTINATION = (APP_NAME.split(" ")).join("_") + '.wxs';
+
+                    if (fs.existsSync(BUILD_DESTINATION)) {
+                        READ_FILE = path.join(BUILD_DESTINATION, FILE_DESTINATION);
+                        FILE_DESTINATION = path.join(BUILD_DESTINATION, (APP_NAME.split(" ")).join("_") + '.wixobj');
+                    }
+
+                    return 'candle.exe ' + READ_FILE + ' -o ' + FILE_DESTINATION;
+                }
+            }
+        },
         copy: {
             app: {
                 files: [{
@@ -277,6 +298,7 @@ module.exports = function (grunt) {
     grunt.registerTask(
         'electron-build', [
             'execute:build-wxs',
+            'exec:candle',
         ]
     );
 
@@ -288,9 +310,7 @@ module.exports = function (grunt) {
         ]
     );
     grunt.registerTask(
-        'dist', [
-            'connect:dist:keepalive'
-        ]
+        'dist', ['connect:dist:keepalive']
     );
     grunt.registerTask(
         'build', [

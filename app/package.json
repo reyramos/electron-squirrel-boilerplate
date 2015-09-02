@@ -4,5 +4,8 @@
   "description": "",
   "main": "main.js",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "diskdb": "^0.1.14"
+  }
 }

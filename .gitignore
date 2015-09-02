@@ -1,5 +1,6 @@
 .idea/
 node_modules/
+**/node_modules
 npm-debug.log
 *.wxs
 *.msi
@@ -7,5 +8,7 @@ npm-debug.log
 *.wixpdb
 build/
 lib/
+**/**/lib/
 .tmp
 dist/
+amy-stack/

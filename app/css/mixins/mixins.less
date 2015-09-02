@@ -1,0 +1,197 @@
+// ============================================
+//				CSS3
+// ============================================
+// Transitions
+
+.transition(@speed:@menu-transition-speed, @control:ease-in-out) {
+	-webkit-transition : @arguments;
+	-moz-transition    : @arguments;
+	-c-transition      : @arguments;
+	-o-transition      : @arguments;
+	transition         : @arguments;
+}
+
+.transition(@transition) {
+	-webkit-transition : @transition;
+	-moz-transition    : @transition;
+	-o-transition      : @transition;
+	transition         : @transition;
+}
+
+.transition-duration(@transition-duration:600ms) {
+	-webkit-transition-duration : @transition-duration;
+	-moz-transition-duration    : @transition-duration;
+	-o-transition-duration      : @transition-duration;
+	transition-duration         : @transition-duration;
+}
+
+.transform-origin(@transition) {
+	-webkit-transform-origin : @transition;
+	-moz-transform-origin    : @transition;
+	-ms-transform-origin     : @transition;
+	transform-origin         : @transition;
+}
+
+.transform(@transition) {
+	-webkit-transform : @transition;
+	-moz-transform    : @transition;
+	-ms-transform     : @transition;
+	transform         : @transition;
+}
+
+.perspective(@degrees:1000) {
+	-webkit-perspective : @degrees;
+	-moz-perspective    : @degrees;
+	-o-perspective      : @degrees;
+	perspective         : @degrees;
+}
+
+.preserve3D{
+	-webkit-transform-style : preserve-3d;
+	-moz-transform-style    : preserve-3d;
+	-o-transform-style      : preserve-3d;
+	transform-style         : preserve-3d;
+}
+
+.rotate(@degrees) {
+    -webkit-transform : rotate(@degrees);
+    -moz-transform    : rotate(@degrees);
+    -ms-transform     : rotate(@degrees);
+    -o-transform      : rotate(@degrees);
+    transform         : rotate(@degrees);
+}
+
+.rotateY(@degrees) {
+	-webkit-transform : rotateY(@degrees);
+	-moz-transform    : rotateY(@degrees);
+	-ms-transform     : rotateY(@degrees);
+	-o-transform      : rotateY(@degrees);
+	transform         : rotateY(@degrees);
+}
+
+.rotateX(@degrees) {
+	-webkit-transform : rotateX(@degrees);
+	-moz-transform    : rotateX(@degrees);
+	-ms-transform     : rotateX(@degrees);
+	-o-transform      : rotateX(@degrees);
+	transform         : rotateX(@degrees);
+}
+
+.translateX(@degrees) {
+	-webkit-transform : translateX(@degrees);
+	-moz-transform    : translateX(@degrees);
+	-ms-transform     : translateX(@degrees);
+	-o-transform      : translateX(@degrees);
+	transform         : translateX(@degrees);
+}
+
+.animation(@transition) {
+	-webkit-animation : @transition; /* Safari 4+ */
+	-moz-animation    : @transition; /* Fx 5+ */
+	-o-animation      : @transition; /* Opera 12+ */
+	animation         : @transition; /* IE 10+ */
+}
+
+// Backface visibility
+// Prevent browsers from flickering when using CSS 3D transforms.
+// Default value is `visible`, but can be changed to `hidden
+// See git pull https://github.com/dannykeane/bootstrap.git backface-visibility for examples
+.backface-visibility(@visibility) {
+	-webkit-backface-visibility : @visibility;
+	-moz-backface-visibility    : @visibility;
+	backface-visibility         : @visibility;
+}
+
+// Background clipping
+// Heads up: FF 3.6 and under need "padding" instead of "padding-box"
+.background-clip(@clip) {
+	-webkit-background-clip : @clip;
+	-moz-background-clip    : @clip;
+	background-clip         : @clip;
+}
+
+// Box sizing
+.box-sizing(@boxmodel) {
+	-webkit-box-sizing : @boxmodel;
+	-moz-box-sizing    : @boxmodel;
+	box-sizing         : @boxmodel;
+}
+
+// Opacity
+.opacity(@opacity) {
+	opacity : @opacity / 100;
+	filter  : ~"alpha(opacity=@{opacity})";
+}
+
+// ============================================
+//				ENABLE/DISABLE MOUSE/TOUCH SELECT
+// ============================================
+
+.select-enabled{
+	-webkit-touch-callout : default;
+	-webkit-user-select   : text;
+	-khtml-user-select    : text;
+	-moz-user-select      : text;
+	-ms-user-select       : text;
+	user-select           : text;
+}
+
+.select-disabled{
+	-webkit-touch-callout : none;
+	-webkit-user-select   : none;
+	-khtml-user-select    : none;
+	-moz-user-select      : none;
+	-ms-user-select       : none;
+	user-select           : none;
+}
+
+// ============================================
+//				MISC HELPERS
+// ============================================
+
+.cursor{
+	cursor : hand;
+	cursor : pointer;
+}
+
+// ============================================
+//				ROUNDED CORNERS
+// ============================================
+
+.border-radius (@radius: 5px) {
+	border-radius         : @radius;
+	-webkit-border-radius : @radius;
+	-moz-border-radius    : @radius;
+	-ms-border-radius     : @radius;
+	-o-border-radius      : @radius;
+	border-radius         : @radius;
+}
+
+.oval-corners (@radius: 200px) {
+	-webkit-border-radius : @radius;
+	-moz-border-radius    : @radius;
+	-ms-border-radius     : @radius;
+	-o-border-radius      : @radius;
+	border-radius         : @radius;
+}
+
+.right-oval-corners (@radius: 200px) {
+	border-left           : none;
+	-webkit-border-radius : 0 @radius @radius 0;
+	-moz-border-radius    : 0 @radius @radius 0;
+	-ms-border-radius     : 0 @radius @radius 0;
+	-o-border-radius      : 0 @radius @radius 0;
+	border-radius         : 0 @radius @radius 0;
+	margin                : 0;
+}
+
+.left-oval-corners (@radius: 200px) {
+	border-right          : none;
+	-webkit-border-radius : @radius 0 0 @radius;
+	-moz-border-radius    : @radius 0 0 @radius;
+	-ms-border-radius     : @radius 0 0 @radius;
+	-o-border-radius      : @radius 0 0 @radius;
+	border-radius         : @radius 0 0 @radius;
+	margin                : 0;
+}
+

@@ -1,0 +1,28 @@
+#templateContainer,
+[ui-view="mainContent"] {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+[ui-view="mainContent"] {
+  overflow: auto;
+}
+
+#templateContainer {
+  overflow: hidden;
+  #mainContent {
+    overflow: hidden;
+    position: absolute;
+    top: @navbar-height;
+    bottom: 20px;
+  }
+  #mainContent {
+    left: 0px;
+    right: 0px;
+  }
+}
+

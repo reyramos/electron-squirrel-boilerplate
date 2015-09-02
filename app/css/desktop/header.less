@@ -1,0 +1,87 @@
+.navbar-default {
+    min-width: @app-min-width;
+}
+
+.navbar-header {
+    float: left;
+}
+
+.navbar-brand {
+    //height: 49px;
+    padding: 10px 15px;
+}
+
+/* Undo the collapsing navbar */
+.navbar-collapse {
+
+    padding-bottom: 0;
+    border-top: 0;
+    overflow: visible !important;
+    display: block !important;
+    height: auto !important;
+}
+
+.navbar-toggle {
+    display: none;
+}
+
+/* Always apply the floated nav */
+.navbar-nav {
+    float: left;
+    margin: 0;
+
+    > li {
+        float: left;
+        height: 30px;
+
+        > a {
+            padding: 0px 10px;
+            line-height: 30px;
+            height: 30px;
+
+        }
+
+        &.active {
+            > a {
+                color: @brand-green !important;
+            }
+        }
+
+    }
+
+    &.navbar-right {
+        float: right;
+    }
+
+}
+
+.brand-primary-bar {
+    height: 30px;
+    padding: 0px 10px;
+    line-height: 30px;
+    background-color: @brand-bg-white;
+    font-size: 14px;
+    color: @brand-bg;
+    //border-bottom: thin solid @sideBarBorderColor;
+    a {
+        color: @brand-bg;
+        text-decoration: none;
+    }
+}
+
+.brand-secondary-bar {
+    //border-top: thin solid lighten(@brand-bg-light, 20%);
+    //border-bottom: thin solid lighten(@brand-bg-light, 20%);
+    //border-bottom: thin solid @sideBarBorderColor;
+    border-top: thin solid @darkSideBarBorderColor;
+    //background-color: @brand-bg;
+    background-color: @white;
+    height: 35px;
+    padding: 0px;
+
+    -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
+
+}
+

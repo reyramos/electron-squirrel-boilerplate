@@ -5,9 +5,8 @@
 (function (angular) {
 	'use strict';
 
-	var ApplicationModule = angular.module('app');
 
-	ApplicationModule.factory('APP_OVERRIDE', AppOverride)
+	angular.module('app').factory('APP_OVERRIDE', AppOverride)
 
 	AppOverride.$inject = ['$rootScope', 'utilities'];
 

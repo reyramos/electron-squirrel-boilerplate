@@ -50,10 +50,9 @@ module.exports = function (grunt) {
         less: {
             options: {
                 compress: true,
-                sourceMap: true,
+                sourceMap: false,
                 paths: ['<%= yeoman.dist %>/css'],
                 sourceMapBasepath: "<%= yeoman.dist %>",
-                outputSourceFiles: true,
                 plugins: [
                     new (require('less-plugin-autoprefix'))({
                         browsers: ["last 2 versions"]
@@ -64,27 +63,8 @@ module.exports = function (grunt) {
                 ]
             },
             styles: {
-                options: {
-                    sourceMapFilename: "<%= yeoman.dist %>/styles.css.map",
-                },
                 files: {
-                    "<%= yeoman.dist %>/styles.css": "<%= yeoman.app %>/css/styles.less" //move the compress css to dist
-                }
-            },
-            desktop: {
-                options: {
-                    sourceMapFilename: "<%= yeoman.dist %>/desktop.css.map",
-                },
-                files: {
-                    "<%= yeoman.dist %>/desktop_styles.css": "<%= yeoman.app %>/css/desktop.less" //move the compress css to dist
-                }
-            },
-            mobile: {
-                options: {
-                    sourceMapFilename: "<%= yeoman.dist %>/mobile.css.map",
-                },
-                files: {
-                    "<%= yeoman.dist %>/mobile_styles.css": "<%= yeoman.app %>/css/mobile.less" //move the compress css to dist
+                    ".tmp/styles.css": "<%= yeoman.app %>/styles.less" //move the compress css to dist
                 }
             }
         },
@@ -144,15 +124,10 @@ module.exports = function (grunt) {
             },
             scripts: {
                 options: {
-                    sourceMap: true,
-                    sourceMapName: "<%= yeoman.dist %>/scripts.js.map",
-                    sourceMapRoot: "<%= yeoman.dist %>/",
-                    sourceMapIncludeSources: true,
-                    sourceMapIn: '.tmp/scripts-require.js.map',
-                    banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */'
+                    sourceMap: false
                 },
                 files: {
-                    '<%= yeoman.dist %>/scripts.js': '.tmp/scripts-concat.js' //place the minify version in the dist folder
+                    '.tmp/scripts.js': '.tmp/scripts-concat.js' //place the minify version in the dist folder
                 }
             }
         },
@@ -168,8 +143,8 @@ module.exports = function (grunt) {
                     ".tmp/index-concat.html": "<%= yeoman.app %>/index.template"
                 },
                 environment: "dist",
-                css_sources: '<%= grunt.file.read(yeoman.dist+"/styles.css") %>',
-                js_sources: '<%= grunt.file.read(yeoman.dist+"/scripts.js") %>'
+                css_sources: '<%= grunt.file.read(".tmp/styles.css") %>',
+                js_sources: '<%= grunt.file.read(".tmp/scripts.js") %>'
             }
         }, //minify Angular Js, html files with $templateCache
         ngtemplates: {
@@ -190,7 +165,8 @@ module.exports = function (grunt) {
                 cwd: '<%= yeoman.app %>',
                 src: [
                     "js/**/**/*.html",
-                    "views/**/**/*.html"
+                    "views/**/**/*.html",
+                    "!views/templates/**/*.html"
                 ],
                 dest: '.tmp/views.js'
             },
@@ -284,7 +260,17 @@ module.exports = function (grunt) {
                         'main.js',
                         'package.json'
                     ]
-                }]
+                }/*,
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '.tmp',
+                        dest: '<%= yeoman.dist %>',
+                        src: [
+                            'scripts.js',
+                            'styles.css'
+                        ]
+                    }*/]
             }
         }
     });

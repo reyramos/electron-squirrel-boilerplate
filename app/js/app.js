@@ -5,9 +5,7 @@
 		'ui.router',
 		'ngResource',
 		'ngSanitize',
-		'ngCookies',
 		'ngAnimate',
-		'ngTouch',
 		'reyramos.utilities',
 		'reyramos.client',
 	]).factory('APP_ENV', appOverride).factory('APP_OVERRIDE', function () {return {}})

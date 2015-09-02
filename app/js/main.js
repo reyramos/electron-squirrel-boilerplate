@@ -9,10 +9,8 @@ require
 			'angular': '../../lib/angular/angular',
 			'ui-router': '../../lib/ui-router/release/angular-ui-router',
 			'angular-resource': '../../lib/angular-resource/index',
-			'angular-cookies': '../../lib/angular-cookies/index',
 			'angular-sanitize': '../../lib/angular-sanitize/index',
 			'angular-animate': '../../lib/angular-animate/index',
-			'angular-touch': '../../lib/angular-touch/index',
 			'jquery': '../../lib/jquery/dist/jquery',
 
 			//VENDORS
@@ -39,9 +37,6 @@ require
 					'ui-router',
 					'angular-resource',
 					'angular-sanitize',
-					'angular-animate',
-					'angular-cookies',
-					'angular-touch',
 					'utilities',
 					'client'
 				]
@@ -49,10 +44,7 @@ require
 			'angular': {'deps': ['jquery']},
 			'ui-router': {'deps': ['angular']},
 			'angular-resource': {'deps': ['angular']},
-			'angular-cookies': {'deps': ['angular']},
 			'angular-sanitize': {'deps': ['angular']},
-			'angular-animate': {'deps': ['angular']},
-			'angular-touch': {'deps': ['angular']},
 			'jquery': {
 				init: function ($) {
 					return $.noConflict(true);

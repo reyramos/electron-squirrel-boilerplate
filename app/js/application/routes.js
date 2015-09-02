@@ -33,14 +33,8 @@
                     'appHeader@': {
                         templateUrl: path + 'header.html',
                     },
-                    'mainContent@root': {
-                        //templateUrl: 'js/dashboard/views/dashboard.html',
-                        //controller: 'dashboardController',
-                        //controllerAs: '_dc'
-                    },
-                    'eventLog@root': {
-                        //templateUrl: 'js/eventLog/views/logger.html'
-                    }
+                    'mainContent@root': {},
+                    'eventLog@root': {}
                 }
             }];
 

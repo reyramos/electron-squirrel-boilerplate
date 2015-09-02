@@ -3,7 +3,6 @@
 
     angular.module('app')
         .directive('a', AnchorDirective)
-		//.directive('ngRepeatDone', ngRepeatDone)
         .directive('passwordMatch', PasswordMatch);
 
 

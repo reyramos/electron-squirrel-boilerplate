@@ -16,7 +16,6 @@ require
 			//VENDORS
 			'UAParser': 'vendor/ua-parser',
 
-
 			//FACTORIES
 			'utilities': 'commons/factory/utilities',
 
@@ -66,6 +65,7 @@ require
 			'development': {'deps': ['app']},
 			'application/appSettings': {'deps': ['app']},
 			'application/baseController': {'deps': ['app']},
+			'application/headerController': {'deps': ['app']},
 
 
 			//COMMONS
@@ -84,6 +84,7 @@ require
 		'development',
 		'application/appSettings',
 		'application/baseController',
+		'application/headerController',
 
 
 		//COMMONS

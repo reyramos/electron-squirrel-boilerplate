@@ -6,14 +6,13 @@
             </div>
             <div id="navbar" class="pull-right">
                 <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a><i class="fa fa-globe"></i></a>
+                    <li ui-sref-active="active">
+                        <a ui-sref="settings"><i class="fa fa-cog"></i></a>
                     </li>
-                    <li>
-                        <a><i class="fa fa-cog"></i></a>
-                    </li>
-                    <li>
-                        <a><i class="fa fa-sign-out"></i></a>
+                    <li class="electron-close">
+                        <a ng-click="hc.closeWindow()">
+                            <i class="fa fa-times"></i>
+                        </a>
                     </li>
                 </ul>
             </div>

@@ -38,7 +38,6 @@
             }]
         ]
 
-
     };
 
 })(window.angular);

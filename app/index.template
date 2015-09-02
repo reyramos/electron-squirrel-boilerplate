@@ -28,22 +28,15 @@
     </script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.0/less.min.js"></script>
     <% }else{ %>
-    <!--<link type="text/css" href="styles.css">-->
     <style><% print (config.css_sources); %></style>
-
     <% } %>
-
 
 </head>
 <body class="fixed-header">
 <header id="header" ui-view="appHeader"></header>
-
 <section  ui-view="applicationContainer"></section>
 
-
-
 <% if (config.environment === 'dist') { %>
-<!--<script type="text/javascript" src="scripts.js"></script>-->
 <script type="text/javascript"><%print(config.js_sources);%></script>
 <% } else { %>
 <script type="text/javascript" data-main="/js/main" src="/lib/requirejs/require.js"></script>

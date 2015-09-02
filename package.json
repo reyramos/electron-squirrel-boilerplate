@@ -5,10 +5,11 @@
   "main": "package.js",
   "dependencies": {
     "asar": "^0.7.2",
-    "time-grunt": "^0.3.1",
+    "diskdb": "^0.1.14",
+    "karma": "^0.12.16",
     "less-plugin-autoprefix": "*",
     "less-plugin-clean-css": "*",
-    "karma": "^0.12.16"
+    "time-grunt": "^0.3.1"
   },
   "devDependencies": {
     "asar": "^0.7.2",

@@ -249,7 +249,7 @@ module.exports = function (grunt) {
             }
         },
         execute: {
-            'electron-build': {
+            'build-wxs': {
                 src: ['build.js']
             }
         },
@@ -275,7 +275,9 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask(
-        'electron-build', ['execute:electron-build']
+        'electron-build', [
+            'execute:build-wxs',
+        ]
     );
 
     grunt.registerTask(

@@ -10,18 +10,26 @@
 
     angular.module('app').controller('headerController', HeaderController);
 
-    HeaderController.$inject = ['$log'];
+    HeaderController.$inject = ['electron'];
 
-    function HeaderController($log) {
+    function HeaderController(electron) {
 
 
         var self = this;
 
 
-
-
         self.closeWindow = function(){
             console.log('close Window')
+
+            var window = electron.remote.getCurrentWindow();
+
+            console.log('close Window',window)
+
+            if(window)
+            window.close();
+
+
+
         }
 
 

@@ -57,6 +57,7 @@
         try {
             //remote require
             o.require = require('remote').require;
+            o.remote = require('remote');
 
             //Electron api
             o.app = o.require('app');

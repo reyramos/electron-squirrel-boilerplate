@@ -10,9 +10,9 @@
 
     angular.module('app').controller('baseController', BaseController);
 
-    BaseController.$inject = ['$state', 'clientService'];
+    BaseController.$inject = ['clientService'];
 
-    function BaseController($state, clientService) {
+    function BaseController(clientService) {
 
 
         var self = this,
@@ -20,23 +20,6 @@
         //the application user-agent classes
             client = clientService.info;
 
-        console.info('client', client)
-
-        self.faCogOpts = [
-            [{
-                name: 'Settings',
-                icon: 'fa fa-cogs',
-                callback: function () {
-                    $state.go('profile')
-                }
-            }],
-            [{
-                name: 'Empty Trash',
-                icon: "fa fa-trash-o",
-                callback: function () {
-                }
-            }]
-        ]
 
     };
 

@@ -14,10 +14,11 @@
             };
             return $delegate;
         });
-    }).config(RouteProvider);
+    }).config(RouteProvider).run(Run);
 
 
     RouteProvider.$inject = ['$stateProvider', '$urlRouterProvider'];
+    Run.$inject = ['$rootScope'];
 
     function RouteProvider($stateProvider, $urlRouterProvider) {
         var path = 'js/application/views/',
@@ -70,6 +71,16 @@
         $urlRouterProvider.otherwise(function ($injector) {
             $injector.get('$state').transitionTo('root');
         });
+    }
+
+
+    function Run($rootScope) {
+
+        //listen for host messages
+        $rootScope.$on('electron-host', function (evt, data) {
+            console.log(data);
+        });
+
     }
 
 

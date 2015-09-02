@@ -12,7 +12,6 @@ require
 			'angular-sanitize': '../lib/angular-sanitize/index',
 			'angular-animate': '../lib/angular-animate/index',
 			'jquery': '../lib/jquery/dist/jquery',
-			//'electron': '../lib/ng-electron/ng-electron',
 			'electron': 'vendor/ng-electron',
 
 			//VENDORS

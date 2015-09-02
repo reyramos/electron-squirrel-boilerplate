@@ -1,45 +1,70 @@
-var app = require('app');  // Module to control application life.
+/**
+ * Amy is Awesome!
+ */
+'use strict';
+var app = require('app');
 var ipc = require('ipc');
+
+var BrowserWindow = require('browser-window');
 var Menu = require('menu');
-var BrowserWindow = require('browser-window');  // Module to create native browser window.
+
 var angular = require('./lib/ng-electron/ng-bridge');
 
+function createMainWindow () {
+    const win = new BrowserWindow({
+        width: 1500,
+        height: 600,
+        //resizable: false
+    });
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the javascript object is GCed.
-var mainWindow = null;
+    win.loadUrl('file://' + __dirname + '/index.html');
+    win.on('closed', onClosed);
 
-// Quit when all windows are closed.
+    return win;
+}
+
+function onClosed() {
+    mainWindow = null;
+}
+// prevent window being GC'd
+let mainWindow;
+
 app.on('window-all-closed', function () {
-    // On OSX it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform != 'darwin') {
+    if (process.platform !== 'darwin') {
         app.quit();
     }
 });
 
-// This method will be called when Electron has done everything
-// initialization and ready for creating browser windows.
+app.on('activate-with-no-open-windows', function () {
+    if (!mainWindow) {
+        mainWindow = createMainWindow();
+    }
+});
+
+app.on('will-quit', function() {
+    console.log('<====================================>');
+    console.log('Amy Says, "Stay Awesome Kids!"');
+    console.log('<====================================>');
+});
+
 app.on('ready', function () {
-    // Create the browser window.
-    mainWindow = new BrowserWindow({
-        'height': true,
-        'resizable': true,
-        //'frame': false
+    mainWindow = createMainWindow();
+    console.log('<====================================>');
+    console.log("Amy says, \"Let's Code Awesome!\"");
+    console.log('<====================================>');
+    mainWindow.webContents.on('dom-ready', function(e) {
+        //try and manually bootstrap AngularJS
+        //The application will be already bootstrap
+        //var code = "angular.bootstrap(document, ['app']);"
+        //mainWindow.webContents.executeJavaScript( code );
+
     });
 
-    //Since we are making the application frameless we are going to create a frame within the index.html file
-    mainWindow.loadUrl('file://' + __dirname + '/index.html');
-
-
-    // Open the devtools.
     mainWindow.openDevTools();
-
-    // Emitted when the window is closed.
-    mainWindow.on('closed', function () {
-        // Dereference the window object, usually you would store windows
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
-        mainWindow = null;
+    mainWindow.webContents.on('did-finish-load', function( e ) {
+        //Start listening for client messages
+        angular.listen(function(msg) {
+            console.log('Client: ' + msg);
+        });
     });
 });

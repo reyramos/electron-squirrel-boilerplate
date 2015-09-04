@@ -8,11 +8,11 @@ var APP_NAME = config.msi.app_name,
     APPLICATION_SRC = path.join(__dirname, config.msi.source),
     BUILD_DESTINATION = path.join(__dirname, config.msi.distribution);
 
-var APPLICATION_ICON_SOURCE = path.join(__dirname, APPLICATION_SRC, 'icon.png');
+var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.png');
 
 //path to electron files
-var ELECTRON_PATH = './electron';
-var ELECTRON_BUILD_DESTINATION = path.join(__dirname, ELECTRON_PATH, '/resources/app.asar');
+var ELECTRON_PATH = path.join(__dirname, 'electron-v0.31.2-win32-x64');
+var ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
 
 
 console.log('APPLICATION_SRC', APPLICATION_SRC)
@@ -76,13 +76,13 @@ asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
 
 
         walk(ELECTRON_PATH, function (obj) {
-            var id = (obj.filePath.replace(/\\/g, " ")).split(/[\s{0,}\\\-_\.]/g),
+            var id = (obj.filePath.replace(/c[^\w\*]/g, " ")).split(/[\s{0,}\\\-_\.]/g),
                 components = getComponents(obj.files, obj.filePath);
+
             id.forEach(function (ele, index, array) {
                 array[index] = ele.capitalize();
             });
             id = id.join("");
-
 
             if (obj.dirname !== obj.root) {
                 DIRECTORY += '<Directory Id="' + id + '" Name="' + obj.dirname + '" />';
@@ -92,22 +92,21 @@ asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
             }
 
             COMPONENTS_REFS += components[1];
-
             if (components[2]) {
                 //if this exist then lets add it
                 DIRECTORY_REF += components[2];
-
             }
 
         });
 
 
         DIRECTORY_REF = ROOT_DIRECTORY_REFERENCE + DIRECTORY_REF;
-
         FILE_WXS = FILE_WXS.replace(/{{DIRECTORY}}/g, DIRECTORY);
         FILE_WXS = FILE_WXS.replace(/{{DIRECTORY_REF}}/g, DIRECTORY_REF);
         FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
-        FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_ID}}/g, (APPLICATION_ICON_ID).join("") + ".icon");
+
+        APPLICATION_ICON_SOURCE = fs.existsSync(APPLICATION_ICON_SOURCE) ? '<Icon Id="' + ((APPLICATION_ICON_ID).join("") + ".icon") + '" SourceFile="' + APPLICATION_ICON_SOURCE + '"/>' : "";
+
         FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_SOURCE}}/g, APPLICATION_ICON_SOURCE);
 
 
@@ -135,7 +134,6 @@ function file_put_content(filename, text) {
 
 
 function getComponents(files, filePath) {
-    filePath = path.join(__dirname, filePath);
     var COMPONENTS = "",
         DIRECTORY_REF = "",
         COMPONENTS_REFS = "",

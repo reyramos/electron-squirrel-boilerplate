@@ -8,6 +8,7 @@ var APP_NAME = config.msi.app_name,
     APPLICATION_SRC = path.join(__dirname, config.msi.source),
     BUILD_DESTINATION = path.join(__dirname, config.msi.distribution);
 
+//searches for icon.png file in the application src to set the Add/Remove icon
 var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.png');
 
 //path to electron files
@@ -105,10 +106,10 @@ asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
         FILE_WXS = FILE_WXS.replace(/{{DIRECTORY_REF}}/g, DIRECTORY_REF);
         FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
 
-        APPLICATION_ICON_SOURCE = fs.existsSync(APPLICATION_ICON_SOURCE) ? '<Icon Id="' + ((APPLICATION_ICON_ID).join("") + ".icon") + '" SourceFile="' + APPLICATION_ICON_SOURCE + '"/>' : "";
+        //we are creating the installer icon in Add/Remove programs
+        APPLICATION_ICON_SOURCE = fs.existsSync(APPLICATION_ICON_SOURCE) ? '<Icon Id="' + ((APPLICATION_ICON_ID).join("") + ".icon") + '" SourceFile="' + APPLICATION_ICON_SOURCE + '"/>\r\n<Property Id="ARPPRODUCTICON" Value="' + ((APPLICATION_ICON_ID).join("") + ".icon") + '" />' : "";
 
         FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_SOURCE}}/g, APPLICATION_ICON_SOURCE);
-
 
         if (fs.existsSync(BUILD_DESTINATION)) {
             var FILE_DESTINATION = path.join(BUILD_DESTINATION, (APP_NAME.split(" ")).join("_") + '.wxs');
@@ -122,7 +123,6 @@ asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
 
 });
 
-
 function file_put_content(filename, text) {
 
     fs.writeFile(filename, text, function (err) {
@@ -131,7 +131,6 @@ function file_put_content(filename, text) {
     });
 
 }
-
 
 function getComponents(files, filePath) {
     var COMPONENTS = "",
@@ -217,7 +216,6 @@ function getComponents(files, filePath) {
 
 }
 
-
 function mkdir(dir) {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
@@ -226,7 +224,6 @@ function mkdir(dir) {
 
     return false;
 }
-
 
 function rmdir(directories, callback) {
     if (typeof directories === 'string') {
@@ -255,7 +252,6 @@ function grep(elems, callback, invert) {
 
     return matches;
 }
-
 /**
  * Simple function to walk into a directory and return the file path
  * @param currentDirPath

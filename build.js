@@ -1,125 +1,164 @@
-var APP_NAME = "LabCorp Phoenix",
-    APP_DESCRIPTION = 'My application description',
-    MANUFACTURER = 'LabCorp',
-    APP_VERSION = '1.0';
-
-var APPLICATION_ICON_SOURCE = "";
+var path = require('path'),
+    fs = require('fs'),
+    config = require('./package.json');
 
 
-//path of your source files
-var APPLICATION_SRC = './dist';
+const APP_NAME = config.msi.app_name;
+const APP_DESCRIPTION = config.msi.app_description;
+const MANUFACTURER = config.msi.manufacturer;
+const APP_VERSION = config.version;
+const APPLICATION_SRC = path.join(__dirname, config.msi.source);
+const BUILD_DESTINATION = path.join(__dirname, config.msi.distribution);
+
+//searches for icon.png file in the application src to set the Add/Remove icon
+var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.png');
+
 //path to electron files
-var ELECTRON_PATH = './electron';
+const ELECTRON_PATH = path.join(__dirname, config.msi.path_to_electron);
+const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
 
-var ELECTRON_BUILD_DESTINATION = ELECTRON_PATH + '/resources/app.asar';
 
-var BUILD_DESTINATION = 'build';
+var ELECTRON_EXE_DESTINATION = fs.existsSync(path.join(ELECTRON_PATH, 'electron.exe')) ? path.join(ELECTRON_PATH, 'electron.exe') : "";
+
+
+console.log('APPLICATION_SRC', APPLICATION_SRC)
+console.log('BUILD_DESTINATION', BUILD_DESTINATION)
+console.log('ELECTRON_BUILD_DESTINATION', ELECTRON_BUILD_DESTINATION)
+
 /*******************************************************************
  APPLICATION VARIABLES
  *******************************************************************/
 
 var uuid = require('node-uuid'), //generate unique UUID <https://github.com/broofa/node-uuid>
+    rcedit = require('rcedit'),
     asar = require('asar'), //create electron build from the application source files
-    fs = require('fs'),
-    path = require('path'),
     child = require('child_process');
 
-mkdir(BUILD_DESTINATION);
-
-asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
-    console.log('Electron Package Created');
-    console.log('Writting to package file, for wixtoolset');
-    var ROOT_DIRECTORY_REFERENCE = "",
-        COMPONENTS_REFS = "",
-        DIRECTORY_REF = "",
-        DIRECTORY = "",
-        FILE_WXS = "",
-        PRODUCT_GUID = uuid.v1(),
-        UPGRADE_GUID = uuid.v1();
-
-    var APP_CAB = APP_NAME.split(" ");
-    APP_CAB.forEach(function (ele, index, array) {
-        array[index] = ele.capitalize();
+String.prototype.capitalize = function () {
+    return this.replace(/(?:^|\s)\S/g, function (a) {
+        return a.toUpperCase();
     });
-
-    var APPLICATION_ICON_ID = APP_NAME.split(" ");
-    APPLICATION_ICON_ID.forEach(function (ele, index, array) {
-        array[index] = ele.capitalize();
-    });
-
-
-    fs.readFile('template.wxs', 'utf8', function (err, data) {
-        if (err) {
-            return console.log(err);
-        }
-
-        FILE_WXS = data;
-
-        //replace the APP_CAB
-        FILE_WXS = FILE_WXS.replace(/{{APP_CAB}}/g, (APP_CAB).join("") + ".cab");
-        //replace the MANUFACTURER
-        FILE_WXS = FILE_WXS.replace(/{{MANUFACTURER}}/g, MANUFACTURER);
-        //replace the APP_NAME
-        FILE_WXS = FILE_WXS.replace(/{{APP_NAME}}/g, APP_NAME);
-        //replace the PRODUCT_GUID
-        FILE_WXS = FILE_WXS.replace(/{{PRODUCT_GUID}}/g, PRODUCT_GUID);
-        //replace the UPGRADE_GUID
-        FILE_WXS = FILE_WXS.replace(/{{UPGRADE_GUID}}/g, UPGRADE_GUID);
-        //replace the APP_VERSION
-        FILE_WXS = FILE_WXS.replace(/{{APP_VERSION}}/g, APP_VERSION);
-
-
-        walk(ELECTRON_PATH, function (obj) {
-            //console.log('walk ===>', obj)
-            var id = (obj.filePath.replace(/\\/g, " ")).split(/[\s{0,}\\\-_\.]/g),
-                components = getComponents(obj.files, obj.filePath);
-            id.forEach(function (ele, index, array) {
-                array[index] = ele.capitalize();
-            });
-            id = id.join("");
-
-
-            if (obj.dirname !== obj.root) {
-                DIRECTORY += '<Directory Id="' + id + '" Name="' + obj.dirname + '" />';
-                DIRECTORY_REF += '<DirectoryRef Id="' + id + '">' + components[0] + '</DirectoryRef>';
-            } else {
-                ROOT_DIRECTORY_REFERENCE = '<DirectoryRef Id="APPLICATIONROOTDIRECTORY">' + components[0] + '</DirectoryRef>';
-            }
-
-            COMPONENTS_REFS += components[1];
-
-            if (components[2]) {
-                //if this exist then lets add it
-                DIRECTORY_REF += components[2];
-
-            }
-
-        });
-
-
-        DIRECTORY_REF = ROOT_DIRECTORY_REFERENCE + DIRECTORY_REF;
-
-        FILE_WXS = FILE_WXS.replace(/{{DIRECTORY}}/g, DIRECTORY);
-        FILE_WXS = FILE_WXS.replace(/{{DIRECTORY_REF}}/g, DIRECTORY_REF);
-        FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
-        FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_ID}}/g, (APPLICATION_ICON_ID).join("") + ".icon");
-        FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_SOURCE}}/g, APPLICATION_ICON_SOURCE);
+};
 
 
 
-        if(fs.existsSync(BUILD_DESTINATION)){
-            file_put_content(BUILD_DESTINATION + "/" +(APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS)
-        }else{
-            file_put_content((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS)
-        }
+rcedit(ELECTRON_EXE_DESTINATION, {
+    'version-string': APP_DESCRIPTION,
+    'file-string': APP_VERSION,
+    'product-string': APP_VERSION,
+    'icon': path.join(APPLICATION_SRC, 'icon.ico')
+}, function (error) {
 
-    });
+    if (error)
+        console.error(error)
+
+
+    createPackage();
 
 
 });
 
 
-function file_put_content (filename, text){
+function createPackage() {
+    //make the directory for the
+    mkdir(BUILD_DESTINATION);
+
+    asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
+        console.log('Electron Package Created');
+        console.log('Creating WXS Package!');
+
+        var ROOT_DIRECTORY_REFERENCE = "",
+            COMPONENTS_REFS = "",
+            DIRECTORY_REF = "",
+            DIRECTORY = "",
+            FILE_WXS = "",
+            PRODUCT_GUID = uuid.v1(),
+            UPGRADE_GUID = uuid.v1();
+
+        var APP_CAB = APP_NAME.split(" ");
+        APP_CAB.forEach(function (ele, index, array) {
+            array[index] = ele.capitalize();
+        });
+
+        var APPLICATION_ICON_ID = APP_NAME.split(" ");
+        APPLICATION_ICON_ID.forEach(function (ele, index, array) {
+            array[index] = ele.capitalize();
+        });
+
+
+        fs.readFile('template.wxs', 'utf8', function (err, data) {
+            if (err) {
+                return console.log(err);
+            }
+
+            FILE_WXS = data;
+
+            //replace the APP_CAB
+            FILE_WXS = FILE_WXS.replace(/{{APP_CAB}}/g, (APP_CAB).join("") + ".cab");
+            //replace the MANUFACTURER
+            FILE_WXS = FILE_WXS.replace(/{{MANUFACTURER}}/g, MANUFACTURER);
+            //replace the APP_NAME
+            FILE_WXS = FILE_WXS.replace(/{{APP_NAME}}/g, APP_NAME);
+            //replace the PRODUCT_GUID
+            FILE_WXS = FILE_WXS.replace(/{{PRODUCT_GUID}}/g, PRODUCT_GUID);
+            //replace the UPGRADE_GUID
+            FILE_WXS = FILE_WXS.replace(/{{UPGRADE_GUID}}/g, UPGRADE_GUID);
+            //replace the APP_VERSION
+            FILE_WXS = FILE_WXS.replace(/{{APP_VERSION}}/g, APP_VERSION);
+
+
+            walk(ELECTRON_PATH, function (obj) {
+                var id = (obj.filePath.replace(/[^\w\*]/g, " ")).split(/[\s{0,}\\\-_\.]/g),
+                    components = getComponents(obj.files, obj.filePath);
+
+                id.forEach(function (ele, index, array) {
+                    array[index] = ele.capitalize();
+                });
+                id = id.join("");
+
+                if (obj.filePath !== path.join(ELECTRON_PATH, '/')) {
+                    DIRECTORY += '<Directory Id="' + id + '" Name="' + obj.dirname + '" />';
+                    DIRECTORY_REF += '<DirectoryRef Id="' + id + '">' + components[0] + '</DirectoryRef>';
+                } else {
+                    ROOT_DIRECTORY_REFERENCE = '<DirectoryRef Id="APPLICATIONROOTDIRECTORY">' + components[0] + '</DirectoryRef>';
+                }
+
+                COMPONENTS_REFS += components[1];
+                if (components[2]) {
+                    //if this exist then lets add it
+                    DIRECTORY_REF += components[2];
+                }
+
+            });
+
+
+            DIRECTORY_REF = ROOT_DIRECTORY_REFERENCE + DIRECTORY_REF;
+            FILE_WXS = FILE_WXS.replace(/{{DIRECTORY}}/g, DIRECTORY);
+            FILE_WXS = FILE_WXS.replace(/{{DIRECTORY_REF}}/g, DIRECTORY_REF);
+            FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
+
+            //we are creating the installer icon in Add/Remove programs
+            APPLICATION_ICON_SOURCE = fs.existsSync(APPLICATION_ICON_SOURCE) ? '<Icon Id="' + ((APPLICATION_ICON_ID).join("") + ".icon") + '" SourceFile="' + APPLICATION_ICON_SOURCE + '"/>\r\n<Property Id="ARPPRODUCTICON" Value="' + ((APPLICATION_ICON_ID).join("") + ".icon") + '" />' : "";
+
+            FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_SOURCE}}/g, APPLICATION_ICON_SOURCE);
+
+            if (fs.existsSync(BUILD_DESTINATION)) {
+                var FILE_DESTINATION = path.join(BUILD_DESTINATION, (APP_NAME.split(" ")).join("_") + '.wxs');
+                file_put_content(FILE_DESTINATION, FILE_WXS)
+            } else {
+                file_put_content((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS)
+            }
+
+        });
+
+
+    });
+
+
+}
+
+
+function file_put_content(filename, text) {
 
     fs.writeFile(filename, text, function (err) {
         if (err) return console.log(err);
@@ -128,21 +167,17 @@ function file_put_content (filename, text){
 
 }
 
-
 function getComponents(files, filePath) {
-
     var COMPONENTS = "",
         DIRECTORY_REF = "",
         COMPONENTS_REFS = "",
         appName = APP_NAME.split(" ");
-
 
     appName.forEach(function (ele, index, array) {
         array[index] = ele.capitalize();
     });
 
     appName = appName.join("");
-
     for (var i in files) {
         var file = files[i],
             ext = file.substr((~-file.lastIndexOf(".") >>> 0) + 2),
@@ -153,10 +188,8 @@ function getComponents(files, filePath) {
         });
         id = id.join("");
 
-
         var idComponent = id + "COMP";
         var idFile = id + "FILE";
-
 
         switch (ext) {
             case 'exe':
@@ -218,16 +251,15 @@ function getComponents(files, filePath) {
 
 }
 
-
 function mkdir(dir) {
     if (!fs.existsSync(dir)) {
+        console.log('Created ', dir)
         fs.mkdirSync(dir);
         return true;
     }
 
     return false;
 }
-
 
 function rmdir(directories, callback) {
     if (typeof directories === 'string') {
@@ -256,7 +288,6 @@ function grep(elems, callback, invert) {
 
     return matches;
 }
-
 /**
  * Simple function to walk into a directory and return the file path
  * @param currentDirPath
@@ -268,7 +299,6 @@ function walk(currentDirPath, callback) {
     fs.readdirSync(currentDirPath).forEach(function (name) {
         var filePath = path.join(currentDirPath, name),
             filename = filePath.substr((~-filePath.lastIndexOf("\\") >>> 0) + 2),
-            root = filePath.substr(0, (~-filePath.indexOf("\\") >>> 0) + 1),
             dirname = currentDirPath.substr((~-currentDirPath.lastIndexOf("\\") >>> 0) + 2) || currentDirPath.substr((~-currentDirPath.lastIndexOf("/") >>> 0) + 2);
 
         var stat = fs.statSync(filePath);
@@ -276,7 +306,6 @@ function walk(currentDirPath, callback) {
             this.push({
                 filename: filename,
                 dirname: dirname,
-                root: root,
                 filePath: filePath.replace(filename, ""),
                 files: [filename]
             })
@@ -305,8 +334,3 @@ function walk(currentDirPath, callback) {
 
 }
 
-String.prototype.capitalize = function () {
-    return this.replace(/(?:^|\s)\S/g, function (a) {
-        return a.toUpperCase();
-    });
-};

@@ -2,6 +2,7 @@
  * Amy is Awesome!
  */
 'use strict';
+var path = require('path');
 var app = require('app');
 var ipc = require('ipc');
 
@@ -12,9 +13,11 @@ var angular = require('./lib/ng-electron/ng-bridge');
 
 function createMainWindow() {
     const win = new BrowserWindow({
-        width: 1500,
-        height: 600,
-        frame: false
+        'width': 1250,
+        'height': 800,
+        'resizable': true,
+        icon: path.join(__dirname, 'icon.png'),
+        title: 'LabCorp Phoenix' //this is set by the index file
     });
 
     win.loadUrl('file://' + __dirname + '/index.html');
@@ -43,24 +46,20 @@ app.on('activate-with-no-open-windows', function () {
 
 app.on('will-quit', function () {
     console.log('<====================================>');
-    console.log('Amy Says, "Stay Awesome Kids!"');
+    console.log('Electron Says, "Stay Awesome Kids!"');
     console.log('<====================================>');
 });
 
 app.on('ready', function () {
     mainWindow = createMainWindow();
-    console.log('<====================================>');
-    console.log("Amy says, \"Let's Code Awesome!\"");
-    console.log('<====================================>');
     mainWindow.webContents.on('dom-ready', function (e) {
         //try and manually bootstrap AngularJS
-        //The application will be already bootstrap
         //var code = "angular.bootstrap(document, ['app']);"
         //mainWindow.webContents.executeJavaScript( code );
-
+        angular.send("Hello from Electron");
     });
 
-    mainWindow.openDevTools();
+    //mainWindow.openDevTools();
     mainWindow.webContents.on('did-finish-load', function (e) {
         //Start listening for client messages
         angular.listen(function (msg) {

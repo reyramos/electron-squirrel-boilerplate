@@ -84,7 +84,7 @@ asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
             });
             id = id.join("");
 
-            if (obj.dirname !== obj.root) {
+            if (obj.filePath !== path.join(ELECTRON_PATH, '/')) {
                 DIRECTORY += '<Directory Id="' + id + '" Name="' + obj.dirname + '" />';
                 DIRECTORY_REF += '<DirectoryRef Id="' + id + '">' + components[0] + '</DirectoryRef>';
             } else {
@@ -267,7 +267,6 @@ function walk(currentDirPath, callback) {
     fs.readdirSync(currentDirPath).forEach(function (name) {
         var filePath = path.join(currentDirPath, name),
             filename = filePath.substr((~-filePath.lastIndexOf("\\") >>> 0) + 2),
-            root = filePath.substr(0, (~-filePath.indexOf("\\") >>> 0) + 1),
             dirname = currentDirPath.substr((~-currentDirPath.lastIndexOf("\\") >>> 0) + 2) || currentDirPath.substr((~-currentDirPath.lastIndexOf("/") >>> 0) + 2);
 
         var stat = fs.statSync(filePath);
@@ -275,7 +274,6 @@ function walk(currentDirPath, callback) {
             this.push({
                 filename: filename,
                 dirname: dirname,
-                root: root,
                 filePath: filePath.replace(filename, ""),
                 files: [filename]
             })

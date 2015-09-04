@@ -4,11 +4,11 @@ The app folder will need to contain the following to build the exe file from ele
 
 ```
  app
- ??? package.json
- ??? main.js
- ??? icon.ico //ico image to replace electronPath/electron.exe during packaging
- ??? icon.png //added png logo to electron app, referenced in main.js
- ??? index.html
+  |-- package.json
+  |-- main.js
+  |-- icon.ico //ico image to replace electronPath/electron.exe during packaging
+  |-- icon.png //added png logo to electron app, referenced in main.js
+  |-- index.html
 ```
 
 ##What is Electron?

@@ -20,9 +20,6 @@ console.log('BUILD_DESTINATION', BUILD_DESTINATION)
 console.log('ELECTRON_BUILD_DESTINATION', ELECTRON_BUILD_DESTINATION)
 
 
-
-
-
 /*******************************************************************
  APPLICATION VARIABLES
  *******************************************************************/

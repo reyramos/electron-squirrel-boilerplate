@@ -259,18 +259,14 @@ module.exports = function (grunt) {
         exec: {
             'candle': {
                 cmd: function () {
-                    var pkg = grunt.file.readJSON('package.json'),
-                        APP_NAME = pkg.msi.app_name,
-                        BUILD_DESTINATION = path.join(__dirname, pkg.msi.distribution),
-                        READ_FILE = (APP_NAME.split(" ")).join("_") + '.wxs',
-                        FILE_DESTINATION = (APP_NAME.split(" ")).join("_") + '.wxs';
-
-                    if (fs.existsSync(BUILD_DESTINATION)) {
-                        READ_FILE = path.join(BUILD_DESTINATION, FILE_DESTINATION);
-                        FILE_DESTINATION = path.join(BUILD_DESTINATION, (APP_NAME.split(" ")).join("_") + '.wixobj');
-                    }
-
-                    return 'candle.exe ' + READ_FILE + ' -o ' + FILE_DESTINATION;
+                    var files = getFilesPath('wxs', 'wixobj');
+                    return 'candle.exe ' + files[0] + ' -o ' + files[1];
+                }
+            },
+            'light': {
+                cmd: function () {
+                    var files = getFilesPath('wixobj', 'msi');
+                    return 'light.exe ' + files[0] + ' -o ' + files[1];
                 }
             }
         },
@@ -294,11 +290,27 @@ module.exports = function (grunt) {
         }
     });
 
+    function getFilesPath(input, output) {
+        var pkg = grunt.file.readJSON('package.json'),
+            APP_NAME = pkg.msi.app_name,
+            BUILD_DESTINATION = path.join(__dirname, pkg.msi.distribution),
+            READ_FILE = (APP_NAME.split(" ")).join("_") + '.' + input,
+            FILE_DESTINATION = (APP_NAME.split(" ")).join("_") + '.' + output;
+
+        if (fs.existsSync(BUILD_DESTINATION)) {
+            READ_FILE = path.join(BUILD_DESTINATION, READ_FILE);
+            FILE_DESTINATION = path.join(BUILD_DESTINATION, FILE_DESTINATION);
+        }
+
+        return [READ_FILE, FILE_DESTINATION]
+    }
+
 
     grunt.registerTask(
         'electron-build', [
             'execute:build-wxs',
             'exec:candle',
+            'exec:light'
         ]
     );
 

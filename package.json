@@ -8,7 +8,8 @@
     "app_description": "LabCorp Application",
     "manufacturer": "LabCorp Inc",
     "source": "dist",
-    "distribution": "build"
+    "distribution": "build",
+    "path_to_electron": "./electron-v0.31.2-win32-x64"
   },
   "dependencies": {
     "asar": "^0.7.2",

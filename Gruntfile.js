@@ -257,6 +257,7 @@ module.exports = function (grunt) {
             }
         },
         exec: {
+
             'candle': {
                 cmd: function () {
                     var files = getFilesPath('wxs', 'wixobj');

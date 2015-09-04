@@ -63,7 +63,7 @@ Once you have installed all the necessay build dependencies, you are ready to cr
 The following command will build the application based of the config in package.json file.
 
 ```bash
-	Grunt build
+	grunt build
 ```
 
 The build command will compile all the contents of app folder into dist folder, which it will be needed to create the msi application. Once the build is completed the MSI file will be located within the build folder containing the following file. 

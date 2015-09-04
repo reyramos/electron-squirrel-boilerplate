@@ -86,3 +86,16 @@ The current application is using UpgradeCode=8291b2b1-4b33-11e5-975d-29a7531f192
 - iojs <https://iojs.org/en/>
 - Wix Toolset Documentation <http://wixtoolset.org/documentation/manual/v3/>
 - Free Online PNG to ICO/ICO to PNG Conversion tool <http://convertico.com/>
+
+
+##Grunt Task
+- build
+    - build the application sources to dist, and msi package
+    
+- serve
+    - run a grunt server, to test your development progress in localhost:9000
+    
+- dist
+    - Best if you build your application and then test your distribution compile file, in localhost:9000
+
+

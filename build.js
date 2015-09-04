@@ -44,8 +44,9 @@ String.prototype.capitalize = function () {
 
 rcedit(ELECTRON_EXE_DESTINATION, {
     'version-string': APP_DESCRIPTION,
-    'file-string': APP_VERSION,
-    'product-string': APP_VERSION,
+    'file-version': APP_VERSION,
+    'product-version': APP_VERSION,
+    'product-name': APP_NAME,
     'icon': path.join(APPLICATION_SRC, 'icon.ico')
 }, function (error) {
 

@@ -3,14 +3,6 @@
   "version": "1.0.0",
   "description": "Create asar file ",
   "main": "package.js",
-  "msi": {
-    "app_name": "LabCorp Phoenix",
-    "app_description": "LabCorp Application",
-    "manufacturer": "LabCorp Inc",
-    "source": "dist",
-    "distribution": "build",
-    "path_to_electron": "./electron-v0.31.2-win32-x64"
-  },
   "dependencies": {
     "asar": "^0.7.2",
     "diskdb": "^0.1.14",

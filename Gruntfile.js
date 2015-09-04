@@ -292,9 +292,9 @@ module.exports = function (grunt) {
     });
 
     function getFilesPath(input, output) {
-        var pkg = grunt.file.readJSON('package.json'),
-            APP_NAME = pkg.msi.app_name,
-            BUILD_DESTINATION = path.join(__dirname, pkg.msi.distribution),
+        var config = require("./electron.config.js"),
+            APP_NAME = config.app_name,
+            BUILD_DESTINATION = path.join(__dirname, config.distribution),
             READ_FILE = (APP_NAME.split(" ")).join("_") + '.' + input,
             FILE_DESTINATION = (APP_NAME.split(" ")).join("_") + '.' + output;
 

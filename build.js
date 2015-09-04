@@ -1,20 +1,20 @@
 var path = require('path'),
     fs = require('fs'),
-    config = require('./package.json');
+    config = require("./electron.config.js");
 
 
-const APP_NAME = config.msi.app_name;
-const APP_DESCRIPTION = config.msi.app_description;
-const MANUFACTURER = config.msi.manufacturer;
+const APP_NAME = config.app_name;
+const APP_DESCRIPTION = config.app_description;
+const MANUFACTURER = config.manufacturer;
 const APP_VERSION = config.version;
-const APPLICATION_SRC = path.join(__dirname, config.msi.source);
-const BUILD_DESTINATION = path.join(__dirname, config.msi.distribution);
+const APPLICATION_SRC = path.join(__dirname, config.source);
+const BUILD_DESTINATION = path.join(__dirname, config.distribution);
 
 //searches for icon.png file in the application src to set the Add/Remove icon
 var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.ico');
 
 //path to electron files
-const ELECTRON_PATH = path.join(__dirname, config.msi.path_to_electron);
+const ELECTRON_PATH = path.join(__dirname, config.path_to_electron);
 const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
 
 

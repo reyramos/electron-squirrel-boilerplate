@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Name='{{APP_NAME}}' Id='{{PRODUCT_GUID}}'
+    <Product Name='{{APP_NAME}}'
+             Id='b54d1bd0-5340-11e5-9de9-ebdce6a5a6b0'
              UpgradeCode='8291b2b1-4b33-11e5-975d-29a7531f1924'
              Language='1033' Version='{{APP_VERSION}}' Manufacturer='{{MANUFACTURER}}'>
 

@@ -11,7 +11,7 @@ const APPLICATION_SRC = path.join(__dirname, config.msi.source);
 const BUILD_DESTINATION = path.join(__dirname, config.msi.distribution);
 
 //searches for icon.png file in the application src to set the Add/Remove icon
-var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.png');
+var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.ico');
 
 //path to electron files
 const ELECTRON_PATH = path.join(__dirname, config.msi.path_to_electron);

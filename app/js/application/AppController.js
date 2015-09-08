@@ -10,9 +10,9 @@
 
     angular.module('app').controller('appController', AppController);
 
-    AppController.$inject = ['clientService', 'electron', '$sce'];
+    AppController.$inject = ['clientService', 'electron', '$sce', 'postMessage'];
 
-    function AppController(clientService, electron, $sce) {
+    function AppController(clientService, electron, $sce, postMessage) {
         //send a message to electron
         electron.send("Hello from the client.");
 
@@ -20,10 +20,10 @@
         //clientService is added in the injector to initiate the service to load
         //the application user-agent classes
             client = clientService.info,
-            href = 'https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/';
+            href = 'https://dev-eligibility-phoenix.labcorp.com/reyramos/post/dist/';
+            //href = 'https://demo-phoenix.labcorp.com/web-ui/';
 
         self.headerIcon = 'fa-globe'
-
 
         function loadUrl(url){
             self.href =  $sce.trustAsResourceUrl(url);

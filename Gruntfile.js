@@ -122,7 +122,7 @@ module.exports = function (grunt) {
                     unused: true,
                     if_return: true,
                     join_vars: true,
-                    drop_console: true
+                    drop_console: false
                 },
             },
             scripts: {
@@ -179,8 +179,7 @@ module.exports = function (grunt) {
             options: {
                 port: 9000,
                 hostname: "*",
-                livereload: 35729,
-                // open: true,
+                livereload: 35729
             },
             livereload: {
                 options: {

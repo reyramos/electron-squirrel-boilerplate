@@ -66,7 +66,7 @@ require
 
 			//APPLICATION
 			'development': {'deps': ['app']},
-			'application/appSettings': {'deps': ['app']},
+			'application/postMessage': {'deps': ['app']},
 			'application/appController': {'deps': ['app']},
 
 
@@ -84,7 +84,7 @@ require
 
 		//APPLICATION
 		'development',
-		'application/appSettings',
+		'application/postMessage',
 		'application/appController',
 
 

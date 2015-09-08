@@ -40,5 +40,15 @@
 <% } else { %>
 <script type="text/javascript" data-main="/js/main" src="/lib/requirejs/require.js"></script>
 <% } %>
+
+<script>
+
+    window.addEventListener('message', function(e){
+        console.log('parent received message!:  ',e.data);
+    })
+
+</script>
+
+
 </body>
 </html>

@@ -59,7 +59,7 @@ app.on('ready', function () {
         angular.send("Hello from Electron");
     });
 
-    //mainWindow.openDevTools();
+    mainWindow.openDevTools();
     mainWindow.webContents.on('did-finish-load', function (e) {
         //Start listening for client messages
         angular.listen(function (msg) {

@@ -20,15 +20,18 @@
 
     angular.module('app').service('postMessageInterceptor', PostMessage);
 
-    PostMessage.$inject = ['$rootScope','$q', 'postMessage', 'electron']
+    PostMessage.$inject = ['$rootScope', '$q', 'postMessage', 'electron']
 
     function PostMessage($rootScope, $q, postMessage, electron) {
-        postMessage.intercept = function (eventType, msg, callback) {
+        postMessage.intercept = function (eventType, msg, cbString) {
             var defer = $q.defer();
             console.log('INTERCEPTOR => ', eventType)
             switch (eventType) {
                 case 'electron':
-                    console.log('callback',callback)
+                    var func = ((cbString.replace(/function\s{0,10}\w?\s{0,10}\(.*\)\s{0,10}\{[^\n]*\n+\s{0,10}/g, "")).replace(/}$/g, "")).trim(),
+                        awesome = new Function('electron', func);
+                    //execute the callback
+                    awesome(electron);
                     break;
                 default :
                     break;

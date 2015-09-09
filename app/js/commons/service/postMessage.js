@@ -77,7 +77,8 @@
             if (typeof (data) === "undefined" || e.source == this) return;
             try {
                 data = JSON.parse(data);
-            } catch (e) {}
+            } catch (e) {
+            }
 
             /**
              * When a message is return, from sender, we would
@@ -86,17 +87,21 @@
             switch (data.cmd) {
                 case 'request':
                     var eventType = data.eventType,
-                        msg = angular.copy(data.message);
+                        msg = angular.copy(data.message),
+                        cb = data.callback ? data.callback : false;
 
-                    try{
-                        if(typeof self.intercept === 'function')
+                    try {
+                        if (typeof self.intercept === 'function')
                         //This is to add custom code for types of events requested from the sender
-                        self.intercept(eventType, msg, function(cb){
-                            port.source.postMessage(JSON.stringify({cmd: 'callback', message: cb}), port.origin);
-                        }).then(function (data) {
-                            response(port, data)
-                        })
-                    }catch(e){
+                            self.intercept(eventType, msg, cb/*function(cb){
+                             if(data.callback)
+                             data.callback()
+
+                             //port.source.postMessage(JSON.stringify({cmd: 'callback', message: cb}), port.origin);
+                             }*/).then(function (data) {
+                                response(port, data)
+                            })
+                    } catch (e) {
                         response(port, msg)
                     }
 

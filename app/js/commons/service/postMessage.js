@@ -93,12 +93,7 @@
                     try {
                         if (typeof self.intercept === 'function')
                         //This is to add custom code for types of events requested from the sender
-                            self.intercept(eventType, msg, cb/*function(cb){
-                             if(data.callback)
-                             data.callback()
-
-                             //port.source.postMessage(JSON.stringify({cmd: 'callback', message: cb}), port.origin);
-                             }*/).then(function (data) {
+                            self.intercept(eventType, msg, cb).then(function (data) {
                                 response(port, data)
                             })
                     } catch (e) {

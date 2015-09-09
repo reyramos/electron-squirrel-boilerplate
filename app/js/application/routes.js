@@ -19,6 +19,11 @@
 
     RouteProvider.$inject = ['$stateProvider', '$urlRouterProvider'];
     Run.$inject = ['$rootScope'];
+    InitializePostMessage.$inject = ['postMessageInterceptor'];
+
+    function InitializePostMessage(postMessageInterceptor) {
+        return postMessageInterceptor;
+    }
 
     function RouteProvider($stateProvider, $urlRouterProvider) {
         var path = 'js/application/views/',
@@ -29,7 +34,10 @@
                     'applicationContainer@': {
                         templateUrl: path + 'index.html',
                         controller: 'appController',
-                        controllerAs: 'app'
+                        controllerAs: 'app',
+                        resolve: {
+                            InitializePostMessage: InitializePostMessage
+                        }
                     },
                     'appHeader@root': {
                         templateUrl: path + 'header.html',

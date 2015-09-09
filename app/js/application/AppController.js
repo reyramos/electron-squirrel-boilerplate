@@ -16,6 +16,7 @@
         //send a message to electron
         electron.send("Hello from the client.");
 
+
         var self = this,
         //clientService is added in the injector to initiate the service to load
         //the application user-agent classes

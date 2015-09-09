@@ -20,9 +20,9 @@
 
     angular.module('app').service('postMessageInterceptor', PostMessage);
 
-    PostMessage.$inject = ['$rootScope', '$q', 'postMessage', 'electron']
+    PostMessage.$inject = ['$q', 'postMessage', 'electron']
 
-    function PostMessage($rootScope, $q, postMessage, electron) {
+    function PostMessage($q, postMessage, electron) {
         postMessage.intercept = function (eventType, msg, cbString) {
             var defer = $q.defer();
             console.log('INTERCEPTOR => ', eventType)

@@ -28,14 +28,12 @@
             console.log('INTERCEPTOR => ', eventType)
             switch (eventType) {
                 case 'electron':
-                    var args = cbString;
-
-                    //args = args.replace(/function\w*?\s+\((.*?)\)\s{0,10}\{[^\n]*\n+\s{0,10}.*[^\n]*\n+\s{0,10}}/, '$1');
-
-                    var func = ((cbString.replace(/function\s{0,10}\w?\s{0,10}\(.*\)\s{0,10}\{[^\n]*\n+\s{0,10}/g, "")).replace(/}$/g, "")).trim(),
-                        awesome = new Function('electron', func);
+                    var args = cbString,
+                        func = ((cbString.replace(/function\s{0,10}\w?\s{0,10}\(.*\)\s{0,10}\{[^\n]*\n+\s{0,10}/g, "")).replace(/}$/g, "")).trim();
+                    args = (args.replace(/function\w*?\s+\((.*?)\)\s{0,10}\{[^\n]*\n+\s{0,10}.*[^\n]*\n+\s{0,10}}/, '$1')).split(',');
+                    var awesome = new Function(args, func);
                     //execute the callback
-                    //awesome(electron);
+                    awesome(electron);
                     break;
                 default :
                     break;

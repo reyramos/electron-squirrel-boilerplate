@@ -41,7 +41,6 @@ String.prototype.capitalize = function () {
 };
 
 
-
 rcedit(ELECTRON_EXE_DESTINATION, {
     'version-string': APP_DESCRIPTION,
     'file-version': APP_VERSION,
@@ -211,7 +210,6 @@ function getComponents(files, filePath) {
                 /**************************************************************
                  * CREATE THE APPLICATION SHORTCUT ON START MENU
                  **************************************************************/
-
                 DIRECTORY_REF += ['<DirectoryRef Id="ApplicationProgramsFolder">',
                     '<Component Id="ApplicationShortcut" Guid="' + uuid.v1() + '">',
                     '<Shortcut Id="ApplicationStartMenuShortcut"',
@@ -220,13 +218,43 @@ function getComponents(files, filePath) {
                     'Target="[#' + file + ']"',
                     'WorkingDirectory="APPLICATIONROOTDIRECTORY"/>' +
                     '<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>',
+
+                    //registry Information
                     '<RegistryValue Root="HKCU" Key="Software\\Microsoft\\' + appName + '"',
                     'Name="installed"',
                     'Type="integer" Value="1"',
-                    'KeyPath="yes"/></Component>',
+                    'KeyPath="yes"/>',
+
+                    '</Component>',
                     '</DirectoryRef>'].join(" ");
 
                 COMPONENTS_REFS += '<ComponentRef Id="ApplicationShortcut" />';
+
+                /**************************************************************
+                 * CREATE THE APPLICATION SHORTCUT ON DESKTOP
+                 **************************************************************/
+                DIRECTORY_REF += ['<DirectoryRef Id="ApplicationDesktopFolder">',
+                    '<Component Id="ApplicationShortcutDesktop" Guid="' + uuid.v1() + '">',
+                    '<Shortcut Id="ApplicationDesktopShortcut"',
+                    'Name="' + APP_NAME + '"',
+                    'Description="' + APP_DESCRIPTION + '"',
+                    'Target="[#' + file + ']"',
+                    'WorkingDirectory="APPLICATIONROOTDIRECTORY"/>',
+
+                    //remove desktop folder
+                    '<RemoveFolder Id="DesktopFolder" On="uninstall"/>',
+
+                    //registry Information
+                    '<RegistryValue Root="HKCU" Key="Software\\Microsoft\\' + appName + '"',
+                    'Name="installed"',
+                    'Type="integer" Value="1"',
+                    'KeyPath="yes"/>',
+
+                    '</Component>',
+                    '</DirectoryRef>'].join(" ");
+
+
+                COMPONENTS_REFS += '<ComponentRef Id="ApplicationShortcutDesktop" />';
 
 
                 break;
@@ -239,6 +267,7 @@ function getComponents(files, filePath) {
                     //'Name=\'' + file + '\'',
                     'Source=\'' + filePath + file + '\'',
                     'KeyPath="yes" Vital=\'yes\' />',
+                    '<RemoveFile Id="Remove' + idComponent + '" Name="' + file + '" On="both"/>',
                     '</Component>'].join(" ");
                 break;
         }

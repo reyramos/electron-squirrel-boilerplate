@@ -209,6 +209,12 @@ module.exports = function (grunt) {
             }
         }, // Make sure code styles are up to par and there are no obvious mistakes
         clean: {
+            build: {
+                files: [{
+                    dot: true,
+                    src: ['build']
+                }]
+            },
             dist: {
                 files: [{
                     dot: true,
@@ -308,6 +314,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'electron-build', [
+            'clean:build',
             'execute:build-wxs',
             'exec:candle',
             'exec:light'

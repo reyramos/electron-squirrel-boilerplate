@@ -1,14 +1,20 @@
 <?xml version='1.0' encoding='windows-1252'?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Name='{{APP_NAME}}'
-             Id='b54d1bd0-5340-11e5-9de9-ebdce6a5a6b0'
+             Id='*'
              UpgradeCode='8291b2b1-4b33-11e5-975d-29a7531f1924'
              Language='1033' Version='{{APP_VERSION}}' Manufacturer='{{MANUFACTURER}}'>
 
-        <Package Id='*' InstallerVersion='300' Compressed='yes'/>
+        <Package Id='*' InstallerVersion='300' Compressed='yes' InstallScope="perMachine"/>
+
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed."/>
+
         <Media Id='1' Cabinet='{{APP_CAB}}' EmbedCab='yes'/>
 
         <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="DesktopFolder" Name="Desktop">
+                <Directory Id="ApplicationDesktopFolder" Name="{{APP_NAME}}"/>
+            </Directory>
             <Directory Id="ProgramFilesFolder">
                 <Directory Id="APPLICATIONROOTDIRECTORY" Name="{{APP_NAME}}">
                     {{DIRECTORY}}
@@ -19,6 +25,7 @@
             </Directory>
         </Directory>
 
+
         {{APPLICATION_ICON_SOURCE}}
 
         {{DIRECTORY_REF}}
@@ -27,6 +34,8 @@
             {{COMPONENTS_REFS}}
         </Feature>
 
+
     </Product>
 </Wix>
+
 

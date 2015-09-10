@@ -21,7 +21,7 @@
         //clientService is added in the injector to initiate the service to load
         //the application user-agent classes
             client = clientService.info,
-            href = 'https://dev-eligibility-phoenix.labcorp.com/reyramos/post/dist/';
+            href = 'https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/';
             //href = 'https://demo-phoenix.labcorp.com/web-ui/';
 
         self.headerIcon = 'fa-globe'

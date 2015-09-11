@@ -211,7 +211,7 @@ function getComponents(files, filePath) {
                 /**************************************************************
                  * CREATE THE APPLICATION SHORTCUT ON START MENU
                  **************************************************************/
-                DIRECTORY_REF += ['<DirectoryRef Id="ApplicationProgramsFolder">',
+                DIRECTORY_REF += ['<DirectoryRef Id="ProgramMenuFolder">',
                     '<Component Id="ApplicationShortcut" Guid="' + uuid.v1() + '">',
                     '<Shortcut Id="ApplicationStartMenuShortcut"',
                     'Name="' + APP_NAME + '"',

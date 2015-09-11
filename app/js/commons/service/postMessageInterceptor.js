@@ -28,21 +28,15 @@
             console.log('INTERCEPTOR => ', eventType)
             switch (eventType) {
                 case 'electron':
+
                     var funcString = msg.func;
 
-                    console.log(funcString)
+                    var args = (funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{([^\n]*\n+\s){0,}\s{0,}\}/, '$1')).split(','),
+                        func = ((funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{/, '')).replace(/\s{0,}\}$/, '')).trim(),
+                        awesome = new Function(args, func);
 
-
-                    var args = (funcString.replace(/function\s{0,10}\w+\s{0,10}\((.*?)\)\s{0,10}\{/, '$1')).split(',');
-                    //    func = ((cbString.replace(/function\s{0,10}\w?\s{0,10}\(.*\)\s{0,10}\{[^\n]*\n+\s{0,10}/g, "")).replace(/}$/g, "")).trim();
-
-                    //args = (args.replace(/function\w*?\s+\((.*?)\)\s{0,10}\{[^\n]*\n+\s{0,10}.*[^\n]*\n+\s{0,10}}/, '$1')).split(',');
-                    ////var awesome = new Function(args, func);
-                    //
-                    console.log(args)
-
-                    ////execute the callback
-                    //awesome(electron);
+                    //execute the callback
+                    awesome(electron);
 
                     break;
                 default :

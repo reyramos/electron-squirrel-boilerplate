@@ -112,12 +112,12 @@
         self.send = function (eventType, data, target) {
 
             var defer = $q.defer(),
+                agent = target?(target.contentWindow?target.contentWindow:(target?target:parent)):parent,
                 callback_id = getCallbackId(),
                 etype = typeof arguments[0],
                 dtype = typeof arguments[1];
 
             data = data || {};
-
 
             if (etype === 'object') {
                 data = eventType;
@@ -143,7 +143,7 @@
             };
 
             console.log('postMessage', postMessage)
-            parent.postMessage(JSON.stringify(postMessage), '*'); //allow all domains
+            agent.postMessage(JSON.stringify(postMessage), '*'); //allow all domains
             return defer.promise;
         }
     }

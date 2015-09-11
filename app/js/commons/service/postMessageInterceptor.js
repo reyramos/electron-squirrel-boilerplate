@@ -23,21 +23,24 @@
     PostMessage.$inject = ['$q', 'postMessage', 'electron']
 
     function PostMessage($q, postMessage, electron) {
-        postMessage.intercept = function (eventType, msg, cbString) {
+        postMessage.intercept = function (eventType, msg) {
             var defer = $q.defer();
             console.log('INTERCEPTOR => ', eventType)
             switch (eventType) {
                 case 'electron':
-                    console.log('cbString',cbString)
+                    var funcString = msg.func;
+
+                    console.log(funcString)
 
 
-                    var args = cbString,
-                        func = ((cbString.replace(/function\s{0,10}\w?\s{0,10}\(.*\)\s{0,10}\{[^\n]*\n+\s{0,10}/g, "")).replace(/}$/g, "")).trim();
+                    var args = (funcString.replace(/function\s{0,10}\w+\s{0,10}\((.*?)\)\s{0,10}\{/, '$1')).split(',');
+                    //    func = ((cbString.replace(/function\s{0,10}\w?\s{0,10}\(.*\)\s{0,10}\{[^\n]*\n+\s{0,10}/g, "")).replace(/}$/g, "")).trim();
 
                     //args = (args.replace(/function\w*?\s+\((.*?)\)\s{0,10}\{[^\n]*\n+\s{0,10}.*[^\n]*\n+\s{0,10}}/, '$1')).split(',');
                     ////var awesome = new Function(args, func);
                     //
-                    //console.log('func',func)
+                    console.log(args)
+
                     ////execute the callback
                     //awesome(electron);
 

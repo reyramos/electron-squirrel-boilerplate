@@ -32,7 +32,6 @@
             parent = $window.parent || window.parent,
             currentCallbackId = 0, // Create a unique callback ID to map requests to responses
             service = {
-                callbacks: [], // Keep all pending requests here until they get responses
                 onmessage: []
             };
 
@@ -87,24 +86,22 @@
             switch (data.cmd) {
                 case 'request':
                     var eventType = data.eventType,
-                        msg = angular.copy(data.message),
-                        cb = data.callback ? data.callback : false;
+                        msg = angular.copy(data.message);
+
+
+                    if(msg.func){
+
+                    }
 
                     try {
                         if (typeof self.intercept === 'function')
                         //This is to add custom code for types of events requested from the sender
-                            self.intercept(eventType, msg, cb).then(function (data) {
+                            self.intercept(eventType, msg).then(function (data) {
                                 response(port, data)
                             })
                     } catch (e) {
                         response(port, msg)
                     }
-
-                    break;
-                case 'callback':
-
-                    //TODO: do something with callbacks
-                    console.log('CHILD => CALLBACKS', data)
 
                     break;
                 case 'response':
@@ -117,7 +114,7 @@
         });
 
 
-        self.send = function (eventType, data, callback) {
+        self.send = function (eventType, data, target) {
 
             var defer = $q.defer(),
                 callback_id = getCallbackId(),
@@ -133,7 +130,7 @@
             }
 
             if (dtype === 'function') {
-                callback = data || null;
+                data = {func:data.toString()} || null;
             }
 
             data.promise = callback_id;
@@ -141,16 +138,14 @@
             //set the caller
             service.onmessage[callback_id] = {
                 time: new Date(),
-                cb: defer,
-                callback: callback
+                cb: defer
             };
 
             var postMessage = {
                 cmd: 'request',
                 message: angular.copy(data),
-                eventType: typeof(arguments[0]) === 'object' ? false : eventType,
-                callback: callback ? callback.toString() : null
-            }
+                eventType: typeof(arguments[0]) === 'object' ? false : eventType
+            };
 
             console.log('postMessage', postMessage)
             parent.postMessage(JSON.stringify(postMessage), '*'); //allow all domains

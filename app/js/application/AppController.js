@@ -21,8 +21,8 @@
         //clientService is added in the injector to initiate the service to load
         //the application user-agent classes
             client = clientService.info,
-            href = 'https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/';
-            //href = 'https://demo-phoenix.labcorp.com/web-ui/';
+            //href = 'https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/';
+            href = 'https://demo-phoenix.labcorp.com/web-ui/';
 
         self.headerIcon = 'fa-globe'
 
@@ -40,17 +40,6 @@
 
                     href = 'https://demo-phoenix.labcorp.com/web-ui/';
                     loadUrl(href)
-                }
-            }],
-            [{
-                name: 'Development Server',
-                icon: 'fa fa-cogs',
-                callback: function () {
-                    self.headerIcon = 'fa-cogs'
-
-                    href = 'https://dev-phoenix.labcorp.com/web-ui/';
-                    loadUrl(href)
-
                 }
             }],
             [{

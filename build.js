@@ -46,7 +46,7 @@ rcedit(ELECTRON_EXE_DESTINATION, {
     'file-version': APP_VERSION,
     'product-version': APP_VERSION,
     'product-name': APP_NAME,
-    'icon': path.join(APPLICATION_SRC, 'icon.ico')
+    //'icon': path.join(APPLICATION_SRC, 'icon.ico')
 }, function (error) {
 
     if (error)
@@ -57,6 +57,7 @@ rcedit(ELECTRON_EXE_DESTINATION, {
 
 
 });
+
 
 
 function createPackage() {
@@ -233,7 +234,7 @@ function getComponents(files, filePath) {
                 /**************************************************************
                  * CREATE THE APPLICATION SHORTCUT ON DESKTOP
                  **************************************************************/
-                DIRECTORY_REF += ['<DirectoryRef Id="ApplicationDesktopFolder">',
+                DIRECTORY_REF += ['<DirectoryRef Id="DesktopFolder">',
                     '<Component Id="ApplicationShortcutDesktop" Guid="' + uuid.v1() + '">',
                     '<Shortcut Id="ApplicationDesktopShortcut"',
                     'Name="' + APP_NAME + '"',
@@ -245,7 +246,7 @@ function getComponents(files, filePath) {
                     '<RemoveFolder Id="DesktopFolder" On="uninstall"/>',
 
                     //registry Information
-                    '<RegistryValue Root="HKCU" Key="Software\\Microsoft\\' + appName + '"',
+                    '<RegistryValue Root="HKCU" Key="Software\\' + appName + '"',
                     'Name="installed"',
                     'Type="integer" Value="1"',
                     'KeyPath="yes"/>',

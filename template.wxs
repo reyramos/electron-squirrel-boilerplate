@@ -3,18 +3,21 @@
     <Product Name='{{APP_NAME}}'
              Id='*'
              UpgradeCode='8291b2b1-4b33-11e5-975d-29a7531f1924'
-             Language='1033' Version='{{APP_VERSION}}' Manufacturer='{{MANUFACTURER}}'>
+             Language='1033'
+             Version='{{APP_VERSION}}'
+             Manufacturer='{{MANUFACTURER}}'>
 
         <Package Id='*' InstallerVersion='300' Compressed='yes' InstallScope="perMachine"/>
 
-        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed."/>
+        <MajorUpgrade
+                Schedule="afterInstallInitialize"
+                DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit."/>
+
 
         <Media Id='1' Cabinet='{{APP_CAB}}' EmbedCab='yes'/>
 
         <Directory Id="TARGETDIR" Name="SourceDir">
-            <Directory Id="DesktopFolder" Name="Desktop">
-                <Directory Id="ApplicationDesktopFolder" Name="{{APP_NAME}}"/>
-            </Directory>
+            <Directory Id="DesktopFolder" Name="{{APP_NAME}}"/>
             <Directory Id="ProgramFilesFolder">
                 <Directory Id="APPLICATIONROOTDIRECTORY" Name="{{APP_NAME}}">
                     {{DIRECTORY}}

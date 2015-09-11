@@ -5,6 +5,6 @@ module.exports = {
     "manufacturer": "LabCorp Inc",
     "source": "dist",
     "distribution": "build",
-    "path_to_electron": "./electron-v0.31.2-win32-x64"
+    "path_to_electron": "./electron-v0.32.2-win32-x64"
 };
 

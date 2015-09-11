@@ -16,7 +16,7 @@ function createMainWindow() {
         'width': 1250,
         'height': 800,
         'resizable': true,
-        icon: path.join(__dirname, 'icon.png'),
+        //icon: path.join(__dirname, 'icon.png'),
         title: 'LabCorp Phoenix' //this is set by the index file
     });
 
@@ -59,7 +59,7 @@ app.on('ready', function () {
         angular.send("Hello from Electron");
     });
 
-    mainWindow.openDevTools();
+    //mainWindow.openDevTools();
     mainWindow.webContents.on('did-finish-load', function (e) {
         //Start listening for client messages
         angular.listen(function (msg) {

@@ -35,7 +35,7 @@
                 onmessage: []
             };
 
-        self.intercept = angular.noop;
+        self.intercept = null;
 
         // This creates a new callback ID for a request
         function getCallbackId() {
@@ -90,7 +90,6 @@
 
                     try {
                         if (typeof self.intercept === 'function')
-                        //This is to add custom code for types of events requested from the sender
                             self.intercept(eventType, msg).then(function (data) {
                                 response(port, data)
                             })

@@ -35,7 +35,7 @@
                         func = ((funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{/, '')).replace(/\s{0,}\}$/, '')).trim(),
                         awesome = new Function(args, func);
 
-                    //execute the callback
+                    //execute the function provided
                     awesome(electron);
 
                     break;

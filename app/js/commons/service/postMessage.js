@@ -88,11 +88,6 @@
                     var eventType = data.eventType,
                         msg = angular.copy(data.message);
 
-
-                    if(msg.func){
-
-                    }
-
                     try {
                         if (typeof self.intercept === 'function')
                         //This is to add custom code for types of events requested from the sender
@@ -130,7 +125,7 @@
             }
 
             if (dtype === 'function') {
-                data = {func:data.toString()} || null;
+                data = {func: data.toString()} || null;
             }
 
             data.promise = callback_id;

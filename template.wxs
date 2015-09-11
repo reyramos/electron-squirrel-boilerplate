@@ -23,8 +23,9 @@
                     {{DIRECTORY}}
                 </Directory>
             </Directory>
-            <Directory Id="ProgramMenuFolder" Name="{{APP_NAME}}"/>
-
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="{{APP_NAME}}"/>
+            </Directory>
         </Directory>
 
 

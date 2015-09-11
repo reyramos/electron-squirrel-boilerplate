@@ -59,7 +59,6 @@ rcedit(ELECTRON_EXE_DESTINATION, {
 });
 
 
-
 function createPackage() {
     //make the directory for the
     mkdir(BUILD_DESTINATION);
@@ -211,7 +210,7 @@ function getComponents(files, filePath) {
                 /**************************************************************
                  * CREATE THE APPLICATION SHORTCUT ON START MENU
                  **************************************************************/
-                DIRECTORY_REF += ['<DirectoryRef Id="ProgramMenuFolder">',
+                DIRECTORY_REF += ['<DirectoryRef Id="ApplicationProgramsFolder">',
                     '<Component Id="ApplicationShortcut" Guid="' + uuid.v1() + '">',
                     '<Shortcut Id="ApplicationStartMenuShortcut"',
                     'Name="' + APP_NAME + '"',
@@ -221,10 +220,13 @@ function getComponents(files, filePath) {
                     '<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>',
 
                     //registry Information
-                    '<RegistryValue Root="HKCU" Key="Software\\Microsoft\\' + appName + '"',
-                    'Name="installed"',
-                    'Type="integer" Value="1"',
-                    'KeyPath="yes"/>',
+                    '<RegistryKey Root="HKCU"',
+                    'Key="Software\\Microsoft\\' + appName + '"',
+                    'Action="createAndRemoveOnUninstall">',
+                    '<RegistryValue Type="integer" Name="' + appName + '" Value="1" KeyPath="yes"/>',
+                    '<RegistryValue Type="string" Value="Default Value"/>',
+                    '</RegistryKey>',
+
 
                     '</Component>',
                     '</DirectoryRef>'].join(" ");
@@ -246,10 +248,13 @@ function getComponents(files, filePath) {
                     '<RemoveFolder Id="DesktopFolder" On="uninstall"/>',
 
                     //registry Information
-                    '<RegistryValue Root="HKCU" Key="Software\\' + appName + '"',
-                    'Name="installed"',
-                    'Type="integer" Value="1"',
-                    'KeyPath="yes"/>',
+                    '<RegistryKey Root="HKCU"',
+                    'Key="Software\\' + appName + '"',
+                    'Action="createAndRemoveOnUninstall">',
+                    '<RegistryValue Type="integer" Name="installed" Value="1" KeyPath="yes"/>',
+                    '<RegistryValue Type="string" Value="Default Value"/>',
+                    '</RegistryKey>',
+
 
                     '</Component>',
                     '</DirectoryRef>'].join(" ");

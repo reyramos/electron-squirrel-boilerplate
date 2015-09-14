@@ -22,6 +22,7 @@
     InitializePostMessage.$inject = ['postMessageInterceptor'];
 
     function InitializePostMessage(postMessageInterceptor) {
+        //BUILD THE LISTENER FROM THE CHILD FRAME/IFRAME
         return postMessageInterceptor;
     }
 
@@ -44,7 +45,7 @@
 
                     },
                     'mainContent@root': {
-                        templateUrl: path + 'iframe.html',
+                        templateUrl: path + 'mainContent.html',
                     },
                     'eventLog@root': {}
                 }

@@ -265,21 +265,6 @@ module.exports = function (grunt) {
                     var files = getFilesPath('wixobj', 'msi');
                     return 'light.exe ' + files[0] + ' -o ' + files[1];
                 }
-            },
-            'asar': {
-                cmd: function () {
-                    var asar = require('asar'),
-                        config = require("./electron.config.js"),
-                        APPLICATION_SRC = path.join(__dirname, config.source),
-                        ELECTRON_PATH = path.join(__dirname, config.electron_build),
-                        ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
-
-                    asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
-                        console.log('\n\nElectron Package Created');
-                    })
-
-                    return null;
-                }
             }
         },
         copy: {
@@ -321,9 +306,9 @@ module.exports = function (grunt) {
     grunt.registerTask(
         'electron-build', [
             'execute:build-wxs',
-            'exec:candle',
-            'exec:light',
-            'clean:build'
+            //'exec:candle',
+            //'exec:light',
+            //'clean:build'
         ]
     );
 
@@ -339,7 +324,6 @@ module.exports = function (grunt) {
             , 'template:dist' //concat all the compile files into index.html
             , 'htmlmin' //clean html
             , 'copy:app'
-            , 'exec:asar'
         ]
     );
 

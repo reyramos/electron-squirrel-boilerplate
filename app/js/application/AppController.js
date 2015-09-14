@@ -15,14 +15,15 @@
     function AppController(clientService, electron, $sce, postMessage) {
         //send a message to electron
         electron.send("Hello from the client.");
-
-
         var self = this,
         //clientService is added in the injector to initiate the service to load
         //the application user-agent classes
             client = clientService.info,
-        //href = 'https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/';
             href = 'https://demo-phoenix.labcorp.com/web-ui/';
+
+
+
+
 
         self.headerIcon = 'fa-globe'
 
@@ -62,9 +63,6 @@
                 }
             }]
         ];
-
-
-
 
     };
 

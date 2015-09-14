@@ -304,8 +304,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'electron-build', [
-            'clean:build',
-            'execute:build-wxs',
+            //'clean:build',
+            //'execute:build-wxs',
             'exec:candle',
             'exec:light'
         ]

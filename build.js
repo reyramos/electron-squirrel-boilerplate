@@ -14,7 +14,7 @@ const BUILD_DESTINATION = path.join(__dirname, config.distribution);
 var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.ico');
 
 //path to electron files
-const ELECTRON_PATH = path.join(__dirname, config.path_to_electron);
+const ELECTRON_PATH = path.join(__dirname, config.electron_build);
 const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
 
 

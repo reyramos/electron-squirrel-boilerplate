@@ -3,10 +3,13 @@ var path = require('path'),
     config = require("./electron.config.js");
 
 
+config['build_date'] = new Date().toJSON();
+
+
 const APP_NAME = config.app_name;
 const APP_DESCRIPTION = config.app_description;
 const MANUFACTURER = config.manufacturer;
-const APP_VERSION = config.version;
+const APP_VERSION = String(config.version).trim() || false;
 const APPLICATION_SRC = path.join(__dirname, config.source);
 const BUILD_DESTINATION = path.join(__dirname, config.distribution);
 
@@ -40,22 +43,34 @@ String.prototype.capitalize = function () {
     });
 };
 
+var BUILD_FILE = false;
+try {
+    BUILD_FILE = fs.existsSync(BUILD_DESTINATION) ? require(path.join(BUILD_DESTINATION, 'build.json')) : require('build.json');
+} catch (e) {
+}
 
-rcedit(ELECTRON_EXE_DESTINATION, {
-    'version-string': APP_DESCRIPTION,
-    'file-version': APP_VERSION,
-    'product-version': APP_VERSION,
-    'product-name': APP_NAME,
-    'icon': path.join(APPLICATION_SRC, 'icon.ico')
-}, function (error) {
-
-    if (error)
-        console.error(error)
-
-    createPackage();
+const BUILD_VERSION = String(BUILD_FILE.version).trim() || false;
 
 
-});
+if (BUILD_VERSION !== APP_VERSION) {
+    rcedit(ELECTRON_EXE_DESTINATION, {
+        'version-string': APP_DESCRIPTION,
+        'file-version': APP_VERSION,
+        'product-version': APP_VERSION,
+        'product-name': APP_NAME,
+        'icon': path.join(APPLICATION_SRC, 'icon.ico')
+    }, function (error) {
+
+        if (error)
+            console.error(error)
+
+        createPackage();
+
+
+    });
+} else {
+    console.log('UPDATE YOUR VERSION FILE, VERSION:' + APP_VERSION + ' ALREADY EXIST');
+}
 
 
 function createPackage() {
@@ -142,11 +157,16 @@ function createPackage() {
             FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_SOURCE}}/g, APPLICATION_ICON_SOURCE);
 
             if (fs.existsSync(BUILD_DESTINATION)) {
-                var FILE_DESTINATION = path.join(BUILD_DESTINATION, 'v' + APP_VERSION + '.wxs');
-                file_put_content(FILE_DESTINATION, FILE_WXS)
+                file_put_content(path.join(BUILD_DESTINATION, 'v' + APP_VERSION + '.wxs'), FILE_WXS);
+                //create the versioning file
+                file_put_content(path.join(BUILD_DESTINATION, 'build.json'), JSON.stringify(config));
+
             } else {
                 file_put_content('v' + APP_VERSION + '.wxs', FILE_WXS)
+                //create the versioning file
+                file_put_content('build.json', JSON.stringify(config));
             }
+
 
         });
 

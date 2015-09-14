@@ -41,6 +41,16 @@ String.prototype.capitalize = function () {
 };
 
 
+
+//if (fs.existsSync(BUILD_DESTINATION)) {
+//    var FILE_DESTINATION = path.join(BUILD_DESTINATION, (APP_NAME.split(" ")).join("_") + '.wxs');
+//    file_put_content(FILE_DESTINATION, FILE_WXS)
+//} else {
+//    file_put_content((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS)
+//}
+
+
+
 rcedit(ELECTRON_EXE_DESTINATION, {
     'version-string': APP_DESCRIPTION,
     'file-version': APP_VERSION,

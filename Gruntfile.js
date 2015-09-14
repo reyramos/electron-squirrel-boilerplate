@@ -220,21 +220,11 @@ module.exports = function (grunt) {
                     dot: true,
                     src: [
                         '.tmp',
-                        'build',
                         '<%= yeoman.dist %>/*',
                         '!<%= yeoman.dist %>/.git*'
                     ]
                 }]
-            },
-            prod: {
-                files: [{
-                    dot: true,
-                    src: [
-                        '.tmp',
-                        '<%= yeoman.dist %>'
-                    ]
-                }]
-            },
+            }
         },
         ngAnnotate: {
             build: {
@@ -333,7 +323,7 @@ module.exports = function (grunt) {
     );
     grunt.registerTask(
         'build', [
-            'clean' //clean directory
+            'clean:dist' //clean directory
             , 'ngtemplates' //minify Angular Js, html files in templateCache
             , 'requirejs' //get all dependencies and combine in one file
             , 'concat:scripts' //concat all js files

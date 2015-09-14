@@ -21,15 +21,16 @@
         //clientService is added in the injector to initiate the service to load
         //the application user-agent classes
             client = clientService.info,
-            //href = 'https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/';
+        //href = 'https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/';
             href = 'https://demo-phoenix.labcorp.com/web-ui/';
 
         self.headerIcon = 'fa-globe'
 
-        function loadUrl(url){
-            self.href =  $sce.trustAsResourceUrl(url);
+        function loadUrl(url) {
+            self.href = $sce.trustAsResourceUrl(url);
             console.log('url', url)
         }
+
         loadUrl(href)
         self.faCogOpts = [
             [{
@@ -61,6 +62,8 @@
                 }
             }]
         ];
+
+
 
 
     };

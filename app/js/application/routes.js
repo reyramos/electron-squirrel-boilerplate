@@ -21,9 +21,9 @@
     Run.$inject = ['$rootScope'];
     InitializePostMessage.$inject = ['postMessageInterceptor'];
 
-    function InitializeApplication(appService) {
-        return appService.init()
-    }
+    //function InitializeApplication(appService) {
+    //    return appService.init()
+    //}
 
     function InitializePostMessage(postMessageInterceptor) {
         //BUILD THE LISTENER FROM THE CHILD FRAME/IFRAME
@@ -45,7 +45,7 @@
                         controller: 'appController',
                         controllerAs: 'app',
                         resolve: {
-                            InitializeApplication: InitializeApplication,
+                            //InitializeApplication: InitializeApplication,
                             InitializePostMessage: InitializePostMessage
                         }
                     },

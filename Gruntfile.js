@@ -265,6 +265,21 @@ module.exports = function (grunt) {
                     var files = getFilesPath('wixobj', 'msi');
                     return 'light.exe ' + files[0] + ' -o ' + files[1];
                 }
+            },
+            'asar': {
+                cmd: function () {
+                    var asar = require('asar'),
+                        config = require("./electron.config.js"),
+                        APPLICATION_SRC = path.join(__dirname, config.source),
+                        ELECTRON_PATH = path.join(__dirname, config.electron_build),
+                        ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
+
+                    asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
+                        console.log('\n\nElectron Package Created');
+                    })
+
+                    return null;
+                }
             }
         },
         copy: {
@@ -313,17 +328,7 @@ module.exports = function (grunt) {
     );
 
     grunt.registerTask(
-        'serve', [
-            'template:dev',
-            'connect:livereload',
-            'watch'
-        ]
-    );
-    grunt.registerTask(
-        'dist', ['connect:dist:keepalive']
-    );
-    grunt.registerTask(
-        'build', [
+        'angular-build', [
             'clean:dist' //clean directory
             , 'ngtemplates' //minify Angular Js, html files in templateCache
             , 'requirejs' //get all dependencies and combine in one file
@@ -334,6 +339,25 @@ module.exports = function (grunt) {
             , 'template:dist' //concat all the compile files into index.html
             , 'htmlmin' //clean html
             , 'copy:app'
+            , 'exec:asar'
+        ]
+    );
+
+    grunt.registerTask(
+        'serve', [
+            'template:dev',
+            'connect:livereload',
+            'watch'
+        ]
+    );
+
+    grunt.registerTask(
+        'dist', ['connect:dist:keepalive']
+    );
+
+    grunt.registerTask(
+        'build', [
+            'angular-build'
             , 'electron-build'
         ]
     );

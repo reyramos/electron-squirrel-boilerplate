@@ -211,8 +211,10 @@ module.exports = function (grunt) {
         clean: {
             build: {
                 files: [{
-                    dot: true,
-                    src: ['build']
+                    expand: true,
+                    cwd: 'build',
+                    extDot: 'last',
+                    src: ['**.wixobj', '**.wixpdb']
                 }]
             },
             dist: {
@@ -303,10 +305,10 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'electron-build', [
-            //'clean:build', //we dont want to clean this
             'execute:build-wxs',
             'exec:candle',
-            'exec:light'
+            'exec:light',
+            'clean:build'
         ]
     );
 

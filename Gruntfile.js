@@ -252,7 +252,6 @@ module.exports = function (grunt) {
             }
         },
         exec: {
-
             'candle': {
                 cmd: function () {
                     var files = getFilesPath('wxs', 'wixobj');
@@ -288,10 +287,10 @@ module.exports = function (grunt) {
 
     function getFilesPath(input, output) {
         var config = require("./electron.config.js"),
-            APP_NAME = config.app_name,
+            APP_VERSION = config.version,
             BUILD_DESTINATION = path.join(__dirname, config.distribution),
-            READ_FILE = (APP_NAME.split(" ")).join("_") + '.' + input,
-            FILE_DESTINATION = (APP_NAME.split(" ")).join("_") + '.' + output;
+            READ_FILE = 'v' + APP_VERSION + '.' + input,
+            FILE_DESTINATION = 'v' + APP_VERSION + '.' + output;
 
         if (fs.existsSync(BUILD_DESTINATION)) {
             READ_FILE = path.join(BUILD_DESTINATION, READ_FILE);
@@ -304,8 +303,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'electron-build', [
-            //'clean:build',
-            //'execute:build-wxs',
+            //'clean:build', //we dont want to clean this
+            'execute:build-wxs',
             'exec:candle',
             'exec:light'
         ]

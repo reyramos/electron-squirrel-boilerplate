@@ -41,29 +41,19 @@ String.prototype.capitalize = function () {
 };
 
 
-
-//if (fs.existsSync(BUILD_DESTINATION)) {
-//    var FILE_DESTINATION = path.join(BUILD_DESTINATION, (APP_NAME.split(" ")).join("_") + '.wxs');
-//    file_put_content(FILE_DESTINATION, FILE_WXS)
-//} else {
-//    file_put_content((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS)
-//}
-
-
-
 rcedit(ELECTRON_EXE_DESTINATION, {
     'version-string': APP_DESCRIPTION,
     'file-version': APP_VERSION,
     'product-version': APP_VERSION,
     'product-name': APP_NAME,
-    //'icon': path.join(APPLICATION_SRC, 'icon.ico')
+    'icon': path.join(APPLICATION_SRC, 'icon.ico')
 }, function (error) {
 
     if (error)
         console.error(error)
 
 
-    createPackage();
+    //createPackage();
 
 
 });
@@ -153,10 +143,10 @@ function createPackage() {
             FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_SOURCE}}/g, APPLICATION_ICON_SOURCE);
 
             if (fs.existsSync(BUILD_DESTINATION)) {
-                var FILE_DESTINATION = path.join(BUILD_DESTINATION, (APP_NAME.split(" ")).join("_") + '.wxs');
+                var FILE_DESTINATION = path.join(BUILD_DESTINATION, 'v' + APP_VERSION + '.wxs');
                 file_put_content(FILE_DESTINATION, FILE_WXS)
             } else {
-                file_put_content((APP_NAME.split(" ")).join("_") + '.wxs', FILE_WXS)
+                file_put_content('v' + APP_VERSION + '.wxs', FILE_WXS)
             }
 
         });

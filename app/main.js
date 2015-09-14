@@ -16,7 +16,7 @@ function createMainWindow() {
         'width': 1250,
         'height': 800,
         'resizable': true,
-        //icon: path.join(__dirname, 'icon.png'),
+        icon: path.join(__dirname, 'icon.png'),
         title: 'LabCorp Phoenix' //this is set by the index file
     });
 

@@ -14,8 +14,10 @@
 
         self.init = function () {
             $http.get(versionUrl).then(function (data) {
-
                 console.log('version', data)
+            }, function(error){
+                console.error('error', error)
+
             });
 
         }

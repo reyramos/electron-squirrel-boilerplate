@@ -17,7 +17,9 @@ function createMainWindow() {
         'height': 800,
         'resizable': true,
         icon: path.join(__dirname, 'icon.png'),
-        title: 'LabCorp Phoenix' //this is set by the index file
+        title: 'LabCorp Phoenix', //this is set by the index file
+        'web-preferences': {'web-security': false}
+
     });
 
     win.loadUrl('file://' + __dirname + '/index.html');

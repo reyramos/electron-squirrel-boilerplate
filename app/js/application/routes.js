@@ -17,7 +17,7 @@
     }).config(RouteProvider).run(Run);
 
 
-    RouteProvider.$inject = ['$stateProvider', '$urlRouterProvider'];
+    RouteProvider.$inject = ['$httpProvider', '$stateProvider', '$urlRouterProvider'];
     Run.$inject = ['$rootScope'];
     InitializePostMessage.$inject = ['postMessageInterceptor'];
 
@@ -30,7 +30,11 @@
         return postMessageInterceptor;
     }
 
-    function RouteProvider($stateProvider, $urlRouterProvider) {
+    function RouteProvider($httpProvider, $stateProvider, $urlRouterProvider) {
+
+        $httpProvider.defaults.useXDomain = true;
+        delete $httpProvider.defaults.headers.common['X-Requested-With'];
+
         var path = 'js/application/views/',
             routes = [{
                 name: "root",

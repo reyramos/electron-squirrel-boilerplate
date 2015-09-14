@@ -52,8 +52,7 @@ rcedit(ELECTRON_EXE_DESTINATION, {
     if (error)
         console.error(error)
 
-
-    //createPackage();
+    createPackage();
 
 
 });

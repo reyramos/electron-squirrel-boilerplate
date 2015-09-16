@@ -121,14 +121,23 @@
 
             data = data || {};
 
-            if (etype === 'object') {
-                data = eventType;
-                eventType = (typeof(data.promise) === "undefined" ? callback_id : data.promise);
+            switch (etype){
+                case 'object':
+                    data = eventType;
+                    dtype = typeof data;
+                    eventType = (typeof(data.promise) === "undefined" ? callback_id : data.promise);
+                    break;
             }
 
-            if (dtype === 'function') {
-                data = {func: data.toString()} || null;
+            switch (dtype){
+                case 'function':
+                    data = {func: data.toString()} || null;
+                    break;
+                case 'string':
+                    data = {string: data.toString()} || null;
+                    break;
             }
+
 
             data.promise = callback_id;
 

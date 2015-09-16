@@ -6,9 +6,9 @@
     'use strict';
     angular.module('app').directive('loading', Loading)
 
-    Loading.$inject = ['$sce', '$document']
+    Loading.$inject = ['$sce', '$document', 'postMessage', '$timeout']
 
-    function Loading($sce, $document) {
+    function Loading($sce, $document, postMessage, $timeout) {
 
         var directive = {
                 restrict: 'E',
@@ -21,6 +21,11 @@
                 iframe.onload = function () {
                     console.log('PAGE LOADED');
                     element.find($document[0].querySelector('#splashScreen')).remove();
+
+                    $timeout(function(){
+                        postMessage.send('electron','Message from parent', iframe)
+                    },0, false)
+
                 };
             },
             post: function (scope, element, attr) {

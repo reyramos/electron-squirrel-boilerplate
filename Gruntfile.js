@@ -17,7 +17,7 @@ module.exports = function (grunt) {
 
     var appConfig = {
         app: 'app',
-        dist: 'dist'
+        dist: 'dist',
     };
 
     // Define the configuration for all the tasks
@@ -26,7 +26,7 @@ module.exports = function (grunt) {
         yeoman: appConfig, // Watches files for changes and runs tasks based on the changed files
         watch: {
             options: {
-                livereload: true,
+                livereload: '<%= connect.options.livereload %>',
                 spawn: false
             },
             less: {
@@ -35,7 +35,7 @@ module.exports = function (grunt) {
                     "{.tmp,<%= yeoman.app %>}/**/*.less"
                 ],
                 options: {
-                    livereload: true,
+                    livereload: '<%= connect.options.livereload %>',
                     spawn: false
                 }
             },
@@ -179,7 +179,7 @@ module.exports = function (grunt) {
             options: {
                 port: 9000,
                 hostname: "*",
-                livereload: 35729
+                livereload: 35730,
             },
             livereload: {
                 options: {

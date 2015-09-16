@@ -9,6 +9,7 @@
         'ngElectron',
         'reyramos.utilities',
         'reyramos.client',
+        'sg.postMessengerService',
     ]).factory('APP_ENV', appOverride).factory('APP_OVERRIDE', function () {
         return {}
     })

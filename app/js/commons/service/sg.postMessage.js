@@ -23,7 +23,7 @@
 (function (angular) {
     'use strict';
 
-    angular.module('app').service('postMessage', PostMessage);
+    angular.module('sg.postMessengerService', []).service('postMessage', PostMessage);
 
     PostMessage.$inject = ['$window', '$q']
 
@@ -79,6 +79,8 @@
             } catch (e) {
             }
 
+            console.log('postMessage.onmessage => data:', data)
+
             /**
              * When a message is return, from sender, we would
              * need to change to response
@@ -87,6 +89,7 @@
                 case 'request':
                     var eventType = data.eventType,
                         msg = angular.copy(data.message);
+
 
                     try {
                         if (typeof self.intercept === 'function')
@@ -141,7 +144,7 @@
                 eventType: typeof(arguments[0]) === 'object' ? false : eventType
             };
 
-            console.log('postMessage', postMessage)
+            console.log('postMessage.send => ', postMessage)
             agent.postMessage(JSON.stringify(postMessage), '*'); //allow all domains
             return defer.promise;
         }

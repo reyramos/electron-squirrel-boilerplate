@@ -10,59 +10,40 @@
 
     angular.module('app').controller('appController', AppController);
 
-    AppController.$inject = ['clientService', 'electron', '$sce', 'postMessage'];
+    AppController.$inject = ['clientService', 'electron', '$sce', 'postMessage', '$document'];
 
-    function AppController(clientService, electron, $sce, postMessage) {
+    function AppController(clientService, electron, $sce, postMessage, $document) {
         //send a message to electron
         electron.send("Hello from the client.");
         var self = this,
         //clientService is added in the injector to initiate the service to load
         //the application user-agent classes
             client = clientService.info,
-            href = 'https://demo-phoenix.labcorp.com/web-ui/';
+            count = 0,
+            href = 'https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/',
+            iframe = document.createElement('iframe');
 
 
+        iframe.onload = function () {
+            //the first load don't count
+            if (count > 0) {
+                console.log('PAGE LOADED');
+                angular.element($document[0].querySelector('#splashScreen')).remove();
+            } else {
+                count++;
+            }
+        };
 
 
-
-        self.headerIcon = 'fa-globe'
+        angular.element($document[0].querySelector('#mainContent')).append(iframe);
 
         function loadUrl(url) {
             self.href = $sce.trustAsResourceUrl(url);
-            console.log('url', url)
+            iframe.src = self.href;
         }
 
         loadUrl(href)
-        self.faCogOpts = [
-            [{
-                name: 'Demo Server',
-                icon: 'fa fa-globe',
-                callback: function () {
-                    self.headerIcon = 'fa-globe'
 
-                    href = 'https://demo-phoenix.labcorp.com/web-ui/';
-                    loadUrl(href)
-                }
-            }],
-            [{
-                name: 'Eligibility Server',
-                icon: "fa fa-hand-peace-o",
-                callback: function () {
-                    self.headerIcon = 'fa-hand-peace-o'
-                    href = 'https://dev-eligibility-phoenix.labcorp.com/web-ui/';
-                    loadUrl(href)
-                }
-            }],
-            [{
-                name: 'Demographics Server',
-                icon: "fa fa-hand-spock-o",
-                callback: function () {
-                    self.headerIcon = 'fa-hand-spock-o'
-                    href = 'https://dev-demographics-phoenix.labcorp.com/web-ui/';
-                    loadUrl(href)
-                }
-            }]
-        ];
 
     };
 

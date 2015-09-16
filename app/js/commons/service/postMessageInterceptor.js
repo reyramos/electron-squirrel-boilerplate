@@ -29,14 +29,20 @@
             switch (eventType) {
                 case 'electron':
 
-                    var funcString = msg.func;
+                    if (msg.hasOwnProperty('func')) {
+                        var funcString = msg.func;
 
-                    var args = (funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{([^\n]*\n+\s){0,}\s{0,}\}/, '$1')).split(','),
-                        func = ((funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{/, '')).replace(/\s{0,}\}$/, '')).trim(),
-                        awesome = new Function(args, func);
+                        var args = (funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{([^\n]*\n+\s){0,}\s{0,}\}/, '$1')).split(','),
+                            func = ((funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{/, '')).replace(/\s{0,}\}$/, '')).trim(),
+                            awesome = new Function(args, func);
 
-                    //execute the function provided
-                    awesome(electron);
+                        //execute the function provided
+                        awesome(electron);
+                    }
+
+                    if (msg.hasOwnProperty('string')) {
+                        console.log('sg.postMessageInterceptor', msg.string)
+                    }
 
                     break;
                 default :

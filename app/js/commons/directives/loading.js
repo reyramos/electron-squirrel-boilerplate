@@ -18,13 +18,18 @@
         directive.link = {
             pre: function (scope, element) {
                 iframe = document.createElement('iframe');
+                iframe.setAttribute("id", "iframeSource");
                 iframe.onload = function () {
-                    console.log('PAGE LOADED');
+                    console.log('PAGE_LOADED');
                     element.find($document[0].querySelector('#splashScreen')).remove();
 
-                    $timeout(function(){
-                        postMessage.send('electron','Message from parent', iframe)
-                    },0, false)
+                    $timeout(function () {
+                        postMessage.send('electron', function () {
+                            var deviceInformationClassList = "";
+                            deviceInformationClassList += "PAGE_LOADED_FROM_ELECTRON_CONTAINER";
+                            document.documentElement.className = deviceInformationClassList;
+                        }, iframe)
+                    }, 0, false)
 
                 };
             },

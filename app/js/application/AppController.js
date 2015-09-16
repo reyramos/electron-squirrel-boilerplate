@@ -18,33 +18,8 @@
         var self = this,
         //clientService is added in the injector to initiate the service to load
         //the application user-agent classes
-            client = clientService.info,
-            count = 0,
-            href = 'https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/',
-            iframe = document.createElement('iframe');
-
-
-        iframe.onload = function () {
-            //the first load don't count
-            if (count > 0) {
-                console.log('PAGE LOADED');
-                angular.element($document[0].querySelector('#splashScreen')).remove();
-            } else {
-                count++;
-            }
-        };
-
-
-        angular.element($document[0].querySelector('#mainContent')).append(iframe);
-
-        function loadUrl(url) {
-            self.href = $sce.trustAsResourceUrl(url);
-            iframe.src = self.href;
-        }
-
-        loadUrl(href)
-
-
+            client = clientService.info;
+        
     };
 
 })(window.angular);

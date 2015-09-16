@@ -23,7 +23,7 @@
 (function (angular) {
     'use strict';
 
-    angular.module('sg.postMessengerService', []).service('postMessage', PostMessage);
+    angular.module('sg.postMessenger', []).service('postMessage', PostMessage);
 
     PostMessage.$inject = ['$window', '$q']
 

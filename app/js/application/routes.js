@@ -21,10 +21,6 @@
     Run.$inject = ['$rootScope'];
     InitializePostMessage.$inject = ['postMessageInterceptor'];
 
-    //function InitializeApplication(appService) {
-    //    return appService.init()
-    //}
-
     function InitializePostMessage(postMessageInterceptor) {
         //BUILD THE LISTENER FROM THE CHILD FRAME/IFRAME
         return postMessageInterceptor;
@@ -42,19 +38,18 @@
                 views: {
                     'applicationContainer@': {
                         templateUrl: path + 'index.html',
-                        controller: 'appController',
-                        controllerAs: 'app',
                         resolve: {
-                            //InitializeApplication: InitializeApplication,
                             InitializePostMessage: InitializePostMessage
                         }
                     },
-                    'appHeader@root': {
-                        templateUrl: path + 'header.html',
-
-                    },
+                    //'appHeader@root': {
+                    //    templateUrl: path + 'header.html',
+                    //
+                    //},
                     'mainContent@root': {
                         templateUrl: path + 'mainContent.html',
+                        controller: 'appController',
+                        controllerAs: 'app',
                     },
                     'eventLog@root': {}
                 }

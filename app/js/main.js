@@ -13,7 +13,7 @@ require
             'angular-animate': '../lib/angular-animate/index',
             'jquery': '../lib/jquery/dist/jquery',
             'electron': 'vendor/ng-electron',
-            'postMessage': 'commons/service/sg.postMessage',
+            'postMessenger': 'commons/service/sg.postMessenger',
 
             //VENDORS
             'UAParser': 'vendor/ua-parser',
@@ -42,7 +42,7 @@ require
                     'electron',
                     'utilities',
                     'client',
-                    'postMessage'
+                    'postMessenger'
                 ]
             },
             'angular': {'deps': ['jquery']},
@@ -51,7 +51,7 @@ require
             'angular-sanitize': {'deps': ['angular']},
             'angular-animate': {'deps': ['angular']},
             'electron': {'deps': ['angular']},
-            'postMessage': {'deps': ['angular']},
+            'postMessenger': {'deps': ['angular']},
             'jquery': {
                 init: function ($) {
                     return $.noConflict(true);
@@ -75,10 +75,11 @@ require
 
             //COMMONS
             'commons/directives/global': {'deps': ['app']},
+            'commons/directives/loading': {'deps': ['app']},
             'commons/directives/dropDownOptions': {'deps': ['app']},
             'commons/directives/offset': {'deps': ['app']},
             'commons/directives/resizer': {'deps': ['app']},
-            'commons/service/postMessageInterceptor': {'deps': ['app', 'postMessage']},
+            'commons/service/postMessageInterceptor': {'deps': ['app', 'postMessenger']},
 
         }
     }, [
@@ -94,6 +95,7 @@ require
 
         //COMMONS
         'commons/directives/global',
+        'commons/directives/loading',
         'commons/directives/dropDownOptions',
         'commons/directives/offset',
         'commons/directives/resizer',

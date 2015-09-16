@@ -28,7 +28,6 @@
             console.log('INTERCEPTOR => ', eventType)
             switch (eventType) {
                 case 'electron':
-
                     if (msg.hasOwnProperty('func')) {
                         var funcString = msg.func;
 

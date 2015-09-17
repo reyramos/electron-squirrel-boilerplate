@@ -20,7 +20,7 @@
 
     angular.module('app').service('postMessageInterceptor', PostMessage);
 
-    PostMessage.$inject = ['$q', 'postMessage', 'electron'];
+    PostMessage.$inject = ['$q', 'postMessage', 'electron', '$document'];
 
 
     function executeFunction(inject, funcString) {
@@ -35,7 +35,7 @@
         awesome(inject);
     }
 
-    function PostMessage($q, postMessage, electron) {
+    function PostMessage($q, postMessage, electron, $document) {
         postMessage.intercept = function (eventType, msg) {
             var defer = $q.defer();
             console.log('INTERCEPTOR => ', eventType)
@@ -46,8 +46,8 @@
                     }
 
                     if (msg.hasOwnProperty('environment')) {
-
-                        var defaultEnvironment = "demo-phoenix",
+                        var iframeSource = $document[0].querySelector('#iframeSource'),
+                            defaultEnvironment = "demo-phoenix",
                             allowedEnvironments = [
                                 defaultEnvironment,
                                 'dev-demographics-phoenix',
@@ -55,9 +55,7 @@
                             ];
 
                         defaultEnvironment = "https://" + (allowedEnvironments.lastIndexOf(msg.environment) > -1 ? msg.environment : defaultEnvironment) + ".labcorp.com/web-ui/#/";
-
-
-                        console.log('sg.postMessageInterceptor => change_environments', defaultEnvironment)
+                        iframeSource.src = defaultEnvironment;
                     }
 
                     if (msg.hasOwnProperty('string')) {

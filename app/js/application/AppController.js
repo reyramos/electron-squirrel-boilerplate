@@ -10,16 +10,20 @@
 
     angular.module('app').controller('appController', AppController);
 
-    AppController.$inject = ['clientService', 'electron', '$sce', 'postMessage', '$document'];
+    AppController.$inject = ['clientService', 'electron', '$sce', 'postMessage', 'APP_ENV'];
 
-    function AppController(clientService, electron, $sce, postMessage, $document) {
+    function AppController(clientService, electron, $sce, postMessage, APP_ENV) {
         //send a message to electron
         electron.send("Hello from the client.");
         var self = this,
         //clientService is added in the injector to initiate the service to load
         //the application user-agent classes
             client = clientService.info;
-        
+
+        self.iframeSrc = APP_ENV.iframeSrc
+
+        console.log('appController:APP_ENV',APP_ENV)
+
     };
 
 })(window.angular);

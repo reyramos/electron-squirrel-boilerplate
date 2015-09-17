@@ -20,7 +20,7 @@
 
     angular.module('app').service('postMessageInterceptor', PostMessage);
 
-    PostMessage.$inject = ['$q', 'postMessage', 'electron', '$document', '$timeout'];
+    PostMessage.$inject = ['$q', 'postMessage', 'electron', '$document'];
 
 
     function executeFunction(inject, funcString) {
@@ -35,7 +35,7 @@
         awesome(inject);
     }
 
-    function PostMessage($q, postMessage, electron, $document, $timeout) {
+    function PostMessage($q, postMessage, electron, $document) {
         postMessage.intercept = function (eventType, msg) {
             var defer = $q.defer();
             console.log('INTERCEPTOR => ', eventType)
@@ -55,15 +55,10 @@
                             ];
 
 
-                        $timeout(function () {
+                        defaultEnvironment = "https://" + (allowedEnvironments.lastIndexOf(msg.environment) > -1 ? msg.environment : defaultEnvironment) + ".labcorp.com/web-ui/#/";
+                        iframeSource.src = defaultEnvironment;
 
-                            defaultEnvironment = "https://" + (allowedEnvironments.lastIndexOf(msg.environment) > -1 ? msg.environment : defaultEnvironment) + ".labcorp.com/web-ui/#/";
-                            iframeSource.src = defaultEnvironment;
-
-                            console.log('iframeSource', defaultEnvironment)
-
-
-                        }, 100)
+                        console.log('iframeSource', defaultEnvironment)
 
 
                     }

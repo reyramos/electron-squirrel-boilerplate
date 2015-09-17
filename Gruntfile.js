@@ -76,6 +76,7 @@ module.exports = function (grunt) {
                 src: [
                     '.tmp/scripts-require.js',
                     '.tmp/views.js',
+                    '<%= yeoman.app %>/js/configs/production.js',
                     '<%= yeoman.app %>/js/bootstrap.js' //concat the bootstrap at the every end
                 ],
                 dest: ".tmp/scripts-concat.js"
@@ -250,7 +251,7 @@ module.exports = function (grunt) {
         },
         execute: {
             'build-asar': {
-                src: ['build-asar.js']
+                src: ['build_asar.js']
             },
             'build-wxs': {
                 src: ['build_wxs.js']

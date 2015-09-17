@@ -36,11 +36,11 @@ var rcedit = require('rcedit'),
 
 //create the versioning file
 if (fs.existsSync(APPLICATION_SRC)) {
-    file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
+    file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
 }
 
 //place the version file in the development folder
-file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
+file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
 
 /**
  * This functionality is to check if the build.json file exist, if it exist it will check if the version is already created.
@@ -64,7 +64,6 @@ function createPackage() {
     mkdir(BUILD_DESTINATION);
     asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
         console.log('Electron Package Created');
-        console.log('Creating WXS Package!');
     });
 }
 

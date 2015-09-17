@@ -51,22 +51,30 @@ try {
 
 const BUILD_VERSION = String(BUILD_FILE.version).trim() || false;
 
+//create the versioning file
+if (fs.existsSync(APPLICATION_SRC)) {
+    file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
+} else {
+    file_put_content('version.json', JSON.stringify(config));
+}
+
+
 /**
  * This functionality is to check if the build.json file exist, if it exist it will check if the version is already created.
  * So it will force the developer to upgrade their version for the new build
  */
 //if (BUILD_VERSION !== APP_VERSION) {
-    rcedit(ELECTRON_EXE_DESTINATION, {
-        'version-string': APP_DESCRIPTION,
-        'file-version': APP_VERSION,
-        'product-version': APP_VERSION,
-        'product-name': APP_NAME,
-        'icon': path.join(APPLICATION_SRC, 'icon.ico')
-    }, function (error) {
-        if (error)
-            console.error(error)
-        createPackage();
-    });
+rcedit(ELECTRON_EXE_DESTINATION, {
+    'version-string': APP_DESCRIPTION,
+    'file-version': APP_VERSION,
+    'product-version': APP_VERSION,
+    'product-name': APP_NAME,
+    'icon': path.join(APPLICATION_SRC, 'icon.ico')
+}, function (error) {
+    if (error)
+        console.error(error)
+    createPackage();
+});
 //} else {
 //    console.log('\n\nUPDATE YOUR VERSION FILE, VERSION:' + APP_VERSION + ' ALREADY EXIST');
 //}

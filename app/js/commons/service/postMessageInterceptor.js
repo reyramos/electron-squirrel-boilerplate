@@ -20,7 +20,20 @@
 
     angular.module('app').service('postMessageInterceptor', PostMessage);
 
-    PostMessage.$inject = ['$q', 'postMessage', 'electron']
+    PostMessage.$inject = ['$q', 'postMessage', 'electron'];
+
+
+    function executeFunction(inject, funcString) {
+
+        var args = (funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{([^\n]*\n+\s){0,}\s{0,}\}/, '$1')).split(','),
+            func = ((funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{/, '')).replace(/\s{0,}\}$/, '')).trim(),
+            awesome = new Function(args, func);
+
+        console.log('args', args)
+        console.log('func', func)
+        //execute the function provided
+        awesome(inject);
+    }
 
     function PostMessage($q, postMessage, electron) {
         postMessage.intercept = function (eventType, msg) {
@@ -29,14 +42,22 @@
             switch (eventType) {
                 case 'electron':
                     if (msg.hasOwnProperty('func')) {
-                        var funcString = msg.func;
+                        executeFunction(electron, msg.func)
+                    }
 
-                        var args = (funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{([^\n]*\n+\s){0,}\s{0,}\}/, '$1')).split(','),
-                            func = ((funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{/, '')).replace(/\s{0,}\}$/, '')).trim(),
-                            awesome = new Function(args, func);
+                    if (msg.hasOwnProperty('environment')) {
 
-                        //execute the function provided
-                        awesome(electron);
+                        var defaultEnvironment = "demo-phoenix",
+                            allowedEnvironments = [
+                                defaultEnvironment,
+                                'dev-demographics-phoenix',
+                                'dev-eligibility-phoenix'
+                            ];
+
+                        defaultEnvironment = "https://" + (allowedEnvironments.lastIndexOf(msg.environment) > -1 ? msg.environment : defaultEnvironment) + ".labcorp.com/web-ui/#/";
+
+
+                        console.log('sg.postMessageInterceptor => change_environments', defaultEnvironment)
                     }
 
                     if (msg.hasOwnProperty('string')) {

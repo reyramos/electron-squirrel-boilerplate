@@ -42,10 +42,6 @@
                             InitializePostMessage: InitializePostMessage
                         }
                     },
-                    //'appHeader@root': {
-                    //    templateUrl: path + 'header.html',
-                    //
-                    //},
                     'mainContent@root': {
                         templateUrl: path + 'mainContent.html',
                         controller: 'appController',
@@ -55,24 +51,6 @@
                 }
             }];
 
-
-        /**
-         * ## HTML5 pushState support
-         *
-         * This enables urls to be routed with HTML5 pushState so they appear in a
-         * '/someurl' format without a page refresh
-         *
-         * The server must support routing all urls to index.html as a catch-all for
-         * this to function properly,
-         *
-         * The alternative is to disable this which reverts to '#!/someurl'
-         * anchor-style urls.
-         */
-            // $locationProvider.html5Mode({
-            //     enabled: true,
-            //     requireBase: false
-            // });
-            // $locationProvider.hashPrefix('!');
 
         angular.forEach(routes, function (route) {
             route.data = {

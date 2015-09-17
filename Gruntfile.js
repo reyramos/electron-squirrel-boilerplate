@@ -258,6 +258,28 @@ module.exports = function (grunt) {
             }
         },
         exec: {
+            'msi-build': {
+                cmd: function () {
+                    var config = require("./electron.config.js");
+                    var APP_VERSION = String(config.version).trim() || false;
+                    var BUILD_DESTINATION = path.join(__dirname, config.distribution);
+                    var BUILD_FILE = false;
+                    try {
+                        BUILD_FILE = fs.existsSync(BUILD_DESTINATION) ? require(path.join(BUILD_DESTINATION, 'build.json')) : require('build.json');
+                    } catch (e) {
+                    }
+
+                    var BUILD_VERSION = String(BUILD_FILE.version).trim() || false;
+
+                    if (BUILD_VERSION !== APP_VERSION) {
+                        return  console.log('\n\nTIME TO ELECTRONIZE');
+
+                    } else {
+                      return  console.log('\n\nUPDATE YOUR VERSION FILE, VERSION:' + APP_VERSION + ' ALREADY EXIST');
+                    }
+
+                }
+            },
             'candle': {
                 cmd: function () {
                     var files = getFilesPath('wxs', 'wixobj');
@@ -315,17 +337,19 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'msi-build', [
-            'execute:build-wxs'
+            'execute:build-wxs',
+            'exec:msi-build',
+
         ]
     );
 
-    grunt.registerTask(
-        'candle', [
-            'exec:candle',
-            'exec:light',
-            'clean:build'
-        ]
-    );
+    //grunt.registerTask(
+    //    'candle', [
+    //        'exec:candle',
+    //        'exec:light',
+    //        'clean:build'
+    //    ]
+    //);
 
 
     grunt.registerTask(

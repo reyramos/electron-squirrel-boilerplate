@@ -15,7 +15,7 @@
     })
 
 
-    appOverride.$inject = ['APP_OVERRIDE'];
+    appOverride.$inject = ['APP_OVERRIDE', 'VERSION'];
 
     /**
      * @ngdoc object
@@ -26,19 +26,20 @@
      *
      */
 
-    function appOverride(APP_OVERRIDE) {
-        var settings = {}
-        //in the build.xml, build number gets replaced with the version number
-        var template = 'template',
-            version = 'BUILDNUMBER';
+    function appOverride(APP_OVERRIDE, VERSION) {
+        var settings = {},
+            info = VERSION,
+            template = 'template';
+
 
         //if version is a number
-        if (!isNaN(parseFloat(version))) {
-            template = template + '-' + version;
+        if (!isNaN(parseFloat(info.version))) {
+            template = template + '-' + info.version;
         }
 
         settings.env = 'development'; //run with the development profile (only effects logging setup by default)
         settings.ga = ''; //Google Analytics
+        settings.info = info; //Google Analytics
         settings.templates = function () {
         }
 

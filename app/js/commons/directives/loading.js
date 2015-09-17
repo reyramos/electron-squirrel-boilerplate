@@ -6,9 +6,9 @@
     'use strict';
     angular.module('app').directive('loading', Loading)
 
-    Loading.$inject = ['$sce', '$document', 'postMessage', '$timeout']
+    Loading.$inject = ['$sce', '$document', 'postMessage', '$timeout', 'APP_ENV']
 
-    function Loading($sce, $document, postMessage, $timeout) {
+    function Loading($sce, $document, postMessage, $timeout, APP_ENV) {
 
         var directive = {
                 restrict: 'E',
@@ -24,11 +24,7 @@
                     element.find($document[0].querySelector('#splashScreen')).remove();
 
                     $timeout(function () {
-                        postMessage.send('electron', function () {
-                            var deviceInformationClassList = "";
-                            deviceInformationClassList += "PAGE_LOADED_FROM_ELECTRON_CONTAINER";
-                            document.documentElement.className = deviceInformationClassList;
-                        }, iframe)
+                        postMessage.send('electron', APP_ENV.info, iframe)
                     }, 0, false)
 
                 };

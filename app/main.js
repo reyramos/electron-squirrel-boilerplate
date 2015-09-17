@@ -61,7 +61,7 @@ app.on('ready', function () {
         angular.send("Hello from Electron");
     });
 
-    mainWindow.openDevTools();
+    //mainWindow.openDevTools();
     //mainWindow.print();
 
     mainWindow.webContents.on('did-finish-load', function (e) {

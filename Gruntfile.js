@@ -315,12 +315,18 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'msi-build', [
-            'execute:build-wxs',
+            'execute:build-wxs'
+        ]
+    );
+
+    grunt.registerTask(
+        'candle', [
             'exec:candle',
             'exec:light',
             'clean:build'
         ]
     );
+
 
     grunt.registerTask(
         'angular-build', [
@@ -353,6 +359,7 @@ module.exports = function (grunt) {
         'build', [
             'angular-build'
             , 'electron-build'
+            , 'msi-build'
         ]
     );
     grunt.registerTask(

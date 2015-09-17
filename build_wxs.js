@@ -34,7 +34,6 @@ console.log('ELECTRON_BUILD_DESTINATION', ELECTRON_BUILD_DESTINATION)
 
 var uuid = require('node-uuid'), //generate unique UUID <https://github.com/broofa/node-uuid>
     rcedit = require('rcedit'),
-    asar = require('asar'), //create electron build from the application source files
     child = require('child_process');
 
 String.prototype.capitalize = function () {
@@ -50,13 +49,6 @@ try {
 }
 
 const BUILD_VERSION = String(BUILD_FILE.version).trim() || false;
-
-//create the versioning file
-if (fs.existsSync(APPLICATION_SRC)) {
-    file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
-} else {
-    file_put_content('version.json', JSON.stringify(config));
-}
 
 
 /**
@@ -84,102 +76,96 @@ function createPackage() {
     //make the directory for the
     mkdir(BUILD_DESTINATION);
 
-    asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
-        console.log('Electron Package Created');
-        console.log('Creating WXS Package!');
+    console.log('Creating WXS Package!');
 
-        var ROOT_DIRECTORY_REFERENCE = "",
-            COMPONENTS_REFS = "",
-            DIRECTORY_REF = "",
-            DIRECTORY = "",
-            FILE_WXS = "",
-            PRODUCT_GUID = uuid.v1(),
-            UPGRADE_GUID = uuid.v1();
+    var ROOT_DIRECTORY_REFERENCE = "",
+        COMPONENTS_REFS = "",
+        DIRECTORY_REF = "",
+        DIRECTORY = "",
+        FILE_WXS = "",
+        PRODUCT_GUID = uuid.v1(),
+        UPGRADE_GUID = uuid.v1();
 
-        var APP_CAB = APP_NAME.split(" ");
-        APP_CAB.forEach(function (ele, index, array) {
-            array[index] = ele.capitalize();
-        });
+    var APP_CAB = APP_NAME.split(" ");
+    APP_CAB.forEach(function (ele, index, array) {
+        array[index] = ele.capitalize();
+    });
 
-        var APPLICATION_ICON_ID = APP_NAME.split(" ");
-        APPLICATION_ICON_ID.forEach(function (ele, index, array) {
-            array[index] = ele.capitalize();
-        });
+    var APPLICATION_ICON_ID = APP_NAME.split(" ");
+    APPLICATION_ICON_ID.forEach(function (ele, index, array) {
+        array[index] = ele.capitalize();
+    });
 
 
-        fs.readFile('template.wxs', 'utf8', function (err, data) {
-            if (err) {
-                return console.log(err);
-            }
+    fs.readFile('template.wxs', 'utf8', function (err, data) {
+        if (err) {
+            return console.log(err);
+        }
 
-            FILE_WXS = data;
+        FILE_WXS = data;
 
-            //replace the APP_CAB
-            FILE_WXS = FILE_WXS.replace(/{{APP_CAB}}/g, (APP_CAB).join("") + ".cab");
-            //replace the MANUFACTURER
-            FILE_WXS = FILE_WXS.replace(/{{MANUFACTURER}}/g, MANUFACTURER);
-            //replace the APP_NAME
-            FILE_WXS = FILE_WXS.replace(/{{APP_NAME}}/g, APP_NAME);
-            //replace the PRODUCT_GUID
-            FILE_WXS = FILE_WXS.replace(/{{PRODUCT_GUID}}/g, PRODUCT_GUID);
-            //replace the UPGRADE_GUID
-            FILE_WXS = FILE_WXS.replace(/{{UPGRADE_GUID}}/g, UPGRADE_GUID);
-            //replace the APP_VERSION
-            FILE_WXS = FILE_WXS.replace(/{{APP_VERSION}}/g, APP_VERSION);
+        //replace the APP_CAB
+        FILE_WXS = FILE_WXS.replace(/{{APP_CAB}}/g, (APP_CAB).join("") + ".cab");
+        //replace the MANUFACTURER
+        FILE_WXS = FILE_WXS.replace(/{{MANUFACTURER}}/g, MANUFACTURER);
+        //replace the APP_NAME
+        FILE_WXS = FILE_WXS.replace(/{{APP_NAME}}/g, APP_NAME);
+        //replace the PRODUCT_GUID
+        FILE_WXS = FILE_WXS.replace(/{{PRODUCT_GUID}}/g, PRODUCT_GUID);
+        //replace the UPGRADE_GUID
+        FILE_WXS = FILE_WXS.replace(/{{UPGRADE_GUID}}/g, UPGRADE_GUID);
+        //replace the APP_VERSION
+        FILE_WXS = FILE_WXS.replace(/{{APP_VERSION}}/g, APP_VERSION);
 
 
-            walk(ELECTRON_PATH, function (obj) {
-                var id = (obj.filePath.replace(/[^\w\*]/g, " ")).split(/[\s{0,}\\\-_\.]/g),
-                    components = getComponents(obj.files, obj.filePath);
+        walk(ELECTRON_PATH, function (obj) {
+            var id = (obj.filePath.replace(/[^\w\*]/g, " ")).split(/[\s{0,}\\\-_\.]/g),
+                components = getComponents(obj.files, obj.filePath);
 
-                id.forEach(function (ele, index, array) {
-                    array[index] = ele.capitalize();
-                });
-                id = id.join("");
-
-                if (obj.filePath !== path.join(ELECTRON_PATH, '/')) {
-                    DIRECTORY += '<Directory Id="' + id + '" Name="' + obj.dirname + '" />';
-                    DIRECTORY_REF += '<DirectoryRef Id="' + id + '">' + components[0] + '</DirectoryRef>';
-                } else {
-                    ROOT_DIRECTORY_REFERENCE = '<DirectoryRef Id="APPLICATIONROOTDIRECTORY">' + components[0] + '</DirectoryRef>';
-                }
-
-                COMPONENTS_REFS += components[1];
-                if (components[2]) {
-                    //if this exist then lets add it
-                    DIRECTORY_REF += components[2];
-                }
-
+            id.forEach(function (ele, index, array) {
+                array[index] = ele.capitalize();
             });
+            id = id.join("");
 
-
-            DIRECTORY_REF = ROOT_DIRECTORY_REFERENCE + DIRECTORY_REF;
-            FILE_WXS = FILE_WXS.replace(/{{DIRECTORY}}/g, DIRECTORY);
-            FILE_WXS = FILE_WXS.replace(/{{DIRECTORY_REF}}/g, DIRECTORY_REF);
-            FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
-
-            //we are creating the installer icon in Add/Remove programs
-            APPLICATION_ICON_SOURCE = fs.existsSync(APPLICATION_ICON_SOURCE) ? '<Icon Id="' + ((APPLICATION_ICON_ID).join("") + ".icon") + '" SourceFile="' + APPLICATION_ICON_SOURCE + '"/>\r\n<Property Id="ARPPRODUCTICON" Value="' + ((APPLICATION_ICON_ID).join("") + ".icon") + '" />' : "";
-
-            FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_SOURCE}}/g, APPLICATION_ICON_SOURCE);
-
-            if (fs.existsSync(BUILD_DESTINATION)) {
-                file_put_content(path.join(BUILD_DESTINATION, 'v' + APP_VERSION + '.wxs'), FILE_WXS);
-                //create the versioning file
-                file_put_content(path.join(BUILD_DESTINATION, 'build.json'), JSON.stringify(config));
-
+            if (obj.filePath !== path.join(ELECTRON_PATH, '/')) {
+                DIRECTORY += '<Directory Id="' + id + '" Name="' + obj.dirname + '" />';
+                DIRECTORY_REF += '<DirectoryRef Id="' + id + '">' + components[0] + '</DirectoryRef>';
             } else {
-                file_put_content('v' + APP_VERSION + '.wxs', FILE_WXS)
-                //create the versioning file
-                file_put_content('build.json', JSON.stringify(config));
+                ROOT_DIRECTORY_REFERENCE = '<DirectoryRef Id="APPLICATIONROOTDIRECTORY">' + components[0] + '</DirectoryRef>';
             }
 
+            COMPONENTS_REFS += components[1];
+            if (components[2]) {
+                //if this exist then lets add it
+                DIRECTORY_REF += components[2];
+            }
 
         });
+
+
+        DIRECTORY_REF = ROOT_DIRECTORY_REFERENCE + DIRECTORY_REF;
+        FILE_WXS = FILE_WXS.replace(/{{DIRECTORY}}/g, DIRECTORY);
+        FILE_WXS = FILE_WXS.replace(/{{DIRECTORY_REF}}/g, DIRECTORY_REF);
+        FILE_WXS = FILE_WXS.replace(/{{COMPONENTS_REFS}}/g, COMPONENTS_REFS);
+
+        //we are creating the installer icon in Add/Remove programs
+        APPLICATION_ICON_SOURCE = fs.existsSync(APPLICATION_ICON_SOURCE) ? '<Icon Id="' + ((APPLICATION_ICON_ID).join("") + ".icon") + '" SourceFile="' + APPLICATION_ICON_SOURCE + '"/>\r\n<Property Id="ARPPRODUCTICON" Value="' + ((APPLICATION_ICON_ID).join("") + ".icon") + '" />' : "";
+
+        FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_SOURCE}}/g, APPLICATION_ICON_SOURCE);
+
+        if (fs.existsSync(BUILD_DESTINATION)) {
+            file_put_content(path.join(BUILD_DESTINATION, 'v' + APP_VERSION + '.wxs'), FILE_WXS);
+            //create the versioning file
+            file_put_content(path.join(BUILD_DESTINATION, 'build.json'), JSON.stringify(config));
+
+        } else {
+            file_put_content('v' + APP_VERSION + '.wxs', FILE_WXS)
+            //create the versioning file
+            file_put_content('build.json', JSON.stringify(config));
+        }
 
 
     });
-
 
 }
 

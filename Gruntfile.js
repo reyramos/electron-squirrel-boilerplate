@@ -249,8 +249,11 @@ module.exports = function (grunt) {
             }
         },
         execute: {
+            'build-asar': {
+                src: ['build-asar.js']
+            },
             'build-wxs': {
-                src: ['build.js']
+                src: ['build_wxs.js']
             }
         },
         exec: {
@@ -305,10 +308,16 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'electron-build', [
+            'execute:build-asar'
+        ]
+    );
+
+    grunt.registerTask(
+        'msi-build', [
             'execute:build-wxs',
-            //'exec:candle',
-            //'exec:light',
-            //'clean:build'
+            'exec:candle',
+            'exec:light',
+            'clean:build'
         ]
     );
 

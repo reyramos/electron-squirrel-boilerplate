@@ -27,7 +27,7 @@
                     $timeout(function () {
                         angular.element($document[0].querySelector('#splashScreen')).remove();
                         postMessage.send('electron', APP_ENV.info, iframe)
-                    }, 0, false)
+                    }, 100)
 
                 };
             },

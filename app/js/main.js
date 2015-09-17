@@ -74,9 +74,7 @@ require
 
 
             //COMMONS
-            'commons/directives/global': {'deps': ['app']},
             'commons/directives/loading': {'deps': ['app']},
-            'commons/directives/dropDownOptions': {'deps': ['app']},
             'commons/directives/offset': {'deps': ['app']},
             'commons/directives/resizer': {'deps': ['app']},
             'commons/service/postMessageInterceptor': {'deps': ['app', 'postMessenger']},
@@ -94,9 +92,7 @@ require
 
 
         //COMMONS
-        'commons/directives/global',
         'commons/directives/loading',
-        'commons/directives/dropDownOptions',
         'commons/directives/offset',
         'commons/directives/resizer',
         'commons/service/postMessageInterceptor'

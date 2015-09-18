@@ -19,7 +19,7 @@ function createMainWindow() {
         icon: path.join(__dirname, 'icon.ico'),
         title: 'LabCorp Phoenix',
         //transparent: true,
-        frame: false
+        //frame: false
     });
 
     win.loadUrl('file://' + __dirname + '/index.html');
@@ -61,7 +61,7 @@ app.on('ready', function () {
         angular.send("Hello from Electron");
     });
 
-    mainWindow.openDevTools();
+    //mainWindow.openDevTools();
     //mainWindow.print();
 
     mainWindow.webContents.on('did-finish-load', function (e) {

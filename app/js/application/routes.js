@@ -42,6 +42,10 @@
                             InitializePostMessage: InitializePostMessage
                         }
                     },
+                    'appHeader@root':{
+                        templateUrl: path + 'header.html',
+
+                    },
                     'mainContent@root': {
                         templateUrl: path + 'mainContent.html',
                         controller: 'appController',

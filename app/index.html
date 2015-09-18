@@ -7,13 +7,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-
-    <style type="text/css">
-        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-            display: none !important;
-        }
-    </style>
     <% if (config.environment === 'dev') { %>
     <link rel="stylesheet/less" type="text/css" href="/styles.less">
     <script>
@@ -31,8 +24,16 @@
     <style><% print (config.css_sources); %></style>
     <% } %>
 
+    <style type="text/css">
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+        }
+        button {
+            -webkit-app-region: no-drag;
+        }
+    </style>
 </head>
-<body class="fixed-header">
+<body style="-webkit-app-region: drag">
 <section  ui-view="applicationContainer"></section>
 
 <% if (config.environment === 'dist') { %>

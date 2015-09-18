@@ -6,6 +6,6 @@ module.exports = {
     "source": "dist",
     "development": "app",
     "distribution": "build",
-    "electron_build": "./electron-v0.32.2-win32-x64"
+    "electron_build": "./electron-v0.33.0-win32-x64"
 };
 

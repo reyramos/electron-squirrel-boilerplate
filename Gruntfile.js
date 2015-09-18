@@ -259,31 +259,15 @@ module.exports = function (grunt) {
         },
         exec: {
             'candle': {
-                stdout: false,
-                stderr: false,
                 cmd: function () {
-                    if (validate()) {
-                        console.log('EXECUTE:candle')
-                        var files = getFilesPath('wxs', 'wixobj');
-                        return 'candle.exe ' + files[0] + ' -o ' + files[1];
-                    } else {
-                        return '\n\nUPDATE YOUR VERSION FILE, VERSION FILE';
-                    }
-
+                    var files = getFilesPath('wxs', 'wixobj');
+                    return 'candle.exe ' + files[0] + ' -o ' + files[1];
                 }
             },
             'light': {
-                stdout: false,
-                stderr: false,
                 cmd: function () {
-                    if (validate()) {
-                        console.log('EXECUTE:light')
-                        var files = getFilesPath('wixobj', 'msi');
-                        return 'light.exe ' + files[0] + ' -o ' + files[1];
-                    } else {
-                        return '\n\nUPDATE YOUR VERSION FILE, VERSION FILE';
-                    }
-
+                    var files = getFilesPath('wixobj', 'msi');
+                    return 'light.exe ' + files[0] + ' -o ' + files[1];
                 }
             }
         },
@@ -348,9 +332,9 @@ module.exports = function (grunt) {
     grunt.registerTask(
         'msi-build', [
             'execute:build-wxs',
-            'exec:candle',
-            'exec:light',
-            'clean:build'
+            //'exec:candle',
+            //'exec:light',
+            //'clean:build'
 
         ]
     );

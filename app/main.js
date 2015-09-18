@@ -7,7 +7,6 @@ var app = require('app');
 var ipc = require('ipc');
 
 var BrowserWindow = require('browser-window');
-var Menu = require('menu');
 
 var angular = require('./lib/ng-electron/ng-bridge');
 

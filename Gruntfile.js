@@ -259,6 +259,8 @@ module.exports = function (grunt) {
         },
         exec: {
             'candle': {
+                stdout: false,
+                stderr: false,
                 cmd: function () {
                     if (validate()) {
                         console.log('EXECUTE:candle')
@@ -271,6 +273,8 @@ module.exports = function (grunt) {
                 }
             },
             'light': {
+                stdout: false,
+                stderr: false,
                 cmd: function () {
                     if (validate()) {
                         console.log('EXECUTE:light')

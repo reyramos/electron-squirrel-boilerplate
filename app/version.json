@@ -1,1 +1,1 @@
-{"version":"1.0.2","app_name":"LabCorp Phoenix","app_description":"LabCorp Application","manufacturer":"LabCorp Inc","source":"dist","development":"app","distribution":"build","electron_build":"./electron-v0.32.2-win32-x64","build_date":"2015-09-18T17:41:42.790Z"}
+{"version":"1.0.3","app_name":"LabCorp Phoenix","app_description":"LabCorp Application","manufacturer":"LabCorp Inc","source":"dist","development":"app","distribution":"build","electron_build":"./electron-v0.32.2-win32-x64","build_date":"2015-09-18T18:53:04.079Z"}

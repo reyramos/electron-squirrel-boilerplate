@@ -13,10 +13,10 @@ var angular = require('./lib/ng-electron/ng-bridge');
 
 function createMainWindow() {
     const win = new BrowserWindow({
-        'width': 1250,
-        'height': 800,
-        'resizable': true,
-        icon: path.join(__dirname, 'icon.png'),
+        width: 1350,
+        height: 800,
+        resizable: true,
+        icon: path.join(__dirname, 'icon.ico'),
         title: 'LabCorp Phoenix'
     });
 

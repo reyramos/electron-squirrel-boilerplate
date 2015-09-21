@@ -7,8 +7,11 @@ var ipc = require('ipc');
 var app = require('app');
 
 
+var fs = require('fs');
 var dialog = require('dialog');
 var version = require('./version.json');
+
+var urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/";
 
 
 /**
@@ -17,7 +20,7 @@ var version = require('./version.json');
  * @param callback: callback to pass the results JSON object(s) back
  */
 function getVersion(callback) {
-    http.get("http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/build.json", function (res) {
+    http.get(urlBuilds + "build.json", function (res) {
         var output = '';
         res.setEncoding('utf8');
 
@@ -135,31 +138,42 @@ app.on('ready', function () {
         setTimeout(function () {
             angular.send('hello from electron');
 
-
             getVersion(function (status, obj) {
                 console.log('<====================================>');
                 console.log('obj', obj);
 
 
                 var vrsCompare = versionCompare(obj.version, version.version),
+                    msi_file = 'v' + obj.version + '.msi',
                     options = {
                         title: 'Update Available',
                         type: 'info',
                         buttons: ['Ok', 'Cancel'],
                         message: 'Version ' + obj.version + ' available',
-                        detail: obj.change_log || '',
-                        noLink: true
-                    };
+                        detail: obj.change_log || ''
+                    },
+                    downloadUrl = urlBuilds + msi_file;
 
+                if (vrsCompare > 0)
+                    dialog.showMessageBox(options, function (data) {
+                        if (data === 0) {
+                            var download = new BrowserWindow({
+                                width: 200,
+                                height: 100,
+                                resizable: false,
+                                icon: path.join(__dirname, 'icon.ico'),
+                                title: 'Download',
+                                'always-on-top': true
+                            });
 
-                //if(vrsCompare > 0)
-                dialog.showMessageBox(options, function (data) {
-
-
-                    console.log('<====================================>');
-                    console.log('dialog', data);
-                })
+                            download.loadUrl(downloadUrl);
+                            download.on('closed', function () {
+                                download = null;
+                            });
+                        }
+                    })
             });
+
         }, 500)
     });
 

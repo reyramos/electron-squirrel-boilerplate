@@ -85,7 +85,7 @@ app.on('ready', function () {
             getVersion(function (status, obj) {
                 angular.send(JSON.stringify(obj));
             });
-        },0, false)
+        },500)
     });
 
 

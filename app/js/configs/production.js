@@ -14,8 +14,7 @@
 		var override = {
 			//loggerHost:"localhost" //used to override the debug functionality
 			env: 'production',
-			iframeSrc:'https://dev-eligibility-phoenix.labcorp.com/reyramos/builds/'
-			//iframeSrc:'https://dev-demographics-phoenix.labcorp.com/reyramos/dist/'
+			iframeSrc:'http://dev-demographics-phoenix.labcorp.com/reyramos/dist/'
 
 		};
 		return override;

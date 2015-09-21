@@ -42,16 +42,11 @@
                             InitializePostMessage: InitializePostMessage
                         }
                     },
-                    'appHeader@root':{
-                        templateUrl: path + 'header.html',
-
-                    },
                     'mainContent@root': {
                         templateUrl: path + 'mainContent.html',
                         controller: 'appController',
                         controllerAs: 'app',
-                    },
-                    'eventLog@root': {}
+                    }
                 }
             }];
 
@@ -73,8 +68,8 @@
     function Run($rootScope) {
 
         //listen for host messages
-        $rootScope.$on('electron-host', function( evt, data ) {
-            console.log('ELECTRON SAYS => ',evt, data );
+        $rootScope.$on('electron-host', function (evt, data) {
+            console.log('ELECTRON SAYS => ', evt, data);
         });
     }
 

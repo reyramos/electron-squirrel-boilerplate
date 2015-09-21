@@ -12,13 +12,9 @@ var angular = require('./lib/ng-electron/ng-bridge');
  * @param options: http options object
  * @param callback: callback to pass the results JSON object(s) back
  */
-function getJSON(options, onResult) {
-    console.log("rest::getJSON");
-
-    var prot = options.port == 443 ? https : http;
-    var req = prot.request(options, function (res) {
+function getVersion(callback) {
+    http.get("http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/build.json", function(res) {
         var output = '';
-        console.log(options.host + ':' + res.statusCode);
         res.setEncoding('utf8');
 
         res.on('data', function (chunk) {
@@ -27,17 +23,15 @@ function getJSON(options, onResult) {
 
         res.on('end', function () {
             var obj = JSON.parse(output);
-            onResult(res.statusCode, obj);
+            callback(res.statusCode, obj);
         });
+
+    }).on('error', function(e) {
+        callback(e);
     });
 
-    req.on('error', function (err) {
-        onResult(err.message);
-    });
 
-    req.end();
-};
-
+}
 
 function createMainWindow() {
     const win = new BrowserWindow({
@@ -90,21 +84,10 @@ app.on('ready', function () {
     });
 
 
-    var options = {
-        host: 'http://24.211.139.167/build.json',
-        //port: 443,
-        //path: '/some/path',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
-
-    getJSON(options,
-        function (statusCode, result) {
-            angular.send(statusCode);
-            angular.send(JSON.stringify(result));
-        });
+    getVersion(function(status, obj){
+        angular.send(status);
+        angular.send(JSON.stringify(obj));
+    });
 
 
     mainWindow.openDevTools();

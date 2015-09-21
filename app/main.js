@@ -80,15 +80,12 @@ app.on('ready', function () {
     mainWindow.webContents.on('dom-ready', function (e) {
         //try and manually bootstrap AngularJS
         //mainWindow.webContents.executeJavaScript(bootstrap);
-        angular.send("Hello from Electron", mainWindow);
 
-        //
-        //getVersion(function (status, obj) {
-        //    angular.send(status);
-        //    angular.send(JSON.stringify(obj));
-        //});
-
-
+        setTimeout(function(){
+            getVersion(function (status, obj) {
+                angular.send(JSON.stringify(obj));
+            });
+        },0, false)
     });
 
 
@@ -96,6 +93,10 @@ app.on('ready', function () {
     //mainWindow.print();
 
     mainWindow.webContents.on('did-finish-load', function (e) {
+
+
+
+
         //Start listening for client messages
         angular.listen(function (msg) {
             console.log('Client: ' + msg);

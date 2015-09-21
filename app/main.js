@@ -1,11 +1,14 @@
 'use strict';
-var path = require('path');
-var app = require('app');
-var ipc = require('ipc');
-var http = require("http");
-var https = require("https");
 var BrowserWindow = require('browser-window');
 var angular = require('./lib/ng-electron/ng-bridge');
+var http = require("http");
+var path = require('path');
+var ipc = require('ipc');
+var app = require('app');
+
+
+var dialog = require('dialog');
+var version = require('./version.json');
 
 
 /**
@@ -33,6 +36,55 @@ function getVersion(callback) {
 
 
 }
+
+
+function versionCompare(v1, v2, options) {
+    var lexicographical = options && options.lexicographical,
+        zeroExtend = options && options.zeroExtend,
+        v1parts = v1.split('.'),
+        v2parts = v2.split('.');
+
+    function isValidPart(x) {
+        return (lexicographical ? /^\d+[A-Za-z]*$/ : /^\d+$/).test(x);
+    }
+
+    if (!v1parts.every(isValidPart) || !v2parts.every(isValidPart)) {
+        return NaN;
+    }
+
+    if (zeroExtend) {
+        while (v1parts.length < v2parts.length) v1parts.push("0");
+        while (v2parts.length < v1parts.length) v2parts.push("0");
+    }
+
+    if (!lexicographical) {
+        v1parts = v1parts.map(Number);
+        v2parts = v2parts.map(Number);
+    }
+
+    for (var i = 0; i < v1parts.length; ++i) {
+        if (v2parts.length == i) {
+            return 1;
+        }
+
+        if (v1parts[i] == v2parts[i]) {
+            continue;
+        }
+        else if (v1parts[i] > v2parts[i]) {
+            return 1;
+        }
+        else {
+            return -1;
+        }
+    }
+
+    if (v1parts.length != v2parts.length) {
+        return -1;
+    }
+
+    return 0;
+}
+
 
 function createMainWindow() {
     const win = new BrowserWindow({
@@ -71,8 +123,7 @@ app.on('activate-with-no-open-windows', function () {
 
 app.on('will-quit', function () {
     console.log('<====================================>');
-    console.log('Electron Says, "Stay Awesome Kids!"');
-    console.log('<====================================>');
+    console.log('Goodbye');
 });
 
 app.on('ready', function () {
@@ -81,22 +132,42 @@ app.on('ready', function () {
         //try and manually bootstrap AngularJS
         //mainWindow.webContents.executeJavaScript(bootstrap);
 
-        setTimeout(function(){
+        setTimeout(function () {
+            angular.send('hello from electron');
+
+
             getVersion(function (status, obj) {
-                angular.send(JSON.stringify(obj));
+                console.log('<====================================>');
+                console.log('obj', obj);
+
+
+                var vrsCompare = versionCompare(obj.version, version.version),
+                    options = {
+                        title: 'Update Available',
+                        type: 'info',
+                        buttons: ['Ok', 'Cancel'],
+                        message: 'Version ' + obj.version + ' available',
+                        detail: obj.change_log || '',
+                        noLink: true
+                    };
+
+
+                //if(vrsCompare > 0)
+                dialog.showMessageBox(options, function (data) {
+
+
+                    console.log('<====================================>');
+                    console.log('dialog', data);
+                })
             });
-        },500)
+        }, 500)
     });
 
 
-    mainWindow.openDevTools();
+    //mainWindow.openDevTools();
     //mainWindow.print();
 
     mainWindow.webContents.on('did-finish-load', function (e) {
-
-
-
-
         //Start listening for client messages
         angular.listen(function (msg) {
             console.log('Client: ' + msg);

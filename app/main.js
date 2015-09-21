@@ -7,13 +7,14 @@ var https = require("https");
 var BrowserWindow = require('browser-window');
 var angular = require('./lib/ng-electron/ng-bridge');
 
+
 /**
  * getJSON:  REST get request returning JSON object(s)
  * @param options: http options object
  * @param callback: callback to pass the results JSON object(s) back
  */
 function getVersion(callback) {
-    http.get("http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/build.json", function(res) {
+    http.get("http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/build.json", function (res) {
         var output = '';
         res.setEncoding('utf8');
 
@@ -26,7 +27,7 @@ function getVersion(callback) {
             callback(res.statusCode, obj);
         });
 
-    }).on('error', function(e) {
+    }).on('error', function (e) {
         callback(e);
     });
 
@@ -78,15 +79,16 @@ app.on('ready', function () {
     mainWindow = createMainWindow();
     mainWindow.webContents.on('dom-ready', function (e) {
         //try and manually bootstrap AngularJS
-        //var code = "angular.bootstrap(document, ['app']);"
-        //mainWindow.webContents.executeJavaScript( code );
-        angular.send("Hello from Electron");
-    });
+        //mainWindow.webContents.executeJavaScript(bootstrap);
+        angular.send("Hello from Electron", mainWindow);
+
+        //
+        //getVersion(function (status, obj) {
+        //    angular.send(status);
+        //    angular.send(JSON.stringify(obj));
+        //});
 
 
-    getVersion(function(status, obj){
-        angular.send(status);
-        angular.send(JSON.stringify(obj));
     });
 
 

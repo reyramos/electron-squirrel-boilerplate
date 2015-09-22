@@ -74,6 +74,7 @@ require
 
 
             //COMMONS
+            'commons/directives/contextMenu': {'deps': ['app']},
             'commons/directives/loading': {'deps': ['app']},
             'commons/directives/offset': {'deps': ['app']},
             'commons/directives/resizer': {'deps': ['app']},
@@ -92,6 +93,7 @@ require
 
 
         //COMMONS
+        'commons/directives/contextMenu',
         'commons/directives/loading',
         'commons/directives/offset',
         'commons/directives/resizer',

@@ -134,8 +134,6 @@ app.on('ready', function () {
     mainWindow.webContents.on('dom-ready', function (e) {
         //try and manually bootstrap AngularJS
         //mainWindow.webContents.executeJavaScript(bootstrap);
-
-
     });
 
 

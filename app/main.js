@@ -141,22 +141,6 @@ app.on('ready', function () {
     //mainWindow.print();
 
     mainWindow.webContents.on('did-finish-load', function (e) {
-
-
-        //var menu = new Menu();
-        ////menu.append(new MenuItem({ label: 'MenuItem1', click: function() { console.log('item 1 clicked'); } }));
-        //menu.append(new MenuItem({
-        //    label: 'Print...', accelerator: 'Ctrl+P', role: 'print', click: function () {
-        //        console.log('PRINT ME')
-        //    }
-        //}));
-
-        //window.addEventListener('contextmenu', function (e) {
-        //    e.preventDefault();
-        //menu.popup(mainWindow);
-
-        //}, false);
-
         setTimeout(function () {
             angular.send('hello from electron');
             getVersion(function (status, obj) {

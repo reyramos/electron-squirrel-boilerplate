@@ -1,17 +1,17 @@
 'use strict';
-var BrowserWindow = require('browser-window');
-var angular = require('./lib/ng-electron/ng-bridge');
-var http = require("http");
-var path = require('path');
-var ipc = require('ipc');
-var app = require('app');
+const BrowserWindow = require('browser-window');
+const Menu = require('menu');
+const angular = require('./lib/ng-electron/ng-bridge');
+const http = require("http");
+const path = require('path');
+const ipc = require('ipc');
+const app = require('app');
+const fs = require('fs');
+const dialog = require('dialog');
+const version = require('./version.json');
+const MenuItem = require('menu-item');
 
-
-var fs = require('fs');
-var dialog = require('dialog');
-var version = require('./version.json');
-
-var urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/";
+const urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/";
 
 
 /**
@@ -135,9 +135,32 @@ app.on('ready', function () {
         //try and manually bootstrap AngularJS
         //mainWindow.webContents.executeJavaScript(bootstrap);
 
+
+    });
+
+
+    mainWindow.openDevTools();
+    //mainWindow.print();
+
+    mainWindow.webContents.on('did-finish-load', function (e) {
+
+
+        //var menu = new Menu();
+        ////menu.append(new MenuItem({ label: 'MenuItem1', click: function() { console.log('item 1 clicked'); } }));
+        //menu.append(new MenuItem({
+        //    label: 'Print...', accelerator: 'Ctrl+P', role: 'print', click: function () {
+        //        console.log('PRINT ME')
+        //    }
+        //}));
+
+        //window.addEventListener('contextmenu', function (e) {
+        //    e.preventDefault();
+        //menu.popup(mainWindow);
+
+        //}, false);
+
         setTimeout(function () {
             angular.send('hello from electron');
-
             getVersion(function (status, obj) {
                 console.log('<====================================>');
                 console.log('obj', obj);
@@ -175,13 +198,8 @@ app.on('ready', function () {
             });
 
         }, 500)
-    });
 
 
-    //mainWindow.openDevTools();
-    //mainWindow.print();
-
-    mainWindow.webContents.on('did-finish-load', function (e) {
         //Start listening for client messages
         angular.listen(function (msg) {
             console.log('Client: ' + msg);

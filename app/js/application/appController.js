@@ -26,18 +26,6 @@
         console.log('appController:APP_ENV => ',APP_ENV)
 
 
-        self.contextMenuOpts = [
-        	[{
-        		name: 'Print',
-        		callback: function () {
-					console.log('PRINT')
-				}
-        	}]
-        ]
-
-
-
-
     };
 
 })(window.angular);

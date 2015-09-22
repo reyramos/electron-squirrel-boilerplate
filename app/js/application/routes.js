@@ -38,14 +38,11 @@
                 views: {
                     'applicationContainer@': {
                         templateUrl: path + 'index.html',
+                        controller: 'appController',
+                        controllerAs: 'app',
                         resolve: {
                             InitializePostMessage: InitializePostMessage
                         }
-                    },
-                    'mainContent@root': {
-                        templateUrl: path + 'mainContent.html',
-                        controller: 'appController',
-                        controllerAs: 'app',
                     }
                 }
             }];

@@ -24,13 +24,9 @@
     <style><% print (config.css_sources); %></style>
     <% } %>
 
-    <style type="text/css">
-        button {
-            -webkit-app-region: no-drag;
-        }
-    </style>
+
 </head>
-<body style="-webkit-app-region: drag">
+<body>
 <section  ui-view="applicationContainer"></section>
 
 <% if (config.environment === 'dist') { %>

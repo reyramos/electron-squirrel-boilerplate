@@ -26,6 +26,24 @@
         console.log('appController:APP_ENV => ',APP_ENV)
 
 
+        self.contextMenuOpts = [
+        	[{
+        		name: 'Add new Category',
+        		icon: 'fa fa-plus-circle',
+        		callback: function () {
+        			newCategory('New Category');
+        		}
+        	}],
+        	[{
+        		name: 'Add new Model',
+        		icon: "fa fa-upload",
+        		callback: function () {
+        			newModel()
+        		}
+        	}]
+        ]
+
+
 
 
     };

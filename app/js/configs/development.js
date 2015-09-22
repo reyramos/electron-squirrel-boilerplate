@@ -16,7 +16,6 @@
 
 
 		var override = {
-			//loggerHost:"localhost" //used to override the debug functionality
 			env: 'development',
 			iframeSrc:'http://labcorp.com:8080/#/'
 		};

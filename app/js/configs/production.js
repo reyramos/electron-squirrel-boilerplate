@@ -12,9 +12,8 @@
 	function AppOverride() {
 
 		var override = {
-			//loggerHost:"localhost" //used to override the debug functionality
 			env: 'production',
-			iframeSrc:'http://dev-demographics-phoenix.labcorp.com/reyramos/dist/'
+			iframeSrc:'https://dev-demographics-phoenix.labcorp.com/web-ui/'
 
 		};
 		return override;

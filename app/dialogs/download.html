@@ -7,7 +7,6 @@
     <style>
 
 
-
         @font-face {
             font-family: 'PhxLightFont';
             src: url('./fonts/light/roboto_light_300.woff') format('woff');
@@ -17,14 +16,14 @@
 
         @font-face {
             font-family: 'PhxRegularFont';
-            src:  url('./fonts/regular/roboto_regular_400.woff') format('woff');
+            src: url('./fonts/regular/roboto_regular_400.woff') format('woff');
             font-weight: 400;
             font-style: normal;
         }
 
         @font-face {
             font-family: 'PhxMediumFont';
-            src:url('./fonts/medium/roboto_medium_500.woff') format('woff');
+            src: url('./fonts/medium/roboto_medium_500.woff') format('woff');
             font-weight: 500;
             font-style: normal;
         }
@@ -38,7 +37,7 @@
 
         @font-face {
             font-family: 'PhxBoldFont';
-            src:  url('./fonts/regular/roboto_regular_400.woff') format('woff');
+            src: url('./fonts/regular/roboto_regular_400.woff') format('woff');
             font-weight: bold;
             font-style: normal;
         }
@@ -50,6 +49,7 @@
             margin: 0px;
             font-family: PhxLightFont, "Helvetica Neue", Helvetica, Arial, sans-serif;;
         }
+
         .modal-box .panel, .modal-box .panel-heading {
             -webkit-border-radius: 0;
             -moz-border-radius: 0;
@@ -180,10 +180,14 @@
             urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/v" + version + '.msi';
 
     function download() {
-        var newWindow = window.open(urlBuilds, 'download');
+        var newWindow = window.open(urlBuilds, 'download'),
+                remote = require('remote');
+
+        remote.getCurrentWindow().hide();
+
         setTimeout(function () {
             newWindow.close();
-            require('remote').getCurrentWindow().close();
+            remote.getCurrentWindow().close();
         }, 2000);
     }
 

@@ -275,7 +275,8 @@ module.exports = function (grunt) {
                         'main.js',
                         'package.json',
                         'lib/**',
-                        'node_modules/**'
+                        'node_modules/**',
+                        'dialogs/*.html'
                     ]
                 }]
             }

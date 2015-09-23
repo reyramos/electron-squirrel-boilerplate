@@ -95,9 +95,7 @@ function createMainWindow() {
         height: 800,
         resizable: true,
         icon: path.join(__dirname, 'icon.ico'),
-        title: 'LabCorp Phoenix',
-        //transparent: true,
-        //frame: false
+        title: 'LabCorp Phoenix'
     });
 
     win.loadUrl('file://' + __dirname + '/index.html');
@@ -145,36 +143,24 @@ app.on('ready', function () {
                 console.log('<====================================>');
                 console.log('obj', obj);
 
+                var vrsCompare = versionCompare(obj.version, version.version);
+                if (vrsCompare > 0) {
+                    mainWindow.close();
+                    var download = new BrowserWindow({
+                        width: 402,
+                        height: 152,
+                        resizable: false,
+                        transparent: true,
+                        frame: false,
+                        'always-on-top': true
+                    });
 
-                var vrsCompare = versionCompare(obj.version, version.version),
-                    msi_file = 'v' + obj.version + '.msi',
-                    options = {
-                        title: 'Update Available',
-                        type: 'info',
-                        buttons: ['Ok', 'Cancel'],
-                        message: 'Version ' + obj.version + ' available',
-                        detail: obj.change_log || ''
-                    },
-                    downloadUrl = urlBuilds + msi_file;
-
-                if (vrsCompare > 0)
-                    dialog.showMessageBox(options, function (data) {
-                        if (data === 0) {
-                            var download = new BrowserWindow({
-                                width: 200,
-                                height: 100,
-                                resizable: false,
-                                icon: path.join(__dirname, 'icon.ico'),
-                                title: 'Download',
-                                'always-on-top': true
-                            });
-
-                            download.loadUrl(downloadUrl);
-                            download.on('closed', function () {
-                                download = null;
-                            });
-                        }
+                    download.loadUrl('file://' + __dirname + '/dialogs/download.html?version='+obj.version);
+                    download.on('closed', function () {
+                        download = null;
                     })
+
+                }
             });
 
         }, 500)

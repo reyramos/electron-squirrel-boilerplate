@@ -26,8 +26,9 @@
     function executeFunction(inject, funcString) {
 
         var args = (funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{([^\n]*\n+\s){0,}\s{0,}\}/, '$1')).split(','),
-            func = ((funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{/, '')).replace(/\s{0,}\}$/, '')).trim(),
-            awesome = new Function(args, func);
+            func = ((funcString.replace(/^function\s{0,10}\w{0,}\s{0,10}\((.*?)\)\s{0,10}\{/, '')).replace(/\s{0,}\}$/, '')).trim();
+
+        var  awesome = new Function(args, func);
 
         console.log('args', args)
         console.log('func', func)

@@ -7,8 +7,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <% if (config.environment === 'dev') { %>
-    <link rel="stylesheet/less" type="text/css" href="/styles.less">
+
+
+    <link rel="stylesheet/less" type="text/css" href="styles.less">
     <script>
         less = {
             env: "development",
@@ -19,23 +20,44 @@
             dumpLineNumbers: "mediaQuery"
         }
     </script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.0/less.min.js"></script>
-    <% }else{ %>
-    <style><% print (config.css_sources); %></style>
-    <% } %>
+    <script src="lib/less/dist/less.min.js"></script>
 
 
 </head>
 <body>
-<section  ui-view="applicationContainer"></section>
-
-<% if (config.environment === 'dist') { %>
-<script type="text/javascript"><%print(config.js_sources);%></script>
-<% } else { %>
-<script type="text/javascript" data-main="/js/main" src="/lib/requirejs/require.js"></script>
-<% } %>
+<section ui-view="applicationContainer"></section>
 
 
+<!-- build:js scripts.bundle.js -->
+<script src="lib/jquery/dist/jquery.js"></script>
+<script src="lib/angular/angular.js"></script>
+<script src="lib/ui-router/release/angular-ui-router.js"></script>
+<script src="lib/angular-resource/index.js"></script>
+<script src="lib/angular-sanitize/index.js"></script>
+<script src="lib/angular-animate/index.js"></script>
+
+<script src="js/vendor/ng-electron.js"></script>
+<script src="js/vendor/ua-parser.js"></script>
+
+<script src="js/app.js"></script>
+
+<script src="js/commons/service/sg.postMessenger.js"></script>
+<script src="js/commons/service/postMessageInterceptor.js"></script>
+<script src="js/commons/factory/utilities.js"></script>
+<script src="js/commons/provider/client.js"></script>
+<script src="js/commons/directives/loading.js"></script>
+
+<!--//APPLICATION-->
+<script src="js/application/routes.js"></script>
+<script src="js/application/appController.js"></script>
+<script src="js/application/appService.js"></script>
+
+<!--//ENVIRONMENT-->
+<!--<script src="js/configs/development.js"></script>-->
+<script src="js/configs/production.js"></script>
+<script src="js/bootstrap.js"></script>
+
+<!-- endbuild -->
 
 </body>
 </html>

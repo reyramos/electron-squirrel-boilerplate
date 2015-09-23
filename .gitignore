@@ -13,5 +13,5 @@ lib/
 dist/
 amy-stack/
 rcedit/
-electron*/
+electron-v*/
 app/version.json

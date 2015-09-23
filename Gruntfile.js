@@ -67,7 +67,7 @@ module.exports = function (grunt) {
             },
             styles: {
                 files: {
-                    ".tmp/styles.css": "<%= yeoman.app %>/styles.less" //move the compress css to dist
+                    "<%= yeoman.dist %>/styles.css": "<%= yeoman.app %>/styles.less" //move the compress css to dist
                 }
             }
         },
@@ -131,7 +131,7 @@ module.exports = function (grunt) {
                     sourceMap: false
                 },
                 files: {
-                    '.tmp/scripts.js': '.tmp/scripts-concat.js' //place the minify version in the dist folder
+                    '<%= yeoman.dist %>/scripts.js': '.tmp/scripts.js' //place the minify version in the dist folder
                 }
             }
         },
@@ -147,23 +147,14 @@ module.exports = function (grunt) {
                     ".tmp/index-concat.html": "<%= yeoman.app %>/index.html"
                 },
                 environment: "dist",
-                css_sources: '<%= grunt.file.read(".tmp/styles.css") %>',
-                js_sources: '<%= grunt.file.read(".tmp/scripts.js") %>'
+                //css_sources: '<%= grunt.file.read(".tmp/styles.css") %>',
+                //js_sources: '<%= grunt.file.read(".tmp/scripts.js") %>'
             }
         }, //minify Angular Js, html files with $templateCache
         ngtemplates: {
             options: {
                 module: 'app',
-                htmlmin: {
-                    collapseBooleanAttributes: true,
-                    collapseWhitespace: true,
-                    removeAttributeQuotes: true,
-                    removeComments: true,
-                    removeEmptyAttributes: true,
-                    removeRedundantAttributes: true,
-                    removeScriptTypeAttributes: true,
-                    removeStyleLinkTypeAttributes: true
-                }
+                htmlmin:  '<%= htmlmin.dist.options %>'
             },
             dist: {
                 cwd: '<%= yeoman.app %>',
@@ -232,7 +223,7 @@ module.exports = function (grunt) {
         ngAnnotate: {
             build: {
                 files: {
-                    '.tmp/scripts-concat.js': ['.tmp/scripts-concat.js']
+                    '.tmp/scripts.js': ['.tmp/scripts-concat.js']
                 }
             }
         },
@@ -240,7 +231,7 @@ module.exports = function (grunt) {
             dist: {
                 options: {
                     removeComments: true, // Only if you don't use comment directives!
-                    collapseWhitespace: true,
+                    collapseWhitespace: false,
                     removeEmptyAttributes: true,
                     removeRedundantAttributes: true
                 },

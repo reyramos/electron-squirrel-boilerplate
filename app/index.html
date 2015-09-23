@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <% if (config.environment === 'dev') { %>
-    <link rel="stylesheet/less" type="text/css" href="/styles.less">
+    <link rel="stylesheet/less" type="text/css" href="styles.less">
     <script>
         less = {
             env: "development",
@@ -21,20 +21,19 @@
     </script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.0/less.min.js"></script>
     <% }else{ %>
-    <style><% print (config.css_sources); %></style>
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <% } %>
 
 
 </head>
 <body>
-<section  ui-view="applicationContainer"></section>
+<section ui-view="applicationContainer"></section>
 
 <% if (config.environment === 'dist') { %>
-<script type="text/javascript"><%print(config.js_sources);%></script>
+<script type="text/javascript" src="scripts.js"></script>
 <% } else { %>
 <script type="text/javascript" data-main="/js/main" src="/lib/requirejs/require.js"></script>
 <% } %>
-
 
 
 </body>

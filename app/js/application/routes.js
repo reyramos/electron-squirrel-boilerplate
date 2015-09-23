@@ -64,7 +64,6 @@
 
     function Run($rootScope) {
 
-
         //listen for host messages
         $rootScope.$on('electron-host', function (evt, data) {
             console.log('ELECTRON SAYS => ', evt, data);

@@ -4,13 +4,14 @@
   "dependencies": {
     "jquery": "~2.x",
     "bootstrap": "3.3.4",
-    "less": "latest",
+    "requirejs": "latest",
     "angular": "https://code.angularjs.org/1.4.3/angular.js",
     "angular-resource": "https://code.angularjs.org/1.4.3/angular-resource.js",
     "angular-loader": "https://code.angularjs.org/1.4.3/angular-loader.js",
     "angular-animate": "https://code.angularjs.org/1.4.3/angular-animate.js",
     "angular-sanitize": "https://code.angularjs.org/1.4.3/angular-sanitize.js",
     "ui-router": "https://github.com/angular-ui/ui-router.git",
+    "fontawesome": "https://github.com/FortAwesome/Font-Awesome.git",
     "ng-electron": "develephant/ng-electron#~0.4.0"
 
   },

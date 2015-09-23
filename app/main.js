@@ -136,7 +136,7 @@ app.on('ready', function () {
         //mainWindow.webContents.executeJavaScript(bootstrap);
     });
 
-    mainWindow.openDevTools()
+    //mainWindow.openDevTools()
     mainWindow.webContents.on('did-finish-load', function (e) {
 
         setTimeout(function () {

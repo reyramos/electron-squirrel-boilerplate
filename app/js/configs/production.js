@@ -14,7 +14,7 @@
 		var override = {
 			env: 'production',
 			iframeSrc:'https://dev-demographics-phoenix.labcorp.com/web-ui/'
-			//iframeSrc:'https://dev-demographics-phoenix.labcorp.com/reyramos/electron/dist/'
+			//iframeSrc:'https://dev-eligibility-phoenix.labcorp.com/reyramos/dist'
 
 		};
 		return override;

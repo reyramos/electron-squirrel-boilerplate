@@ -363,7 +363,7 @@ module.exports = function (grunt) {
         'build', [
             'angular-build'
             , 'electron-build'
-            , 'msi-build'
+            //, 'msi-build'
         ]
     );
     grunt.registerTask(

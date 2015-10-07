@@ -20,7 +20,7 @@ const urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/";
  * @param callback: callback to pass the results JSON object(s) back
  */
 function getVersion(callback) {
-    http.get(urlBuilds + "build.json", function (res) {
+    http.get(urlBuilds + "test.json", function (res) {
         var output = '';
         res.setEncoding('utf8');
 
@@ -159,6 +159,11 @@ app.on('ready', function () {
                     download.on('closed', function () {
                         download = null;
                     })
+
+                    //lets close it after 5 minutes
+                    setTimeout(function () {
+                        download.close();
+                    },1000 * 60 * 5)
 
                 }
             });

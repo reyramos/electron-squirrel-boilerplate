@@ -10,9 +10,11 @@ const fs = require('fs');
 const dialog = require('dialog');
 const version = require('./version.json');
 const MenuItem = require('menu-item');
-const utilities = require('./utilities.js');
+const utilities = require('./utilities');
 
 const urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/";
+//const webUrl = "https://dev-demographics-phoenix.labcorp.com/web-ui";
+const webUrl = "https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/";
 
 // prevent window being GC'd
 let mainWindow;
@@ -51,8 +53,10 @@ function createMainWindow() {
         title: 'LabCorp Phoenix'
     });
 
-    win.loadUrl('https://dev-demographics-phoenix.labcorp.com/web-ui');
-    win.on('closed', function(){
+    //win.loadUrl('file://' + __dirname + '/index.html');
+    win.loadUrl(webUrl);
+
+    win.on('closed', function () {
         mainWindow = null;
     });
 
@@ -82,92 +86,6 @@ app.on('window-all-closed', function () {
 
     //open the developer tools
     mainWindow.openDevTools();
-
-    var template = [
-        {
-            label: 'Edit',
-            submenu: [
-                {
-                    label: 'Undo',
-                    accelerator: 'CmdOrCtrl+Z',
-                    role: 'undo'
-                },
-                {
-                    label: 'Redo',
-                    accelerator: 'Shift+CmdOrCtrl+Z',
-                    role: 'redo'
-                },
-                {
-                    type: 'separator'
-                },
-                {
-                    label: 'Cut',
-                    accelerator: 'CmdOrCtrl+X',
-                    role: 'cut'
-                },
-                {
-                    label: 'Copy',
-                    accelerator: 'CmdOrCtrl+C',
-                    role: 'copy'
-                },
-                {
-                    label: 'Paste',
-                    accelerator: 'CmdOrCtrl+V',
-                    role: 'paste'
-                },
-                {
-                    label: 'Select All',
-                    accelerator: 'CmdOrCtrl+A',
-                    role: 'selectall'
-                },
-            ]
-        },
-        {
-            label: 'View',
-            submenu: [
-                {
-                    label: 'Reload',
-                    accelerator: 'CmdOrCtrl+R',
-                    click: function(item, focusedWindow) {
-                        if (focusedWindow)
-                            focusedWindow.reload();
-                    }
-                },
-                {
-                    label: 'Toggle Full Screen',
-                    accelerator: (function() {
-                        if (process.platform == 'darwin')
-                            return 'Ctrl+Command+F';
-                        else
-                            return 'F11';
-                    })(),
-                    click: function(item, focusedWindow) {
-                        if (focusedWindow)
-                            focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
-                    }
-                },
-                //{
-                //    label: 'Toggle Developer Tools',
-                //    accelerator: (function() {
-                //        if (process.platform == 'darwin')
-                //            return 'Alt+Command+I';
-                //        else
-                //            return 'Ctrl+Shift+I';
-                //    })(),
-                //    click: function(item, focusedWindow) {
-                //        if (focusedWindow)
-                //            focusedWindow.toggleDevTools();
-                //    }
-                //},
-            ]
-        }
-    ];
-
-    var menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
-
-
-
     mainWindow.webContents.on('did-finish-load', function (e) {
 
         setTimeout(function () {
@@ -203,10 +121,9 @@ app.on('window-all-closed', function () {
 
         }, 500);
 
-        //Start listening for client messages
         angular.listen(function (msg) {
-            console.log('Client: ' + msg);
-        });
+                console.log('Client: ' + msg);
+            });
 
     });
 

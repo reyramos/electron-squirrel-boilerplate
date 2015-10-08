@@ -9,10 +9,6 @@
 (function (angular) {
     'use strict';
 
-    angular.module('ngElectron', []).factory("electron", Electronfunc).run(ElectronRunFunc);
-
-    ElectronRunFunc.$inject = ['$rootScope', 'electron'];
-
     var electron_host = 'ELECTRON_BRIDGE_HOST',
         electron_client = 'ELECTRON_BRIDGE_CLIENT',
         electron_host_id = 'electron-host',
@@ -23,13 +19,26 @@
 
     try {
         ipc = require('ipc');
-        diskdb = require('diskdb');
     } catch (e) {
-        console.error('modules not loaded :', e)
+        console.error('modules not loaded:ipc => ', e)
     }
 
 
-    function Electronfunc() {
+    try {
+        diskdb = require('diskdb');
+    } catch (e) {
+        console.error('modules not loaded:diskdb => ', e)
+    }
+
+    angular.module('ngElectron', []).run(ElectronRunFunc).factory("electron", Electronfunc);
+
+    ElectronRunFunc.$inject = ['$rootScope', 'electron', '$log'];
+    Electronfunc.$inject = ['$log'];
+
+    function Electronfunc($log) {
+
+        $log.debug('FACTORY => electron')
+
         var o = new Object();
 
         //ipc -> host (main process)
@@ -89,7 +98,7 @@
             o.url = o.require('url');
             o.zlib = o.require('zlib');
         } catch (e) {
-            console.error('electron modules not loaded')
+            console.error('electron modules not loaded => ', e)
         }
 
 
@@ -97,11 +106,13 @@
     }
 
 
-    function ElectronRunFunc($rootScope, electron) {
+    function ElectronRunFunc($rootScope, electron, $log) {
+        $log.debug('RUN => electron')
         //Start listening for host messages
         if (ipc) {
-            console.log('ngElectron has joined the room.');
+            $log.log('ngElectron has joined the room.');
             ipc.on(electron_client, function (data) {
+                $log.log(electron_host_id, data);
                 //Event type: 'electron-host'
                 $rootScope.$broadcast(electron_host_id, data);
             });

@@ -105,6 +105,36 @@ function LOAD_APPLICATION() {
         splashScreen = null;
     })
 
+
+    splashScreen.webContents.on('did-finish-load', function (e) {
+        setTimeout(function () {
+            getVersion(function (status, obj) {
+                var vrsCompare = utilities.versionCompare(obj.version, version.version);
+                if (vrsCompare > 0) {
+                    mainWindow.close();
+                    splashScreen.close();
+                    var download = new BrowserWindow({
+                        width: 402,
+                        height: 152,
+                        resizable: false,
+                        frame: false,
+                        'always-on-top': true
+                    });
+
+                    download.loadUrl('file://' + __dirname + '/dialogs/download.html?version=' + obj.version);
+                    download.on('closed', function () {
+                        download = null;
+                    })
+
+                    //lets close it after 5 minutes
+                    setTimeout(function () {
+                        download.destroy();
+                    }, 1000 * 60 * 5);//terminate after 5 minutes
+                }
+            });
+        }, 500);
+    });
+
     mainWindow = createMainWindow(size);
 
     mainWindow.webContents.on('did-start-loading', function (e) {
@@ -132,12 +162,9 @@ function LOAD_APPLICATION() {
 
     //open the developer tools
     //mainWindow.openDevTools();
-    splashScreen.webContents.on('did-finish-load', function (e) {
-
-        setTimeout(function () {
-            getVersion(getVersionCallback);
-        }, 500);
-
+    //open the developer tools
+    //mainWindow.openDevTools();
+    mainWindow.webContents.on('did-finish-load', function (e) {
         angular.listen(function (data) {
             switch (data.eventType) {
                 case 'getVersion':
@@ -153,30 +180,7 @@ function LOAD_APPLICATION() {
 
     });
 
+
 }
 
 
-function getVersionCallback(status, obj) {
-    var vrsCompare = utilities.versionCompare(obj.version, version.version);
-    if (vrsCompare > 0) {
-        mainWindow.close();
-        splashScreen.close();
-        var download = new BrowserWindow({
-            width: 402,
-            height: 152,
-            resizable: false,
-            frame: false,
-            'always-on-top': true
-        });
-
-        download.loadUrl('file://' + __dirname + '/dialogs/download.html?version=' + obj.version);
-        download.on('closed', function () {
-            download = null;
-        })
-
-        //lets close it after 5 minutes
-        setTimeout(function () {
-            download.destroy();
-        }, 1000 * 60 * 5);//terminate after 5 minutes
-    }
-}

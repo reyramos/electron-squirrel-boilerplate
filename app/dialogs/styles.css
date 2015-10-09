@@ -2,35 +2,35 @@
 
 @font-face {
     font-family: 'PhxLightFont';
-    src: url('./fonts/light/roboto_light_300.woff') format('woff');
+    src: url('../fonts/light/roboto_light_300.woff') format('woff');
     font-weight: 300;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'PhxRegularFont';
-    src: url('./fonts/regular/roboto_regular_400.woff') format('woff');
+    src: url('../fonts/regular/roboto_regular_400.woff') format('woff');
     font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'PhxMediumFont';
-    src: url('./fonts/medium/roboto_medium_500.woff') format('woff');
+    src: url('../fonts/medium/roboto_medium_500.woff') format('woff');
     font-weight: 500;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'PhxCondensedFont';
-    src: url('./fonts/condensed/roboto_condensed_400.woff') format('woff');
+    src: url('../fonts/condensed/roboto_condensed_400.woff') format('woff');
     font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'PhxBoldFont';
-    src: url('./fonts/regular/roboto_regular_400.woff') format('woff');
+    src: url('../fonts/regular/roboto_regular_400.woff') format('woff');
     font-weight: bold;
     font-style: normal;
 }

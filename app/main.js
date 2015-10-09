@@ -106,8 +106,16 @@ app.on('window-all-closed', function () {
         }, 500);
 
         angular.listen(function (data) {
-            console.log('Client: ' + JSON.stringify(data));
-            angular.send(data);
+            switch (data.eventType) {
+                case 'getVersion':
+
+                    getVersion(function (status, obj) {
+                        data.msg.version = obj;
+                        angular.send(data);
+                    });
+                    break;
+            }
+
         });
 
     });
@@ -116,7 +124,6 @@ app.on('window-all-closed', function () {
 
 
 function getVersionCallback(status, obj) {
-    angular.send(obj);
     var vrsCompare = utilities.versionCompare(obj.version, version.version);
     if (vrsCompare > 0) {
         mainWindow.close();

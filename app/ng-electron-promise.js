@@ -78,7 +78,8 @@
 
             if (!ipc)return;
 
-            var defer = $q.defer();
+            var defer = $q.defer(),
+                data = typeof (data) === "object"?data:{};
 
 
             var callback_id = getCallbackId(),
@@ -90,12 +91,6 @@
                 eventType = (typeof(data.promise) === "undefined" ? callback_id : data.promise);
             }
 
-            if (dtype !== 'object') {
-                reject('BAD_PARAMETER');
-                return;
-            }
-
-            data.promise = callback_id;
 
             //set the caller
             service.onmessage[callback_id] = {
@@ -104,19 +99,11 @@
             };
 
 
-            if (typeof eventType === "undefined" || typeof(arguments[0]) === 'object') {
-                ipc.send(ELECTRON_BRIDGE_HOST, data);
-            } else {
-                if (!eventType) {
-                    reject('MISSING_EVENT_TYPE');
-                    return;
-                }
-                ipc.send(ELECTRON_BRIDGE_HOST, {
-                    eventType: eventType,
-                    data: data
-                });
-
-            }
+            ipc.send(ELECTRON_BRIDGE_HOST, {
+                eventType: eventType,
+                promise:callback_id,
+                msg: data
+            });
 
             return defer.promise;
         }
@@ -186,8 +173,6 @@
         if (ipc) {
             console.log('ngElectron has joined the room.');
             ipc.on(ELECTRON_BRIDGE_CLIENT, function (data) {
-                console.log('ELECTRON_BRIDGE_CLIENT', data);
-
                 $rootScope.$broadcast(ELECTRON_HOST_ID, data);
                 onMessage(data)
             });

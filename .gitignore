@@ -10,6 +10,7 @@ npm-debug.log
 build/
 lib/
 **/**/lib/
+**/resources/app.asar
 .tmp
 dist/
 amy-stack/

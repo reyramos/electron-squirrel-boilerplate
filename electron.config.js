@@ -3,7 +3,7 @@ module.exports = {
     "app_name": "LabCorp Phoenix",
     "app_description": "LabCorp Application",
     "manufacturer": "LabCorp Inc",
-    "source": "dist",
+    "source": "app",
     "development": "app",
     "distribution": "build",
     "electron_build": "./electron-v0.33.0-win32-x64"

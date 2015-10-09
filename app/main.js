@@ -17,9 +17,8 @@ const code = fs.readFileSync(__dirname + '/ng-electron-promise.min.js', 'utf8');
 
 
 const urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/";
-//const webUrl = "https://dev-demographics-phoenix.labcorp.com/web-ui";
-//const webUrl = "https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/";
-const webUrl = "http://labcorp.com:8080/";
+//const webUrl = "https://dev-phoenix.labcorp.com/web-ui/";
+const webUrl = "https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/";
 
 // prevent window being GC'd
 let mainWindow;
@@ -90,10 +89,8 @@ app.on('window-all-closed', function () {
     mainWindow = createMainWindow(size);
     mainWindow.webContents.on('dom-ready', function (e) {
         var insertScript = 'var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );';
-        //var insertScript = 'var s = document.querySelector( \'#electron\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);';
         mainWindow.webContents.executeJavaScript(insertScript);
         mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
-
         //TODO://Change to application name
         mainWindow.webContents.executeJavaScript("angular.bootstrap(document, ['phxApp']);");
     });

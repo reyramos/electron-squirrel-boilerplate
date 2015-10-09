@@ -50,18 +50,16 @@ function getVersion(callback) {
 }
 
 
-function createMainWindow() {
+function createMainWindow(size) {
     const win = new BrowserWindow({
-        width: 1350,
-        height: 800,
+        width: size.width,
+        height: size.height,
         resizable: true,
         icon: path.join(__dirname, 'icon.ico'),
         title: 'LabCorp Phoenix'
     });
 
-    //win.loadUrl('file://' + __dirname + '/index.html');
     win.loadUrl(webUrl);
-
     win.on('closed', function () {
         mainWindow = null;
     });
@@ -85,7 +83,11 @@ app.on('window-all-closed', function () {
     console.log('<====================================>');
     console.log('Goodbye');
 }).on('ready', function () {
-    mainWindow = createMainWindow();
+    var electronScreen = require('screen');
+    var size = electronScreen.getPrimaryDisplay().workAreaSize;
+
+
+    mainWindow = createMainWindow(size);
     mainWindow.webContents.on('dom-ready', function (e) {
         var insertScript = 'var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );';
         //var insertScript = 'var s = document.querySelector( \'#electron\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);';

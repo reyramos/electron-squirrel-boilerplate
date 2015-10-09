@@ -8,7 +8,6 @@ The app folder will need to contain the following to build the exe file from ele
   |-- main.js
   |-- icon.ico //ico image to replace electronPath/electron.exe during packaging
   |-- icon.png //added png logo to electron app, referenced in main.js
-  |-- index.html
 ```
 
 ##What is Electron?
@@ -96,11 +95,3 @@ The current application is using UpgradeCode=8291b2b1-4b33-11e5-975d-29a7531f192
 ##Grunt Task
 - build
     - build the application sources to dist, and msi package
-    
-- serve
-    - run a grunt server, to test your development progress in localhost:9000
-    
-- dist
-    - Best if you build your application and then test your distribution compile file, in localhost:9000
-
-

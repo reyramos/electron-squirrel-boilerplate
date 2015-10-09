@@ -1,6 +1,7 @@
 .idea/
 node_modules/
 **/node_modules
+**/lib
 npm-debug.log
 *.wxs
 *.msi
@@ -9,7 +10,10 @@ npm-debug.log
 build/
 lib/
 **/**/lib/
+**/resources/app.asar
 .tmp
 dist/
 amy-stack/
 rcedit/
+electron-v*/
+app/version.json

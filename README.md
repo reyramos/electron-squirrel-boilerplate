@@ -8,7 +8,6 @@ The app folder will need to contain the following to build the exe file from ele
   |-- main.js
   |-- icon.ico //ico image to replace electronPath/electron.exe during packaging
   |-- icon.png //added png logo to electron app, referenced in main.js
-  |-- index.html
 ```
 
 ##What is Electron?
@@ -80,7 +79,12 @@ The build command will compile all the contents of app folder into dist folder, 
 ## UPGRADE CODE
 The current application is using UpgradeCode=8291b2b1-4b33-11e5-975d-29a7531f1924, this is used to set the application UUID, so we can update our app, while not affecting the previous build version. Once we build our updated application, the user may install their new build replacing the old, as long the UpgradeCode does not change. This has already been set within our template.wxs file, which is used to build the application msi.
 
-
+```
+    <Product Name='LabCorp Phoenix'
+             Id='b54d1bd0-5340-11e5-9de9-ebdce6a5a6b0'
+             UpgradeCode='8291b2b1-4b33-11e5-975d-29a7531f1924'
+             Language='1033' Version='1.0.0' Manufacturer='LabCorp Inc'>
+```
 ##Additional Sources
 - nodejs <https://nodejs.org/en/docs/>
 - iojs <https://iojs.org/en/>
@@ -91,11 +95,3 @@ The current application is using UpgradeCode=8291b2b1-4b33-11e5-975d-29a7531f192
 ##Grunt Task
 - build
     - build the application sources to dist, and msi package
-    
-- serve
-    - run a grunt server, to test your development progress in localhost:9000
-    
-- dist
-    - Best if you build your application and then test your distribution compile file, in localhost:9000
-
-

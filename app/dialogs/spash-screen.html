@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upgrade</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .splashscreen {
+            width: 600px;
+            height: 500px;
+            background-color: #ffffff;
+            position: fixed;
+            border: thin solid #c5c5c5;
+
+            -webkit-box-shadow: 1px 3px 6px 0 rgba(0, 0, 0, 0.75);
+            -moz-box-shadow: 1px 3px 6px 0 rgba(0, 0, 0, 0.75);
+            box-shadow: 1px 3px 6px 0 rgba(0, 0, 0, 0.75);
+
+            background: url('../icon.png') no-repeat top left;
+            background-position: -20px -133px;
+        }
+
+        .message {
+            position: absolute;
+            bottom: 0px;
+        }
+    </style>
+</head>
+
+<script>
+    var version = window.location.search.split('version=')[1] || window.location.hash.split('version=')[1],
+            urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/v" + version + '.msi';
+
+    function download() {
+        var newWindow = window.open(urlBuilds, 'download'),
+                remote = require('remote');
+
+        remote.getCurrentWindow().hide();
+
+        setTimeout(function () {
+            newWindow.close();
+        }, 2000);
+    }
+
+
+</script>
+<body>
+<div class="splashscreen">
+    <div class="message">Loading</div>
+</div>
+</body>
+</html>

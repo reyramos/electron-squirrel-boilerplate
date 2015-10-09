@@ -17,8 +17,8 @@ const code = fs.readFileSync(__dirname + '/ng-electron-promise.min.js', 'utf8');
 
 
 const urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/";
-//const webUrl = "https://dev-phoenix.labcorp.com/web-ui/";
-const webUrl = "https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/";
+const webUrl = "https://dev-phoenix.labcorp.com/web-ui/";
+//const webUrl = "https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/";
 
 // prevent window being GC'd
 let mainWindow;
@@ -96,7 +96,7 @@ app.on('window-all-closed', function () {
     });
 
     //open the developer tools
-    mainWindow.openDevTools();
+    //mainWindow.openDevTools();
     mainWindow.webContents.on('did-finish-load', function (e) {
 
         setTimeout(function () {

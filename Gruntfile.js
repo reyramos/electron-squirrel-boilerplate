@@ -101,7 +101,7 @@ module.exports = function (grunt) {
             'execute:build-wxs',
             //'exec:candle',
             //'exec:light',
-            //'clean:build'
+            //'clean'
 
         ]
     );

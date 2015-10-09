@@ -9,12 +9,20 @@
 (function (angular) {
     'use strict';
 
-    var electron_host = 'ELECTRON_BRIDGE_HOST',
-        electron_client = 'ELECTRON_BRIDGE_CLIENT',
-        electron_host_id = 'electron-host',
+    //TODO://MAKE SURE TO CHANGE TO YOUR APP REFERENCE
+    angular.module('phxApp').run(ElectronRunFunc).factory("electron", Electronfunc);
+
+
+    var ELECTRON_BRIDGE_HOST = 'ELECTRON_BRIDGE_HOST',
+        ELECTRON_BRIDGE_CLIENT = 'ELECTRON_BRIDGE_CLIENT',
+        ELECTRON_HOST_ID = 'electron-host',
         db_silo = 'client/data',
         ipc = null,
-        diskdb = null;
+        diskdb = null,
+        currentCallbackId = 0, // Create a unique callback ID to map requests to responses
+        service = {
+            onmessage: []
+        };
 
 
     try {
@@ -30,22 +38,89 @@
         console.error('modules not loaded:diskdb => ', e)
     }
 
-    angular.module('ngElectron', []).run(ElectronRunFunc).factory("electron", Electronfunc);
 
-    ElectronRunFunc.$inject = ['$rootScope', 'electron', '$log'];
-    Electronfunc.$inject = ['$log'];
+    // This creates a new callback ID for a request
+    function getCallbackId() {
+        currentCallbackId += 1;
+        //reset callback id
+        if (currentCallbackId > 10000) {
+            currentCallbackId = 0;
+        }
+        return currentCallbackId;
+    }
 
-    function Electronfunc($log) {
+    /**
+     * Will check if promise has been sent to return back to
+     * defer.promise() message
+     */
+    function listening() {
+        if (service.onmessage.hasOwnProperty(this.promise)) {
+            service.onmessage[this.promise].cb.resolve(this)
+            delete service.onmessage[this.promise];
+            delete this.promise;
+        }
+    }
 
-        $log.debug('FACTORY => electron')
+    function onMessage(data) {
+        listening.apply(data)
+    }
 
-        var o = new Object();
+
+    ElectronRunFunc.$inject = ['$rootScope', 'electron'];
+    Electronfunc.$inject = ['$q'];
+
+    function Electronfunc($q) {
+        var  o = new Object();
+
 
         //ipc -> host (main process)
-        o.send = function (data) {
-            if (ipc)
-                ipc.send(electron_host, data);
-        };
+        o.send = function (eventType, data) {
+
+            if (!ipc)return;
+
+            var defer = $q.defer();
+
+
+            var callback_id = getCallbackId(),
+                etype = typeof arguments[0],
+                dtype = typeof arguments[1];
+
+            if (etype === 'object') {
+                data = eventType;
+                eventType = (typeof(data.promise) === "undefined" ? callback_id : data.promise);
+            }
+
+            if (dtype !== 'object') {
+                reject('BAD_PARAMETER');
+                return;
+            }
+
+            data.promise = callback_id;
+
+            //set the caller
+            service.onmessage[callback_id] = {
+                time: new Date(),
+                cb: defer
+            };
+
+
+            if (typeof eventType === "undefined" || typeof(arguments[0]) === 'object') {
+                ipc.send(ELECTRON_BRIDGE_HOST, data);
+            } else {
+                if (!eventType) {
+                    reject('MISSING_EVENT_TYPE');
+                    return;
+                }
+                ipc.send(ELECTRON_BRIDGE_HOST, {
+                    eventType: eventType,
+                    data: data
+                });
+
+            }
+
+            return defer.promise;
+        }
+
 
         //diskdb
         o.db = function (collection) {
@@ -106,15 +181,15 @@
     }
 
 
-    function ElectronRunFunc($rootScope, electron, $log) {
-        $log.debug('RUN => electron')
+    function ElectronRunFunc($rootScope, electron) {
         //Start listening for host messages
         if (ipc) {
-            $log.log('ngElectron has joined the room.');
-            ipc.on(electron_client, function (data) {
-                $log.log(electron_host_id, data);
-                //Event type: 'electron-host'
-                $rootScope.$broadcast(electron_host_id, data);
+            console.log('ngElectron has joined the room.');
+            ipc.on(ELECTRON_BRIDGE_CLIENT, function (data) {
+                console.log('ELECTRON_BRIDGE_CLIENT', data);
+
+                $rootScope.$broadcast(ELECTRON_HOST_ID, data);
+                onMessage(data)
             });
             /*
              Add $electron as a special root property.

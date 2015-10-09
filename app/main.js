@@ -12,12 +12,18 @@ const version = require('./version.json');
 const MenuItem = require('menu-item');
 const utilities = require('./utilities');
 
+
+const code = fs.readFileSync(__dirname + '/ng-electron-promise.min.js', 'utf8');
+
+
 const urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/";
 //const webUrl = "https://dev-demographics-phoenix.labcorp.com/web-ui";
-const webUrl = "https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/";
+//const webUrl = "https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/";
+const webUrl = "http://labcorp.com:8080/";
 
 // prevent window being GC'd
 let mainWindow;
+
 
 /**
  * getJSON:  REST get request returning JSON object(s)
@@ -81,7 +87,13 @@ app.on('window-all-closed', function () {
 }).on('ready', function () {
     mainWindow = createMainWindow();
     mainWindow.webContents.on('dom-ready', function (e) {
+        var insertScript = 'var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );';
+        //var insertScript = 'var s = document.querySelector( \'#electron\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);';
+        mainWindow.webContents.executeJavaScript(insertScript);
         mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
+
+        //TODO://Change to application name
+        mainWindow.webContents.executeJavaScript("angular.bootstrap(document, ['phxApp']);");
     });
 
     //open the developer tools
@@ -89,42 +101,42 @@ app.on('window-all-closed', function () {
     mainWindow.webContents.on('did-finish-load', function (e) {
 
         setTimeout(function () {
-            angular.send('hello from electron');
-            getVersion(function (status, obj) {
-                console.log('<====================================>');
-                console.log('version => ', obj);
-
-                var vrsCompare = utilities.versionCompare(obj.version, version.version);
-                if (vrsCompare > 0) {
-                    mainWindow.close();
-                    var download = new BrowserWindow({
-                        width: 402,
-                        height: 152,
-                        resizable: false,
-                        transparent: true,
-                        frame: false,
-                        'always-on-top': true
-                    });
-
-                    download.loadUrl('file://' + __dirname + '/dialogs/download.html?version=' + obj.version);
-                    download.on('closed', function () {
-                        download = null;
-                    })
-
-                    //lets close it after 5 minutes
-                    setTimeout(function () {
-                        download.close();
-                    }, 1000 * 60 * 5)
-
-                }
-            });
-
+            angular.send('HELLO_FROM_ELECTRON');
+            getVersion(getVersionCallback);
         }, 500);
 
-        angular.listen(function (msg) {
-                console.log('Client: ' + msg);
-            });
+        angular.listen(function (data) {
+            console.log('Client: ' + JSON.stringify(data));
+            angular.send(data);
+        });
 
     });
 
 });
+
+
+function getVersionCallback(status, obj) {
+    angular.send(obj);
+    var vrsCompare = utilities.versionCompare(obj.version, version.version);
+    if (vrsCompare > 0) {
+        mainWindow.close();
+        var download = new BrowserWindow({
+            width: 402,
+            height: 152,
+            resizable: false,
+            transparent: true,
+            frame: false,
+            'always-on-top': true
+        });
+
+        download.loadUrl('file://' + __dirname + '/dialogs/download.html?version=' + obj.version);
+        download.on('closed', function () {
+            download = null;
+        })
+
+        //lets close it after 5 minutes
+        setTimeout(function () {
+            download.close();
+        }, 1000 * 60 * 5)
+    }
+}

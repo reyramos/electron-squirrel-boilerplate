@@ -1,5 +1,5 @@
 module.exports = {
-    "version": "1.2.1",
+    "version": "1.2.2",
     "app_name": "LabCorp Phoenix",
     "app_description": "LabCorp Application",
     "manufacturer": "LabCorp Inc",

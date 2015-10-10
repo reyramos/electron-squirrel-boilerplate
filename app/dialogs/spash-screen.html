@@ -127,6 +127,11 @@
         var prct = Number.parseFloat(stat) +  Number.parseFloat(rnd);
         set(prct);
     }
+    function stop() {
+        started = false;
+        status = 0;
+        loadingBar.style.backgroundColor = '#a94442';
+    }
 
     function complete() {
         completeTimeout =  window.setTimeout(function() {
@@ -137,8 +142,6 @@
     }
 
     start();
-
-
 
 </script>
 

@@ -151,6 +151,11 @@ function LOAD_APPLICATION() {
             //splashScreen.webContents.executeJavaScript(insertScript);
         });
 
+        mainWindow.webContents.on('did-fail-load', function (e) {
+            var insertScript = 'stop();';
+            splashScreen.webContents.executeJavaScript(insertScript);
+        });
+
         mainWindow.webContents.on('did-stop-loading', function (e) {
             count++;
             if (count === 3) {

@@ -21,8 +21,8 @@ const webUrl = "https://dev-phoenix.labcorp.com/web-ui/";
 //const webUrl = "https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/";
 
 // prevent window being GC'd
-let mainWindow;
-let splashScreen;
+let mainWindow = null;
+let splashScreen = null;
 
 
 /**
@@ -91,21 +91,26 @@ function LOAD_APPLICATION() {
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
 
 
+    /**
+     * Build the Splash Screen
+     */
     splashScreen = new BrowserWindow({
         width: 602,
         height: 502,
         resizable: false,
+        transparent:true,
         frame: false,
         'always-on-top': true
     });
-
-
     splashScreen.loadUrl('file://' + __dirname + '/dialogs/spash-screen.html?');
     splashScreen.on('closed', function () {
         splashScreen = null;
     })
 
-
+    /**
+     * Once the Splash Screen finish loading, check the version, start to load the application
+     * in the background
+     */
     splashScreen.webContents.on('did-finish-load', function (e) {
         setTimeout(function () {
             getVersion(function (status, obj) {
@@ -130,55 +135,61 @@ function LOAD_APPLICATION() {
                     setTimeout(function () {
                         download.destroy();
                     }, 1000 * 60 * 5);//terminate after 5 minutes
+                } else if (!mainWindow) {
+                    startMainApplication();
                 }
             });
         }, 500);
     });
 
-    mainWindow = createMainWindow(size);
 
-    mainWindow.webContents.on('did-start-loading', function (e) {
-        var insertScript = 'var s = document.querySelector( \'.message\' );s.innerHTML="Loading ...";';
-        splashScreen.webContents.executeJavaScript(insertScript);
-    });
+    function startMainApplication() {
+        mainWindow = createMainWindow(size);
 
-    mainWindow.webContents.on('did-stop-loading', function (e) {
-        count++;
-        if (count === 3) {
-            var insertScript = 'var s = document.querySelector( \'.message\' );s.innerHTML="Completed";';
-            splashScreen.webContents.executeJavaScript(insertScript);
-            splashScreen.close();//no longer needed
-            mainWindow.show();//no longer needed
-        }
-    });
-
-    mainWindow.webContents.on('dom-ready', function (e) {
-        var insertScript = 'var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );';
-        mainWindow.webContents.executeJavaScript(insertScript);
-        mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
-        //TODO://Change to application name
-        mainWindow.webContents.executeJavaScript("angular.bootstrap(document, ['phxApp']);");
-    });
-
-    //open the developer tools
-    //mainWindow.openDevTools();
-    //open the developer tools
-    //mainWindow.openDevTools();
-    mainWindow.webContents.on('did-finish-load', function (e) {
-        angular.listen(function (data) {
-            switch (data.eventType) {
-                case 'getVersion':
-
-                    getVersion(function (status, obj) {
-                        data.msg.version = obj;
-                        angular.send(data);
-                    });
-                    break;
-            }
-
+        mainWindow.webContents.on('did-start-loading', function (e) {
+            //var insertScript = 'var s = document.querySelector( \'.message\' );s.innerHTML="Loading ...";';
+            //splashScreen.webContents.executeJavaScript(insertScript);
         });
 
-    });
+        mainWindow.webContents.on('did-stop-loading', function (e) {
+            count++;
+            if (count === 3) {
+                //var insertScript = 'var s = document.querySelector( \'.message\' );s.innerHTML="Completed";';
+                var insertScript = 'setTimeout(complete,1000);';
+                splashScreen.webContents.executeJavaScript(insertScript);
+                setTimeout(function () {
+                    splashScreen.close();//no longer needed
+                    mainWindow.show();//no longer needed
+                }, 2000)
+            }
+        });
+
+        mainWindow.webContents.on('dom-ready', function (e) {
+            var insertScript = 'var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );';
+            mainWindow.webContents.executeJavaScript(insertScript);
+            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
+            //TODO://Change to application name
+            mainWindow.webContents.executeJavaScript("angular.bootstrap(document, ['phxApp']);");
+        });
+
+        //open the developer tools
+        //mainWindow.openDevTools();
+        mainWindow.webContents.on('did-finish-load', function (e) {
+            angular.listen(function (data) {
+                switch (data.eventType) {
+                    case 'getVersion':
+
+                        getVersion(function (status, obj) {
+                            data.msg.version = obj;
+                            angular.send(data);
+                        });
+                        break;
+                }
+
+            });
+
+        });
+    }
 
 
 }

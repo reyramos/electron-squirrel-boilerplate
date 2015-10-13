@@ -77,7 +77,7 @@ app.on('window-all-closed', function () {
     }
 }).on('activate-with-no-open-windows', function () {
     if (!mainWindow) {
-        //LOAD_APPLICATION();
+        LOAD_APPLICATION();
     }
 }).on('will-quit', function () {
     console.log('<====================================>');
@@ -98,7 +98,7 @@ function LOAD_APPLICATION() {
         width: 602,
         height: 502,
         resizable: false,
-        transparent:true,
+        transparent: true,
         frame: false,
         'always-on-top': true
     });
@@ -112,12 +112,15 @@ function LOAD_APPLICATION() {
      * in the background
      */
     splashScreen.webContents.on('did-finish-load', function (e) {
+
+        if (!mainWindow) {
+            startMainApplication();
+        }
+
         setTimeout(function () {
             getVersion(function (status, obj) {
                 var vrsCompare = utilities.versionCompare(obj.version, version.version);
                 if (vrsCompare > 0) {
-                    mainWindow.close();
-                    splashScreen.close();
                     var download = new BrowserWindow({
                         width: 402,
                         height: 152,
@@ -125,18 +128,14 @@ function LOAD_APPLICATION() {
                         frame: false,
                         'always-on-top': true
                     });
-
-                    download.loadUrl('file://' + __dirname + '/dialogs/download.html?version=' + obj.version);
+                    download.loadUrl('file://' + __dirname + '/dialogs/download.html?version=' + obj.version + '&id='+mainWindow.id);
                     download.on('closed', function () {
                         download = null;
-                    })
-
-                    //lets close it after 5 minutes
-                    setTimeout(function () {
-                        download.destroy();
-                    }, 1000 * 60 * 5);//terminate after 5 minutes
-                } else if (!mainWindow) {
-                    startMainApplication();
+                    });
+                    //lets close it after
+                    //setTimeout(function () {
+                    //    download.destroy();
+                    //}, 3000);
                 }
             });
         }, 500);
@@ -181,22 +180,24 @@ function LOAD_APPLICATION() {
         //mainWindow.openDevTools();
         mainWindow.webContents.on('did-finish-load', function (e) {
             angular.listen(function (data) {
+
                 switch (data.eventType) {
                     case 'getVersion':
-
                         getVersion(function (status, obj) {
                             data.msg.version = obj;
                             angular.send(data);
                         });
                         break;
+                    default :
+                        angular.send(data);
+                        break;
+
                 }
 
             });
-
         });
+
     }
-
-
 }
 
 

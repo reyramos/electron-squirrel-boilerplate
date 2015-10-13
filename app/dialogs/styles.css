@@ -44,6 +44,10 @@ body, html {
     background-color: #ffffff;
 }
 
+.pull-right{
+    float: right;
+}
+
 .modal-box .panel, .modal-box .panel-heading {
     -webkit-border-radius: 0;
     -moz-border-radius: 0;

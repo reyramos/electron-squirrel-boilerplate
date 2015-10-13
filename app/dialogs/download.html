@@ -7,20 +7,36 @@
 </head>
 
 <script>
-    var version = window.location.search.split('version=')[1] || window.location.hash.split('version=')[1],
-            urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/v" + version + '.msi';
 
-    function download() {
-        var newWindow = window.open(urlBuilds, 'download'),
-                remote = require('remote');
+    function _GET(string) {
+        var query = window.location.search.replace(/\?/, '').split('&') || window.location.hash.replace(/\?/, '').split('&'),
+                search = "";
+        for (var i in query) {
+            if (query[i].indexOf(string + "=") > -1) {
+                return query[i].replace(string + "=", "");
+            }
+        }
 
-        remote.getCurrentWindow().hide();
-
-        setTimeout(function () {
-            newWindow.close();
-        }, 2000);
+        return search;
     }
 
+
+    var remote = require('remote'),
+            currentWindow = remote.getCurrentWindow(),
+            mainWindow = _GET('id'),
+            urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/v" + _GET('version') + '.msi';
+
+
+    function download() {
+
+        require('shell').openExternal(urlBuilds);
+
+//        var newWindow = window.open(urlBuilds, 'download');
+//        currentWindow.hide();
+//        setTimeout(function () {
+//            newWindow.close();
+//        }, 2000);
+    }
 
 </script>
 <body>
@@ -30,6 +46,7 @@
         <div class="panel-body">A new version is available, Please download and install.</div>
         <div class="panel-footer">
             <a href="javascript:download()">Download</a>
+            <a href="javascript:currentWindow.close()" class="pull-right">Cancel</a>
 
         </div>
     </div>

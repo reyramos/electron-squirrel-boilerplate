@@ -13,7 +13,7 @@ const MenuItem = require('menu-item');
 const utilities = require('./utilities');
 
 
-const code = fs.readFileSync(__dirname + '/ng-electron-promise.min.js', 'utf8');
+const code = fs.readFileSync(__dirname + '/ng-electron/ng-electron-promise.min.js', 'utf8');
 
 
 const urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/build.json";

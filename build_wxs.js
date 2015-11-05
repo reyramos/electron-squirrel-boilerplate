@@ -44,8 +44,7 @@ String.prototype.capitalize = function () {
 };
 
 
-const release = config[config['WORKING_ENVIRONMENT']] + path.join(config.releasePath, config['WORKING_ENVIRONMENT'].toLowerCase(), 'build.json').replace(/\\/g, '/');
-
+const release = config["DEV"] + path.join(config.releasePath, config['WORKING_ENVIRONMENT'].toLowerCase(), 'build.json').replace(/\\/g, '/');
 
 /**
  * This functionality is to check if the build.json file exist, if it exist it will check if the version is already created.

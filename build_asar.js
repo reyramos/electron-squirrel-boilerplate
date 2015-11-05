@@ -14,7 +14,8 @@ const APP_VERSION = String(config.version).trim() || false;
 const APPLICATION_SRC = path.join(__dirname, config.source);
 const DEVELOPMENT_SRC = path.join(__dirname, config.development);
 const BUILD_DESTINATION = path.join(__dirname, config.distribution);
-const release = config[config['WORKING_ENVIRONMENT']] + path.join(config.releasePath, config['WORKING_ENVIRONMENT'].toLowerCase(), 'build.json').replace(/\\/g, '/');
+
+const RELEASE = config["DEV"] + path.join(config.releasePath, config['WORKING_ENVIRONMENT'].toLowerCase(), 'build.json').replace(/\\/g, '/');
 
 //searches for icon.png file in the application src to set the Add/Remove icon
 var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.ico');
@@ -25,6 +26,7 @@ const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar
 
 var ELECTRON_EXE_DESTINATION = fs.existsSync(path.join(ELECTRON_PATH, 'electron.exe')) ? path.join(ELECTRON_PATH, 'electron.exe') : "";
 
+console.log('RELEASE', RELEASE)
 console.log('DEVELOPMENT_SRC', DEVELOPMENT_SRC)
 console.log('APPLICATION_SRC', APPLICATION_SRC)
 console.log('ELECTRON_BUILD_DESTINATION', ELECTRON_BUILD_DESTINATION)
@@ -53,6 +55,10 @@ if (fs.existsSync(DEVELOPMENT_SRC)) {
  */
 
 getVersion(function (status, obj) {
+
+    console.log('getVersion', obj)
+
+
     const BUILD_VERSION = String(obj.version).trim() || false;
     var vrsCompare = utilities.versionCompare(APP_VERSION, BUILD_VERSION);
     if (vrsCompare > 0) {
@@ -102,7 +108,7 @@ function mkdir(dir) {
 }
 
 function getVersion(callback) {
-    require("https").get(release, function (res) {
+    require("https").get(RELEASE, function (res) {
         var output = '';
         res.setEncoding('utf8');
 

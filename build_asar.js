@@ -1,6 +1,5 @@
 var path = require('path'),
     fs = require('fs'),
-    http = require('https'),
     utilities = require('./app/utilities.js'),
     config = require("./electron.config.js");
 
@@ -103,7 +102,7 @@ function mkdir(dir) {
 }
 
 function getVersion(callback) {
-    http.get(release, function (res) {
+    require("https").get(release, function (res) {
         var output = '';
         res.setEncoding('utf8');
 

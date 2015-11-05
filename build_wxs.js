@@ -1,8 +1,7 @@
 var path = require('path'),
     fs = require('fs'),
     utilities = require('./app/utilities.js'),
-    config = require("./electron.config.js"),
-    http = require("https");
+    config = require("./electron.config.js");
 
 
 config['build_date'] = new Date().toJSON();
@@ -392,7 +391,7 @@ function walk(currentDirPath, callback) {
 }
 
 function getVersion(callback) {
-    http.get(release, function (res) {
+    require("https").get(release, function (res) {
         var output = '';
         res.setEncoding('utf8');
 

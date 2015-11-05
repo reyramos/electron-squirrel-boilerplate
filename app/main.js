@@ -3,7 +3,6 @@
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
 const angular = require('./ng-electron/ng-bridge');
-const http = require("http");
 const path = require('path');
 const ipc = require('ipc');
 const app = require('app');
@@ -29,7 +28,7 @@ let splashScreen = null;
  * @param callback: callback to pass the results JSON object(s) back
  */
 function getVersion(callback) {
-    http.get(release, function (res) {
+    require("https").get(release, function (res) {
         var output = '';
         res.setEncoding('utf8');
 

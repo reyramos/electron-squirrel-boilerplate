@@ -7,6 +7,11 @@
 </head>
 
 <script>
+    var remote = require('remote'),
+            currentWindow = remote.getCurrentWindow(),
+            mainWindow = _GET('id'),
+            releasePath = null,
+            anHttpRequest = new XMLHttpRequest();
 
     function _GET(string) {
         var query = window.location.search.replace(/\?/, '').split('&') || window.location.hash.replace(/\?/, '').split('&'),
@@ -20,16 +25,17 @@
         return search;
     }
 
-
-    var remote = require('remote'),
-            currentWindow = remote.getCurrentWindow(),
-            mainWindow = _GET('id'),
-            urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/v" + _GET('version') + '.msi';
-
-
     function download() {
 
-        require('shell').openExternal(urlBuilds);
+        anHttpRequest.open("GET", '../version.json', true);
+        anHttpRequest.send(null);
+
+        anHttpRequest.onreadystatechange = function () {
+            var config = JSON.parse(anHttpRequest.responseText);
+
+            releasePath = config["DEV"] + require('path').join(config.releasePath, config["WORKING_ENVIRONMENT"].toLowerCase(), 'v' + _GET('version') + '.msi').replace(/\\/g, '/');
+            require('shell').openExternal(releasePath);
+        };
 
 //        var newWindow = window.open(urlBuilds, 'download');
 //        currentWindow.hide();

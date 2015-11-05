@@ -17,7 +17,8 @@ const code = fs.readFileSync(__dirname + '/ng-electron/ng-electron-promise.min.j
 
 
 const urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/build.json";
-const webUrl = "https://dev-phoenix.labcorp.com/web-ui/";
+//const webUrl = "https://dev-phoenix.labcorp.com/web-ui/";
+const webUrl = "https://qa-phoenix.labcorp.com/web-ui/";
 //const webUrl = "https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/";
 
 // prevent window being GC'd

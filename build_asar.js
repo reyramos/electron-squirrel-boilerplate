@@ -38,8 +38,6 @@ var rcedit = require('rcedit'),
     asar = require('asar'); //create electron build from the application source files
 
 
-//CREATE the version file for the application used
-delete config['WORKING_ENVIRONMENT'];
 //create the versioning file
 if (fs.existsSync(APPLICATION_SRC)) {
     file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));

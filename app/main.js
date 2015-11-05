@@ -1,4 +1,7 @@
 'use strict';
+
+var environment = "DEV";
+
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
 const angular = require('./ng-electron/ng-bridge');
@@ -11,20 +14,15 @@ const dialog = require('dialog');
 const version = require('./version.json');
 const MenuItem = require('menu-item');
 const utilities = require('./utilities');
-
-
 const code = fs.readFileSync(__dirname + '/ng-electron/ng-electron-promise.min.js', 'utf8');
 
-
-const urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/build.json";
-//const webUrl = "https://dev-phoenix.labcorp.com/web-ui/";
-const webUrl = "https://qa-phoenix.labcorp.com/web-ui/";
-//const webUrl = "https://dev-eligibility-phoenix.labcorp.com/reyramos/dist/";
+//GET THE ENVIRONMENT VARIABLES TO CREATE
+const release = version["DEV"] + path.join(version.releasePath, environment.toLowerCase(), 'build.json').replace(/\\/g, '/');
+const webUrl = version[environment] + "web-ui/";
 
 // prevent window being GC'd
 let mainWindow = null;
 let splashScreen = null;
-
 
 /**
  * getJSON:  REST get request returning JSON object(s)
@@ -32,7 +30,7 @@ let splashScreen = null;
  * @param callback: callback to pass the results JSON object(s) back
  */
 function getVersion(callback) {
-    http.get(urlBuilds, function (res) {
+    http.get(release, function (res) {
         var output = '';
         res.setEncoding('utf8');
 
@@ -129,7 +127,7 @@ function LOAD_APPLICATION() {
                         frame: false,
                         'always-on-top': true
                     });
-                    download.loadUrl('file://' + __dirname + '/dialogs/download.html?version=' + obj.version + '&id='+mainWindow.id);
+                    download.loadUrl('file://' + __dirname + '/dialogs/download.html?version=' + obj.version + '&id=' + mainWindow.id);
                     download.on('closed', function () {
                         download = null;
                     });
@@ -139,6 +137,7 @@ function LOAD_APPLICATION() {
                     //}, 3000);
                 }
             });
+
         }, 500);
     });
 

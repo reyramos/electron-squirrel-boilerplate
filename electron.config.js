@@ -6,8 +6,8 @@ module.exports = {
     "source": "app",
     "development": "app",
     "distribution": "build",
-    "electron_build": "./electron-v0.33.0-win32-x64",
-    "buildVersionPath": "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/",
+    "electron_build": "./electron-v0.34.2-win32-x64",
+    "releasePath": "release",
     "UAT": "https://uat-phoenix.labcorp.com/",
     "DEV": "https://dev-phoenix.labcorp.com/",
     "QA": "https://qa-phoenix.labcorp.com/"

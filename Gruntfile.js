@@ -109,7 +109,7 @@ module.exports = function (grunt) {
     grunt.registerTask(
         'build', [
              'electron-build',
-             'msi-build'
+             //'msi-build'
         ]
     );
     grunt.registerTask(

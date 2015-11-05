@@ -56,6 +56,9 @@ function createMainWindow(size) {
         icon: path.join(__dirname, 'icon.ico'),
         title: 'LabCorp Phoenix'
     });
+
+    console.log('webUrl',webUrl)
+
     win.loadUrl(webUrl);
     win.on('closed', function () {
         mainWindow = null;
@@ -171,7 +174,11 @@ function LOAD_APPLICATION() {
             mainWindow.webContents.executeJavaScript(insertScript);
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
             //TODO://Change to application name
-            mainWindow.webContents.executeJavaScript("angular.bootstrap(document, ['phxApp']);");
+
+            setTimeout(function(){
+                mainWindow.webContents.executeJavaScript("angular.bootstrap(document, ['phxApp']);");
+            },1);
+
         });
 
         //open the developer tools

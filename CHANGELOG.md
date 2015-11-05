@@ -1,3 +1,12 @@
+<a name="1.2.5"></a>
+# 1.2.5 MOUNTAIN STAG (2015-11-05)
+
+## Updates
+
+- Add delay for angular bootstrapping on electron, to initiate any electron bridge
+
+
+
 <a name="1.2.4"></a>
 # 1.2.4 EMERALD ANDROID (2015-11-05)
 

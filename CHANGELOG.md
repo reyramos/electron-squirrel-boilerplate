@@ -12,3 +12,8 @@
 - Update code to support new download branch url
 
 
+## Enhancements
+
+- Build asar and wxs will check release path for version control before msi build
+
+

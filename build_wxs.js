@@ -44,7 +44,7 @@ String.prototype.capitalize = function () {
 };
 
 
-const release = config["DEV"] + path.join(config.releasePath, config['WORKING_ENVIRONMENT'].toLowerCase(), 'build.json').replace(/\\/g, '/');
+const RELEASE = config["DEV"] + path.join(config.releasePath, config['WORKING_ENVIRONMENT'].toLowerCase(), 'build.json').replace(/\\/g, '/');
 
 /**
  * This functionality is to check if the build.json file exist, if it exist it will check if the version is already created.
@@ -390,7 +390,7 @@ function walk(currentDirPath, callback) {
 }
 
 function getVersion(callback) {
-    require("https").get(release, function (res) {
+    require("https").get(RELEASE, function (res) {
         var output = '';
         res.setEncoding('utf8');
 

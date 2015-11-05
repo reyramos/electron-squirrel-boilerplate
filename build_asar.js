@@ -56,7 +56,7 @@ if (fs.existsSync(DEVELOPMENT_SRC)) {
 
 getVersion(function (status, obj) {
 
-    console.log('getVersion', obj)
+    console.log('VERSION => ', obj)
 
 
     const BUILD_VERSION = String(obj.version).trim() || false;

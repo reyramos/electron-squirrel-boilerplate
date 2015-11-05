@@ -1,7 +1,5 @@
 'use strict';
 
-var environment = "DEV";
-
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
 const angular = require('./ng-electron/ng-bridge');
@@ -17,8 +15,9 @@ const utilities = require('./utilities');
 const code = fs.readFileSync(__dirname + '/ng-electron/ng-electron-promise.min.js', 'utf8');
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE
-const release = version["DEV"] + path.join(version.releasePath, environment.toLowerCase(), 'build.json').replace(/\\/g, '/');
-const webUrl = version[environment] + "web-ui/";
+const release = version["DEV"] + path.join(version.releasePath, version["WORKING_ENVIRONMENT"].toLowerCase(), 'build.json').replace(/\\/g, '/');
+const webUrl = version[version["WORKING_ENVIRONMENT"]] + "web-ui/";
+
 
 // prevent window being GC'd
 let mainWindow = null;

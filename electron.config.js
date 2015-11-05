@@ -1,5 +1,5 @@
 module.exports = {
-    "version": "1.2.3",
+    "version": "1.2.4",
     "app_name": "LabCorp Phoenix",
     "app_description": "LabCorp Application",
     "manufacturer": "LabCorp Inc",
@@ -10,6 +10,7 @@ module.exports = {
     "releasePath": "release",
     "UAT": "https://uat-phoenix.labcorp.com/",
     "DEV": "https://dev-phoenix.labcorp.com/",
-    "QA": "https://qa-phoenix.labcorp.com/"
+    "QA": "https://qa-phoenix.labcorp.com/",
+    "WORKING_ENVIRONMENT":"DEV"
 };
 

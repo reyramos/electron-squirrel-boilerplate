@@ -5,6 +5,11 @@
 
 - The web application was executing DOM event before the electron app, causing missing delay.
 - Added delay for angular bootstrapping, make sure it ready before electron bridge
+- Fix error on download = null when on cancel request
+
+## Enhancements
+
+- Fallback on if versioning file does not exist on server.
 
 
 <a name="1.2.6"></a>

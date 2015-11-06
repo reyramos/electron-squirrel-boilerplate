@@ -56,11 +56,11 @@ function createMainWindow(size) {
         show: false,
         icon: path.join(__dirname, 'icon.ico'),
         title: 'LabCorp Phoenix',
-        'web-preferences':{
-            'web-security':false,
-            'allow-displaying-insecure-content':true,
-            'allow-running-insecure-content':true
-        }
+        //'web-preferences':{
+        //    'web-security':false,
+        //    'allow-displaying-insecure-content':true,
+        //    'allow-running-insecure-content':true
+        //}
     });
 
     console.log('webUrl',webUrl)
@@ -164,33 +164,31 @@ function LOAD_APPLICATION() {
         });
 
         mainWindow.webContents.on('did-stop-loading', function (e) {
-            //var insertScript = 'var s = document.querySelector( \'.message\' );s.innerHTML="Completed";';
-            var insertScript = 'setTimeout(complete,1000);';
 
-            if(splashScreen)
-                splashScreen.webContents.executeJavaScript(insertScript);
-
-            setTimeout(function () {
-
-                if(splashScreen)
-                splashScreen.close();//no longer needed
-
-
-                mainWindow.show();//no longer needed
-            }, 2000);
+            var insertScript = 'var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );';
+            mainWindow.webContents.executeJavaScript(insertScript);
+            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
             console.log('did-stop-loading')
 
         });
 
         mainWindow.webContents.on('dom-ready', function (e) {
-            var insertScript = 'var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );';
-            mainWindow.webContents.executeJavaScript(insertScript);
-            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
-            //TODO://Change to application name
-            mainWindow.webContents.executeJavaScript("angular.bootstrap(document, ['phxApp']);");
+            //var insertScript = 'var s = document.querySelector( \'.message\' );s.innerHTML="Completed";';
+            if(splashScreen)
+                splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
 
+           var bootstrap =  setTimeout(function () {
+                mainWindow.webContents.executeJavaScript("angular.bootstrap(document, ['phxApp']);");
+            }, 1000);
 
+            setTimeout(function () {
+                clearTimeout(bootstrap);
+
+                if(splashScreen)
+                    splashScreen.close();//no longer needed
+                mainWindow.show();//no longer needed
+            }, 2000);
         });
 
         //open the developer tools

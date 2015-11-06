@@ -1,4 +1,16 @@
 <a name="1.2.6"></a>
+# 1.2.7 TUNDRA GRIZZLY (2015-11-06)
+
+## Bug Fix
+
+- The web application was executing DOM event before the electron app, causing missing delay.
+- Added delay for angular bootstrapping, make sure it ready before electron bridge
+
+
+
+
+
+<a name="1.2.6"></a>
 # 1.2.6 SPACE THUNDER (2015-11-06)
 
 ## Bug Fix

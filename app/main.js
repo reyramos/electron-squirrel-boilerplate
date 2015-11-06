@@ -15,7 +15,7 @@ const utilities = require('./utilities');
 const code = fs.readFileSync(__dirname + '/ng-electron/ng-electron-promise.min.js', 'utf8');
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE
-const release = version["DEV"] + path.join(version.releasePath, version["WORKING_ENVIRONMENT"].toLowerCase(), 'build.json').replace(/\\/g, '/');
+const release = version["DEV"] + path.join(version.releasePath, version["WORKING_ENVIRONMENT"].toLowerCase(), 'test.json').replace(/\\/g, '/');
 const webUrl = version[version["WORKING_ENVIRONMENT"]] + "web-ui/";
 
 
@@ -38,12 +38,18 @@ function getVersion(callback) {
         });
 
         res.on('end', function () {
-            var obj = JSON.parse(output);
-            callback(res.statusCode, obj);
+            try {
+                var obj = JSON.parse(output);
+                callback(res.statusCode, obj);
+            } catch (e) {
+            }
+
         });
 
     }).on('error', function (e) {
-        callback(e);
+        //callback(e);
+        console.log('error', e)
+
     });
 }
 
@@ -63,7 +69,7 @@ function createMainWindow(size) {
         //}
     });
 
-    console.log('webUrl',webUrl)
+    console.log('webUrl', webUrl)
 
     win.loadUrl(webUrl);
 
@@ -137,15 +143,12 @@ function LOAD_APPLICATION() {
                     download.loadUrl('file://' + __dirname + '/dialogs/download.html?version=' + obj.version + '&id=' + mainWindow.id);
                     download.on('closed', function () {
                         download = null;
-                        download.destroy();
                     });
-                 }
+                }
             });
 
         }, 500);
     });
-
-
 
 
     function startMainApplication() {
@@ -165,34 +168,36 @@ function LOAD_APPLICATION() {
 
         mainWindow.webContents.on('did-stop-loading', function (e) {
 
-            var insertScript = 'var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );';
-            mainWindow.webContents.executeJavaScript(insertScript);
-            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
+            if (splashScreen)
+                splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
+
+            setTimeout(function () {
+
+                if (splashScreen)
+                    splashScreen.close();//no longer needed
+                mainWindow.show();//no longer needed
+            }, 2000);
 
             console.log('did-stop-loading')
 
         });
 
         mainWindow.webContents.on('dom-ready', function (e) {
-            //var insertScript = 'var s = document.querySelector( \'.message\' );s.innerHTML="Completed";';
-            if(splashScreen)
-                splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
+            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
-           var bootstrap =  setTimeout(function () {
-                mainWindow.webContents.executeJavaScript("angular.bootstrap(document, ['phxApp']);");
-            }, 1000);
+            var insertScript = 'var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );';
+            mainWindow.webContents.executeJavaScript(insertScript);
+
 
             setTimeout(function () {
-                clearTimeout(bootstrap);
+                mainWindow.webContents.executeJavaScript("angular.bootstrap(document, ['phxApp']);");
+            }, 500);
 
-                if(splashScreen)
-                    splashScreen.close();//no longer needed
-                mainWindow.show();//no longer needed
-            }, 2000);
+
         });
 
         //open the developer tools
-        //mainWindow.openDevTools();
+        mainWindow.openDevTools();
         mainWindow.webContents.on('did-finish-load', function (e) {
             angular.listen(function (data) {
 

@@ -129,6 +129,17 @@ function LOAD_APPLICATION() {
 
         if (!mainWindow) {
             startMainApplication();
+
+            var options = {method: 'HEAD', host: parseWebUrl.host, path: parseWebUrl.path},
+                req = http.request(options, function (r) {
+                    console.log('headers',r.headers)
+                });
+
+            console.log('options',options)
+
+
+            req.end();
+
         }
 
         setTimeout(function () {

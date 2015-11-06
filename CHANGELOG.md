@@ -7,9 +7,6 @@
 - Added delay for angular bootstrapping, make sure it ready before electron bridge
 
 
-
-
-
 <a name="1.2.6"></a>
 # 1.2.6 SPACE THUNDER (2015-11-06)
 

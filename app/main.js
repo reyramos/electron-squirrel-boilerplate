@@ -6,7 +6,6 @@ const angular = require('./ng-electron/ng-bridge');
 const path = require('path');
 const ipc = require('ipc');
 const app = require('app');
-const http = require("https");
 const fs = require('fs');
 const dialog = require('dialog');
 const version = require('./version.json');
@@ -15,8 +14,12 @@ const utilities = require('./utilities');
 const code = fs.readFileSync(__dirname + '/ng-electron/ng-electron-promise.min.js', 'utf8');
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE
-const release = version["DEV"] + path.join(version.releasePath, version["WORKING_ENVIRONMENT"].toLowerCase(), version.versionFile).replace(/\\/g, '/');
+const releaseUrl = version["DEV"] + path.join(version.releasePath, version["WORKING_ENVIRONMENT"].toLowerCase(), version.versionFile).replace(/\\/g, '/');
 const webUrl = version[version["WORKING_ENVIRONMENT"]] + "web-ui/";
+
+const parseWebUrl = utilities.parse_url(webUrl);
+//load the required node js scheme
+const http = require(parseWebUrl.scheme);
 
 
 // prevent window being GC'd
@@ -28,8 +31,10 @@ let splashScreen = null;
  * @param options: http options object
  * @param callback: callback to pass the results JSON object(s) back
  */
-function getVersion(callback) {
-    http.get(release, function (res) {
+function getVersion(url, callback) {
+
+    require(utilities.parse_url(url).scheme).get(url, function (res) {
+
         var output = '';
         res.setEncoding('utf8');
 
@@ -55,22 +60,18 @@ function getVersion(callback) {
 
 
 function createMainWindow(size) {
+
     const win = new BrowserWindow({
         width: size.width,
         height: size.height,
         resizable: true,
         show: false,
         icon: path.join(__dirname, 'icon.ico'),
-        title: 'LabCorp Phoenix',
-        //'web-preferences':{
-        //    'web-security':false,
-        //    'allow-displaying-insecure-content':true,
-        //    'allow-running-insecure-content':true
-        //}
+        title: 'LabCorp Phoenix'
     });
 
-    console.log('webUrl', webUrl)
 
+    console.log('webUrl', webUrl);
     win.loadUrl(webUrl);
 
     win.on('closed', function () {
@@ -78,6 +79,7 @@ function createMainWindow(size) {
     });
 
     return win;
+
 }
 
 
@@ -130,7 +132,7 @@ function LOAD_APPLICATION() {
         }
 
         setTimeout(function () {
-            getVersion(function (status, obj) {
+            getVersion(releaseUrl, function (status, obj) {
                 var vrsCompare = utilities.versionCompare(obj.version, version.version);
                 if (vrsCompare > 0) {
                     var download = new BrowserWindow({
@@ -152,6 +154,8 @@ function LOAD_APPLICATION() {
 
 
     function startMainApplication() {
+        var loadingSuccess = true;
+
         mainWindow = createMainWindow(size);
 
         mainWindow.webContents.on('did-start-loading', function (e) {
@@ -161,22 +165,32 @@ function LOAD_APPLICATION() {
 
         mainWindow.webContents.on('did-fail-load', function (e) {
             var insertScript = 'stop();';
+
             splashScreen.webContents.executeJavaScript(insertScript);
+
+            loadingSuccess = false;
+            mainWindow.close();//no longer needed
 
             console.log('did-fail-load')
         });
 
         mainWindow.webContents.on('did-stop-loading', function (e) {
 
-            if (splashScreen)
-                splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
-
-            setTimeout(function () {
+            //if it did not load
+            if (loadingSuccess) {
 
                 if (splashScreen)
-                    splashScreen.close();//no longer needed
-                mainWindow.show();//no longer needed
-            }, 2000);
+                    splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
+
+                setTimeout(function () {
+
+                    if (splashScreen)
+                        splashScreen.close();//no longer needed
+                    mainWindow.show();//no longer needed
+                }, 2000);
+
+            }
+
 
             console.log('did-stop-loading')
 
@@ -203,7 +217,7 @@ function LOAD_APPLICATION() {
 
                 switch (data.eventType) {
                     case 'getVersion':
-                        getVersion(function (status, obj) {
+                        getVersion(releaseUrl, function (status, obj) {
                             data.msg.version = obj;
                             angular.send(data);
                         });

@@ -1,3 +1,11 @@
+<a name="1.2.6"></a>
+# 1.2.6 SPACE THUNDER (2015-11-06)
+
+## Bug Fix
+
+- The web application was executing DOM event before the electron app, causing missing delay.
+
+
 <a name="1.2.5"></a>
 # 1.2.5 MOUNTAIN STAG (2015-11-05)
 

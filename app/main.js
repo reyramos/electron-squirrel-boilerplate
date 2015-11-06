@@ -197,7 +197,7 @@ function LOAD_APPLICATION() {
         });
 
         //open the developer tools
-        mainWindow.openDevTools();
+        //mainWindow.openDevTools();
         mainWindow.webContents.on('did-finish-load', function (e) {
             angular.listen(function (data) {
 

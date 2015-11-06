@@ -6,6 +6,7 @@ const angular = require('./ng-electron/ng-bridge');
 const path = require('path');
 const ipc = require('ipc');
 const app = require('app');
+const http = require("https");
 const fs = require('fs');
 const dialog = require('dialog');
 const version = require('./version.json');
@@ -28,7 +29,7 @@ let splashScreen = null;
  * @param callback: callback to pass the results JSON object(s) back
  */
 function getVersion(callback) {
-    require("https").get(release, function (res) {
+    http.get(release, function (res) {
         var output = '';
         res.setEncoding('utf8');
 
@@ -54,12 +55,18 @@ function createMainWindow(size) {
         resizable: true,
         show: false,
         icon: path.join(__dirname, 'icon.ico'),
-        title: 'LabCorp Phoenix'
+        title: 'LabCorp Phoenix',
+        'web-preferences':{
+            'web-security':false,
+            'allow-displaying-insecure-content':true,
+            'allow-running-insecure-content':true
+        }
     });
 
     console.log('webUrl',webUrl)
 
     win.loadUrl(webUrl);
+
     win.on('closed', function () {
         mainWindow = null;
     });
@@ -86,7 +93,6 @@ app.on('window-all-closed', function () {
 
 
 function LOAD_APPLICATION() {
-    var count = 0;
     var electronScreen = require('screen');
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
 
@@ -131,16 +137,15 @@ function LOAD_APPLICATION() {
                     download.loadUrl('file://' + __dirname + '/dialogs/download.html?version=' + obj.version + '&id=' + mainWindow.id);
                     download.on('closed', function () {
                         download = null;
+                        download.destroy();
                     });
-                    //lets close it after
-                    //setTimeout(function () {
-                    //    download.destroy();
-                    //}, 3000);
-                }
+                 }
             });
 
         }, 500);
     });
+
+
 
 
     function startMainApplication() {
@@ -154,19 +159,28 @@ function LOAD_APPLICATION() {
         mainWindow.webContents.on('did-fail-load', function (e) {
             var insertScript = 'stop();';
             splashScreen.webContents.executeJavaScript(insertScript);
+
+            console.log('did-fail-load')
         });
 
         mainWindow.webContents.on('did-stop-loading', function (e) {
-            count++;
-            if (count === 3) {
-                //var insertScript = 'var s = document.querySelector( \'.message\' );s.innerHTML="Completed";';
-                var insertScript = 'setTimeout(complete,1000);';
+            //var insertScript = 'var s = document.querySelector( \'.message\' );s.innerHTML="Completed";';
+            var insertScript = 'setTimeout(complete,1000);';
+
+            if(splashScreen)
                 splashScreen.webContents.executeJavaScript(insertScript);
-                setTimeout(function () {
-                    splashScreen.close();//no longer needed
-                    mainWindow.show();//no longer needed
-                }, 2000)
-            }
+
+            setTimeout(function () {
+
+                if(splashScreen)
+                splashScreen.close();//no longer needed
+
+
+                mainWindow.show();//no longer needed
+            }, 2000);
+
+            console.log('did-stop-loading')
+
         });
 
         mainWindow.webContents.on('dom-ready', function (e) {

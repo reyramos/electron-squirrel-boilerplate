@@ -1,11 +1,12 @@
 module.exports = {
-    "version": "1.2.7",
+    "version": "1.2.8",
     "app_name": "LabCorp Phoenix",
     "app_description": "LabCorp Application",
     "manufacturer": "LabCorp Inc",
     "source": "app",
     "development": "app",
     "distribution": "build",
+    "versionFile": "test.json",
     "electron_build": "./electron-v0.34.2-win32-x64",
     "releasePath": "release",
     "UAT": "https://uat-phoenix.labcorp.com/",

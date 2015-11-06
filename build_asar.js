@@ -15,7 +15,7 @@ const APPLICATION_SRC = path.join(__dirname, config.source);
 const DEVELOPMENT_SRC = path.join(__dirname, config.development);
 const BUILD_DESTINATION = path.join(__dirname, config.distribution);
 
-const RELEASE = config["DEV"] + path.join(config.releasePath, config['WORKING_ENVIRONMENT'].toLowerCase(), 'build.json').replace(/\\/g, '/');
+const RELEASE = config["DEV"] + path.join(config.releasePath, config['WORKING_ENVIRONMENT'].toLowerCase(), config.versionFile).replace(/\\/g, '/');
 
 //searches for icon.png file in the application src to set the Add/Remove icon
 var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.ico');
@@ -46,7 +46,6 @@ if (fs.existsSync(APPLICATION_SRC)) {
 if (fs.existsSync(DEVELOPMENT_SRC)) {
     file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
 }
-
 
 
 /**
@@ -117,11 +116,17 @@ function getVersion(callback) {
         });
 
         res.on('end', function () {
-            var obj = JSON.parse(output);
-            callback(res.statusCode, obj);
+
+            try {
+                var obj = JSON.parse(output);
+                callback(res.statusCode, obj);
+            } catch (e) {
+            }
+
         });
 
     }).on('error', function (e) {
-        callback(e);
+        console.error('ERROR => ',e)
+        //callback(e);
     });
 }

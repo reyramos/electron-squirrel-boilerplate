@@ -44,7 +44,7 @@ String.prototype.capitalize = function () {
 };
 
 
-const RELEASE = config["DEV"] + path.join(config.releasePath, config['WORKING_ENVIRONMENT'].toLowerCase(), 'build.json').replace(/\\/g, '/');
+const RELEASE = config["DEV"] + path.join(config.releasePath, config['WORKING_ENVIRONMENT'].toLowerCase(), config.versionFile).replace(/\\/g, '/');
 
 /**
  * This functionality is to check if the build.json file exist, if it exist it will check if the version is already created.
@@ -157,12 +157,12 @@ function createPackage() {
         if (fs.existsSync(BUILD_DESTINATION)) {
             file_put_content(path.join(BUILD_DESTINATION, 'v' + APP_VERSION + '.wxs'), FILE_WXS);
             //create the versioning file
-            file_put_content(path.join(BUILD_DESTINATION, 'build.json'), JSON.stringify(config));
+            file_put_content(path.join(BUILD_DESTINATION, config.versionFile), JSON.stringify(config));
 
         } else {
             file_put_content('v' + APP_VERSION + '.wxs', FILE_WXS)
             //create the versioning file
-            file_put_content('build.json', JSON.stringify(config));
+            file_put_content(config.versionFile, JSON.stringify(config));
         }
 
 
@@ -399,11 +399,16 @@ function getVersion(callback) {
         });
 
         res.on('end', function () {
-            var obj = JSON.parse(output);
-            callback(res.statusCode, obj);
+            try {
+                var obj = JSON.parse(output);
+                callback(res.statusCode, obj);
+            } catch (e) {
+            }
+
         });
 
     }).on('error', function (e) {
-        callback(e);
+        console.error('ERROR => ',e)
+        //callback(e);
     });
 }

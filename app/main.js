@@ -15,7 +15,7 @@ const utilities = require('./utilities');
 const code = fs.readFileSync(__dirname + '/ng-electron/ng-electron-promise.min.js', 'utf8');
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE
-const release = version["DEV"] + path.join(version.releasePath, version["WORKING_ENVIRONMENT"].toLowerCase(), 'test.json').replace(/\\/g, '/');
+const release = version["DEV"] + path.join(version.releasePath, version["WORKING_ENVIRONMENT"].toLowerCase(), version.versionFile).replace(/\\/g, '/');
 const webUrl = version[version["WORKING_ENVIRONMENT"]] + "web-ui/";
 
 

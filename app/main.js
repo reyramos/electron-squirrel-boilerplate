@@ -72,7 +72,6 @@ function createMainWindow(size) {
         title: 'LabCorp Phoenix'
     });
 
-
     console.log('webUrl', webUrl);
     win.loadUrl(webUrl);
 
@@ -178,19 +177,15 @@ function LOAD_APPLICATION() {
 
         mainWindow.webContents.on('did-fail-load', function (e) {
             var insertScript = 'stop();';
-
             splashScreen.webContents.executeJavaScript(insertScript);
-
             loadingSuccess = false;
             mainWindow.close();//no longer needed
-
             console.log('did-fail-load')
         });
 
         mainWindow.webContents.on('did-stop-loading', function (e) {
 
             //if it did not load
-
 
             console.log('did-stop-loading')
 
@@ -207,6 +202,8 @@ function LOAD_APPLICATION() {
             console.log('did-finish-loading')
 
             var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );angular.bootstrap(document, [\'' + version.ngModuleName + '\']);}()';
+
+
             mainWindow.webContents.executeJavaScript(insertScript);
 
 

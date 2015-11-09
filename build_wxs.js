@@ -50,7 +50,7 @@ const RELEASE = config["DEV"] + path.join(config.releasePath, config['WORKING_EN
  * This functionality is to check if the build.json file exist, if it exist it will check if the version is already created.
  * So it will force the developer to upgrade their version for the new build
  */
-getVersion(function (status, obj) {
+getVersion(RELEASE, function (status, obj) {
     const BUILD_VERSION = String(obj.version).trim() || false;
 
     var vrsCompare = utilities.versionCompare(APP_VERSION, BUILD_VERSION);
@@ -389,8 +389,8 @@ function walk(currentDirPath, callback) {
 
 }
 
-function getVersion(callback) {
-    require("https").get(RELEASE, function (res) {
+function getVersion(url, callback) {
+    require(utilities.parse_url(url).scheme).get(url, function (res) {
         var output = '';
         res.setEncoding('utf8');
 
@@ -408,7 +408,7 @@ function getVersion(callback) {
         });
 
     }).on('error', function (e) {
-        console.error('ERROR => ',e)
+        console.error('ERROR => ', e)
         //callback(e);
     });
 }

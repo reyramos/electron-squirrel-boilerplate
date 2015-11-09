@@ -15,7 +15,7 @@ const code = fs.readFileSync(__dirname + '/ng-electron/ng-electron-promise.min.j
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE
 const releaseUrl = version["DEV"] + path.join(version.releasePath, version["WORKING_ENVIRONMENT"].toLowerCase(), version.versionFile).replace(/\\/g, '/');
-const webUrl = version[version["WORKING_ENVIRONMENT"]] + "web-ui/";
+const webUrl = version[version["WORKING_ENVIRONMENT"]];
 
 const parseWebUrl = utilities.parse_url(webUrl);
 //load the required node js scheme

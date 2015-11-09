@@ -9,9 +9,9 @@ module.exports = {
     "versionFile": "build.json",
     "electron_build": "./electron-v0.34.2-win32-x64",
     "releasePath": "release",
-    "UAT": "https://uat-phoenix.labcorp.com/",
-    "DEV": "https://dev-phoenix.labcorp.com/",
-    "QA": "https://qa-phoenix.labcorp.com/",
+    "UAT": "https://uat-phoenix.labcorp.com/web-ui/",
+    "DEV": "https://dev-phoenix.labcorp.com/web-ui/",
+    "QA": "https://qa-phoenix.labcorp.com/web-ui/",
     "WORKING_ENVIRONMENT":"UAT"
 };
 

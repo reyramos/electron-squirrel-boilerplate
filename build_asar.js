@@ -53,7 +53,7 @@ if (fs.existsSync(DEVELOPMENT_SRC)) {
  * So it will force the developer to upgrade their version for the new build
  */
 
-getVersion(function (status, obj) {
+getVersion(RELEASE, function (status, obj) {
 
     console.log('VERSION => ', obj)
 
@@ -106,8 +106,8 @@ function mkdir(dir) {
     return false;
 }
 
-function getVersion(callback) {
-    require("https").get(RELEASE, function (res) {
+function getVersion(url, callback) {
+    require(utilities.parse_url(url).scheme).get(url, function (res) {
         var output = '';
         res.setEncoding('utf8');
 

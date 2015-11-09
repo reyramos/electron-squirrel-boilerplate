@@ -3,9 +3,11 @@ var path = require('path'),
     utilities = require('./app/utilities.js'),
     config = require("./electron.config.js");
 
+/*******************************************************************
+ APPLICATION VARIABLES
+ *******************************************************************/
 
 config['build_date'] = new Date().toJSON();
-
 
 const APP_NAME = config.app_name;
 const APP_DESCRIPTION = config.app_description;
@@ -25,13 +27,15 @@ const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar
 var ELECTRON_EXE_DESTINATION = fs.existsSync(path.join(ELECTRON_PATH, 'electron.exe')) ? path.join(ELECTRON_PATH, 'electron.exe') : "";
 
 
+var buildFileName = config.versionFilePath.split('/');
+
+buildFileName = buildFileName[buildFileName.length - 1];
+
+
 console.log('APPLICATION_SRC', APPLICATION_SRC)
 console.log('BUILD_DESTINATION', BUILD_DESTINATION)
 console.log('ELECTRON_BUILD_DESTINATION', ELECTRON_BUILD_DESTINATION)
 
-/*******************************************************************
- APPLICATION VARIABLES
- *******************************************************************/
 
 var uuid = require('node-uuid'), //generate unique UUID <https://github.com/broofa/node-uuid>
     rcedit = require('rcedit'),
@@ -44,7 +48,7 @@ String.prototype.capitalize = function () {
 };
 
 
-const RELEASE = utilities.parse_url(config["DEV"]).scheme + '://' + utilities.parse_url(config["DEV"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g,config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
+const RELEASE = utilities.parse_url(config["DEV"]).scheme + '://' + utilities.parse_url(config["DEV"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
 /**
  * This functionality is to check if the build.json file exist, if it exist it will check if the version is already created.
@@ -157,12 +161,12 @@ function createPackage() {
         if (fs.existsSync(BUILD_DESTINATION)) {
             file_put_content(path.join(BUILD_DESTINATION, 'v' + APP_VERSION + '.wxs'), FILE_WXS);
             //create the versioning file
-            file_put_content(path.join(BUILD_DESTINATION, config.versionFile), JSON.stringify(config));
+            file_put_content(path.join(BUILD_DESTINATION, buildFileName), JSON.stringify(config));
 
         } else {
             file_put_content('v' + APP_VERSION + '.wxs', FILE_WXS)
             //create the versioning file
-            file_put_content(config.versionFile, JSON.stringify(config));
+            file_put_content(buildFileName, JSON.stringify(config));
         }
 
 

@@ -15,7 +15,7 @@ const APPLICATION_SRC = path.join(__dirname, config.source);
 const DEVELOPMENT_SRC = path.join(__dirname, config.development);
 const BUILD_DESTINATION = path.join(__dirname, config.distribution);
 
-const RELEASE = utilities.parse_url(config["DEV"]).scheme + '://' + utilities.parse_url(config["DEV"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g,config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
+const RELEASE = utilities.parse_url(config["DEV"]).scheme + '://' + utilities.parse_url(config["DEV"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
 
 //searches for icon.png file in the application src to set the Add/Remove icon
@@ -40,15 +40,6 @@ var rcedit = require('rcedit'),
     asar = require('asar'); //create electron build from the application source files
 
 
-//create the versioning file
-if (fs.existsSync(APPLICATION_SRC)) {
-    file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
-}
-if (fs.existsSync(DEVELOPMENT_SRC)) {
-    file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
-}
-
-
 /**
  * This functionality is to check if the build.json file exist, if it exist it will check if the version is already created.
  * So it will force the developer to upgrade their version for the new build
@@ -57,6 +48,14 @@ if (fs.existsSync(DEVELOPMENT_SRC)) {
 utilities.getVersion(RELEASE, function (status, obj) {
 
     console.log('VERSION => ', obj)
+
+//create the versioning file
+    if (fs.existsSync(APPLICATION_SRC)) {
+        file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
+    }
+    if (fs.existsSync(DEVELOPMENT_SRC)) {
+        file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
+    }
 
 
     const BUILD_VERSION = String(obj.version).trim() || false;

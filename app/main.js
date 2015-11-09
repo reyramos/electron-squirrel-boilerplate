@@ -202,19 +202,19 @@ function LOAD_APPLICATION() {
         });
 
         //open the developer tools
-        //mainWindow.openDevTools();
+        mainWindow.openDevTools();
         mainWindow.webContents.on('did-finish-load', function (e) {
             console.log('did-finish-loading')
 
             var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );angular.bootstrap(document, [\'' + version.ngModuleName + '\']);}()';
-
             mainWindow.webContents.executeJavaScript(insertScript);
 
-            setTimeout(function () {
 
-                mainWindow.webContents.executeJavaScript("alert('"+__dirname.replace(/[\\/]/g,'/')+"');");
-
-            }, 3000);
+            //setTimeout(function () {
+            //
+            //    //mainWindow.webContents.executeJavaScript("alert('"+__dirname.replace(/[\\/]/g,'/')+"');");
+            //
+            //}, 10000);
 
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {
@@ -226,6 +226,7 @@ function LOAD_APPLICATION() {
 
                     if (splashScreen)
                         splashScreen.close();//no longer needed
+
                     mainWindow.show();
                 }, 2000);
 

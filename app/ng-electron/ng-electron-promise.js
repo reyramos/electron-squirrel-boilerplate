@@ -10,7 +10,7 @@
     'use strict';
 
     //TODO://MAKE SURE TO CHANGE TO YOUR APP REFERENCE
-    angular.module('phxApp').run(ElectronRunFunc).factory("electron", Electronfunc);
+    angular.module('APP_MODULE_NAME').run(ElectronRunFunc).factory("electron", Electronfunc);
 
 
     var ELECTRON_BRIDGE_HOST = 'ELECTRON_BRIDGE_HOST',
@@ -27,13 +27,14 @@
 
     try {
         ipc = require('ipc');
+
     } catch (e) {
         console.error('modules not loaded:ipc => ', e)
     }
 
-
     try {
         diskdb = require('diskdb');
+
     } catch (e) {
         console.error('modules not loaded:diskdb => ', e)
     }
@@ -70,7 +71,7 @@
     Electronfunc.$inject = ['$q'];
 
     function Electronfunc($q) {
-        var  o = new Object();
+        var o = new Object();
 
 
         //ipc -> host (main process)
@@ -79,7 +80,7 @@
             if (!ipc)return;
 
             var defer = $q.defer(),
-                data = typeof (data) === "object"?data:{};
+                data = typeof (data) === "object" ? data : {};
 
 
             var callback_id = getCallbackId(),
@@ -101,7 +102,7 @@
 
             ipc.send(ELECTRON_BRIDGE_HOST, {
                 eventType: eventType,
-                promise:callback_id,
+                promise: callback_id,
                 msg: data
             });
 

@@ -15,7 +15,8 @@ const APPLICATION_SRC = path.join(__dirname, config.source);
 const DEVELOPMENT_SRC = path.join(__dirname, config.development);
 const BUILD_DESTINATION = path.join(__dirname, config.distribution);
 
-const RELEASE = config["DEV"] + path.join(config.releasePath, config['WORKING_ENVIRONMENT'].toLowerCase(), config.versionFile).replace(/\\/g, '/');
+const RELEASE = utilities.parse_url(config["DEV"]).scheme + '://' + utilities.parse_url(config["DEV"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g,config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
+
 
 //searches for icon.png file in the application src to set the Add/Remove icon
 var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.ico');
@@ -53,7 +54,7 @@ if (fs.existsSync(DEVELOPMENT_SRC)) {
  * So it will force the developer to upgrade their version for the new build
  */
 
-getVersion(RELEASE, function (status, obj) {
+utilities.getVersion(RELEASE, function (status, obj) {
 
     console.log('VERSION => ', obj)
 
@@ -106,27 +107,3 @@ function mkdir(dir) {
     return false;
 }
 
-function getVersion(url, callback) {
-    require(utilities.parse_url(url).scheme).get(url, function (res) {
-        var output = '';
-        res.setEncoding('utf8');
-
-        res.on('data', function (chunk) {
-            output += chunk;
-        });
-
-        res.on('end', function () {
-
-            try {
-                var obj = JSON.parse(output);
-                callback(res.statusCode, obj);
-            } catch (e) {
-            }
-
-        });
-
-    }).on('error', function (e) {
-        console.error('ERROR => ',e)
-        //callback(e);
-    });
-}

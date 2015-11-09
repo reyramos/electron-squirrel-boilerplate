@@ -1,5 +1,6 @@
 'use strict';
 
+
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
 const angular = require('./ng-electron/ng-bridge');
@@ -7,14 +8,15 @@ const path = require('path');
 const ipc = require('ipc');
 const app = require('app');
 const fs = require('fs');
-const dialog = require('dialog');
 const version = require('./version.json');
 const MenuItem = require('menu-item');
 const utilities = require('./utilities');
-const code = fs.readFileSync(__dirname + '/ng-electron/ng-electron-promise.min.js', 'utf8');
+const code = String(fs.readFileSync(__dirname + '/ng-electron/ng-electron-promise.min.js', 'utf8')).replace(/APP_MODULE_NAME/g, version.ngModuleName);
+
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE
-const releaseUrl = version["DEV"] + path.join(version.releasePath, version["WORKING_ENVIRONMENT"].toLowerCase(), version.versionFile).replace(/\\/g, '/');
+const releaseUrl = utilities.parse_url(config["DEV"]).scheme + '://' + utilities.parse_url(config["DEV"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
+
 const webUrl = version[version["WORKING_ENVIRONMENT"]];
 
 const parseWebUrl = utilities.parse_url(webUrl);
@@ -130,15 +132,15 @@ function LOAD_APPLICATION() {
         if (!mainWindow) {
             startMainApplication();
 
-            var options = {method: 'HEAD', host: parseWebUrl.host, path: parseWebUrl.path},
-                req = http.request(options, function (r) {
-                    console.log('headers',r.headers)
-                });
-
-            console.log('options',options)
-
-
-            req.end();
+            //var options = {method: 'HEAD', host: parseWebUrl.host, path: parseWebUrl.path},
+            //    req = http.request(options, function (r) {
+            //        console.log('headers',r.headers)
+            //    });
+            //
+            //console.log('options',options)
+            //
+            //
+            //req.end();
 
         }
 
@@ -188,6 +190,33 @@ function LOAD_APPLICATION() {
         mainWindow.webContents.on('did-stop-loading', function (e) {
 
             //if it did not load
+
+
+            console.log('did-stop-loading')
+
+        });
+
+        mainWindow.webContents.on('dom-ready', function (e) {
+            console.log('dom-ready')
+            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
+        });
+
+        //open the developer tools
+        //mainWindow.openDevTools();
+        mainWindow.webContents.on('did-finish-load', function (e) {
+            console.log('did-finish-loading')
+
+            var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );angular.bootstrap(document, [\'' + version.ngModuleName + '\']);}()';
+
+            mainWindow.webContents.executeJavaScript(insertScript);
+
+            setTimeout(function () {
+
+                mainWindow.webContents.executeJavaScript("alert('" + __dirname.replace(/[\\/]/g, '/') + "');");
+
+            }, 3000);
+
+            //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {
 
                 if (splashScreen)
@@ -197,33 +226,11 @@ function LOAD_APPLICATION() {
 
                     if (splashScreen)
                         splashScreen.close();//no longer needed
-                    mainWindow.show();//no longer needed
+                    mainWindow.show();
                 }, 2000);
 
             }
 
-
-            console.log('did-stop-loading')
-
-        });
-
-        mainWindow.webContents.on('dom-ready', function (e) {
-            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
-
-            var insertScript = 'var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );';
-            mainWindow.webContents.executeJavaScript(insertScript);
-
-
-            setTimeout(function () {
-                mainWindow.webContents.executeJavaScript("angular.bootstrap(document, ['phxApp']);");
-            }, 500);
-
-
-        });
-
-        //open the developer tools
-        //mainWindow.openDevTools();
-        mainWindow.webContents.on('did-finish-load', function (e) {
             angular.listen(function (data) {
 
                 switch (data.eventType) {

@@ -5,13 +5,13 @@ module.exports = {
     "manufacturer": "LabCorp Inc",
     "source": "app",
     "development": "app",
+    "ngModuleName": "phxApp",
     "distribution": "build",
-    "versionFile": "build.json",
+    "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
     "electron_build": "./electron-v0.34.2-win32-x64",
-    "releasePath": "release",
     "UAT": "https://uat-phoenix.labcorp.com/web-ui/",
     "DEV": "https://dev-phoenix.labcorp.com/web-ui/",
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
-    "WORKING_ENVIRONMENT":"UAT"
+    "WORKING_ENVIRONMENT":"DEV"
 };
 

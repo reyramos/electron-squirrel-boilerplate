@@ -63,7 +63,34 @@ service.versionCompare = function (v1, v2, options) {
     return 0;
 }
 
-service.parse_url = function(str, component) {
+
+service.getVersion = function (url, callback) {
+
+    require(service.parse_url(url).scheme).get(url, function (res) {
+        var output = '';
+        res.setEncoding('utf8');
+
+        res.on('data', function (chunk) {
+            output += chunk;
+        });
+
+        res.on('end', function () {
+            try {
+                var obj = JSON.parse(output);
+                callback(res.statusCode, obj);
+            } catch (e) {
+            }
+
+        });
+
+    }).on('error', function (e) {
+        console.error('ERROR => ', e)
+        //callback(e);
+    });
+}
+
+
+service.parse_url = function (str, component) {
     //       discuss at: http://phpjs.org/functions/parse_url/
     //      original by: Steven Levithan (http://blog.stevenlevithan.com)
     // reimplemented by: Brett Zamir (http://brett-zamir.me)
@@ -112,9 +139,9 @@ service.parse_url = function(str, component) {
         'fragment'
     ];
     var parser = {
-        php    : /^(?:([^:\/?#]+):)?(?:\/\/()(?:(?:()(?:([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?))?()(?:(()(?:(?:[^?#\/]*\/)*)()(?:[^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-        strict : /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-        loose  : /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/\/?)?((?:(([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/ // Added one optional slash to post-scheme to catch file:/// (should restrict this)
+        php: /^(?:([^:\/?#]+):)?(?:\/\/()(?:(?:()(?:([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?))?()(?:(()(?:(?:[^?#\/]*\/)*)()(?:[^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+        strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+        loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/\/?)?((?:(([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/ // Added one optional slash to post-scheme to catch file:/// (should restrict this)
     };
 
     var m = parser[mode].exec(str);
@@ -138,7 +165,7 @@ service.parse_url = function(str, component) {
         parser = /(?:^|&)([^&=]*)=?([^&]*)/g;
         uri[name] = {};
         query = uri[key[12]] || '';
-        query.replace(parser, function($0, $1, $2) {
+        query.replace(parser, function ($0, $1, $2) {
             if ($1) {
                 uri[name][$1] = $2;
             }

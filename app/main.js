@@ -15,7 +15,7 @@ const code = String(fs.readFileSync(__dirname + '/ng-electron/ng-electron-promis
 
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE
-const releaseUrl = utilities.parse_url(config["DEV"]).scheme + '://' + utilities.parse_url(config["DEV"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
+const releaseUrl = utilities.parse_url(version["DEV"]).scheme + '://' + utilities.parse_url(version["DEV"]).host + path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g,version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
 const webUrl = version[version["WORKING_ENVIRONMENT"]];
 
@@ -212,7 +212,7 @@ function LOAD_APPLICATION() {
 
             setTimeout(function () {
 
-                mainWindow.webContents.executeJavaScript("alert('" + __dirname.replace(/[\\/]/g, '/') + "');");
+                mainWindow.webContents.executeJavaScript("alert('"+__dirname.replace(/[\\/]/g,'/')+"');");
 
             }, 3000);
 

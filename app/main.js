@@ -74,6 +74,7 @@ function createMainWindow(size) {
 
     console.log('webUrl', webUrl);
     win.loadUrl(webUrl);
+    //win.loadUrl('file://' + __dirname + '/index.html');
 
     win.on('closed', function () {
         mainWindow = null;
@@ -196,6 +197,7 @@ function LOAD_APPLICATION() {
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
         });
 
+
         //open the developer tools
         mainWindow.openDevTools();
         mainWindow.webContents.on('did-finish-load', function (e) {
@@ -203,9 +205,7 @@ function LOAD_APPLICATION() {
 
             var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );angular.bootstrap(document, [\'' + version.ngModuleName + '\']);}()';
 
-
             mainWindow.webContents.executeJavaScript(insertScript);
-
 
             //setTimeout(function () {
             //

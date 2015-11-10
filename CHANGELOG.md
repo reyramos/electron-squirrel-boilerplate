@@ -1,4 +1,12 @@
 <a name="1.2.6"></a>
+# 1.2.8  ORANGE MOTHERBOARD (2015-11-10)
+
+## Enhancements
+
+- Read local config file for environment change.
+
+
+<a name="1.2.6"></a>
 # 1.2.7 TUNDRA GRIZZLY (2015-11-06)
 
 ## Bug Fix

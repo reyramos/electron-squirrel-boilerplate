@@ -213,6 +213,10 @@ function LOAD_APPLICATION() {
             console.log('dom-ready')
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
+            //var insertScript = 'var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );';
+            var insertScript = 'var link = document.createElement(\'script\');link.id = "ELECTRON_BRIDGE";link.type = "text/javascript";link.src = window.URL.createObjectURL(new Blob([\'' + code + '\']));document.head.appendChild( link );';
+            mainWindow.webContents.executeJavaScript(insertScript);
+
         });
 
 
@@ -220,10 +224,10 @@ function LOAD_APPLICATION() {
         mainWindow.webContents.on('did-finish-load', function (e) {
             console.log('did-finish-loading')
 
-            var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );}()';
 
-            mainWindow.webContents.executeJavaScript(insertScript);
-            mainWindow.webContents.executeJavaScript('angular.bootstrap(document, [\'' + version.ngModuleName + '\']);');
+
+
+            //mainWindow.webContents.executeJavaScript('angular.bootstrap(document, [\'' + version.ngModuleName + '\']);');
 
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {
@@ -243,17 +247,17 @@ function LOAD_APPLICATION() {
 
             angular.listen(function (data) {
 
-                console.log('listen',data)
+                console.log('listen', data)
 
                 switch (data.eventType) {
                     case 'getVersion':
-                        console.log('getVersion',releaseUrl)
+                        console.log('getVersion', releaseUrl)
 
                         getVersion(releaseUrl, function (status, obj) {
                             data.msg.version = obj;
 
-                            console.log('status',status)
-                            console.log('obj',obj)
+                            console.log('status', status)
+                            console.log('obj', obj)
 
 
                             angular.send(data);

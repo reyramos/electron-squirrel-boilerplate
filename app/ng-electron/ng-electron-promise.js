@@ -1,16 +1,8 @@
-///**
-// * ngElectron service for AngularJS
-// * (c)2015 C. Byerley @develephant
-// * http://develephant.github.io/ngElectron
-// * See also: https://develephant.gitgub.io/amy
-// * Version 0.4.0
-// */
-
 (function (angular) {
+
     'use strict';
 
-    angular.module('APP_MODULE_NAME').factory("electron", Electronfunc);
-
+    angular.module('ngElectron',[]).factory("electron", Electronfunc);
 
     var ELECTRON_BRIDGE_HOST = 'ELECTRON_BRIDGE_HOST',
         ELECTRON_BRIDGE_CLIENT = 'ELECTRON_BRIDGE_CLIENT',
@@ -39,7 +31,7 @@
     }
 
 
-    // This creates a new callback ID for a request
+// This creates a new callback ID for a request
     function getCallbackId() {
         currentCallbackId += 1;
         //reset callback id
@@ -65,7 +57,7 @@
         listening.apply(data)
     }
 
-    Electronfunc.$inject = ['$q','$rootScope'];
+    Electronfunc.$inject = ['$q', '$rootScope'];
 
     function Electronfunc($q, $rootScope) {
         var o = new Object();
@@ -181,8 +173,6 @@
 
         return o;
     }
-
-
 
 
 })(window.angular);

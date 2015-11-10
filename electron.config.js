@@ -12,6 +12,6 @@ module.exports = {
     "UAT": "https://uat-phoenix.labcorp.com/web-ui/",
     "DEV": "https://dev-phoenix.labcorp.com/web-ui/",
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
-    "WORKING_ENVIRONMENT":"QA"
+    "WORKING_ENVIRONMENT":"DEV"
 };
 

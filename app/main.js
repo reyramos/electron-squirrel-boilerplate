@@ -1,6 +1,5 @@
 'use strict';
 
-
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
 const angular = require('./ng-electron/ng-bridge');
@@ -13,20 +12,47 @@ const MenuItem = require('menu-item');
 const utilities = require('./utilities');
 const code = String(fs.readFileSync(__dirname + '/ng-electron/ng-electron-promise.min.js', 'utf8')).replace(/APP_MODULE_NAME/g, version.ngModuleName);
 
+//GET THE ENVIRONMENT VARIABLES TO CREATE,
+//This url contains the version that is hosted on the remote server for package control
+const releaseUrl = utilities.parse_url(version["DEV"]).scheme + '://' + utilities.parse_url(version["DEV"]).host + path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
-//GET THE ENVIRONMENT VARIABLES TO CREATE
-const releaseUrl = utilities.parse_url(version["DEV"]).scheme + '://' + utilities.parse_url(version["DEV"]).host + path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g,version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
-const webUrl = version[version["WORKING_ENVIRONMENT"]];
+//If the local machine contains a config app, lets load the environment specified, used for developers
+let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
+    localConfig = null;
 
-const parseWebUrl = utilities.parse_url(webUrl);
+//Allows for local path config file
+if (fs.existsSync(localFilePath)) {
+    localConfig = require(localFilePath);
+}
+
+let webUrl = !localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment;
 //load the required node js scheme
-const http = require(parseWebUrl.scheme);
-
+let http = require('http');
 
 // prevent window being GC'd
 let mainWindow = null;
 let splashScreen = null;
+
+
+/**
+ * Create the main Electron Application
+ */
+app.on('window-all-closed', function () {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+}).on('activate-with-no-open-windows', function () {
+    if (!mainWindow) {
+        validateURL(webUrl).then(LOAD_APPLICATION)
+    }
+}).on('will-quit', function () {
+    console.log('<====================================>');
+    console.log('Goodbye');
+}).on('ready', function () {
+    validateURL(webUrl).then(LOAD_APPLICATION)
+});
+
 
 /**
  * getJSON:  REST get request returning JSON object(s)
@@ -60,7 +86,6 @@ function getVersion(url, callback) {
     });
 }
 
-
 function createMainWindow(size) {
 
     const win = new BrowserWindow({
@@ -84,23 +109,25 @@ function createMainWindow(size) {
 
 }
 
+function validateURL(url) {
 
-/**
- * Create the main Electron Application
- */
-app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
-        app.quit();
+    function _finally(url) {
+        //update variables
+        webUrl = url;
+        http = require(utilities.parse_url(url).scheme);
+        return url;
     }
-}).on('activate-with-no-open-windows', function () {
-    if (!mainWindow) {
-        LOAD_APPLICATION();
-    }
-}).on('will-quit', function () {
-    console.log('<====================================>');
-    console.log('Goodbye');
-}).on('ready', LOAD_APPLICATION);
 
+
+    return new Promise(function (fulfill, reject) {
+        require(utilities.parse_url(url).scheme).get(url, function (res) {
+            webUrl = res.statusCode === 200 ? url : version[version["WORKING_ENVIRONMENT"]];
+            fulfill(_finally(webUrl));
+        }).on('error', function (e) {
+            fulfill(_finally(version[version["WORKING_ENVIRONMENT"]]));
+        });
+    });
+}
 
 function LOAD_APPLICATION() {
     var electronScreen = require('screen');
@@ -131,17 +158,6 @@ function LOAD_APPLICATION() {
 
         if (!mainWindow) {
             startMainApplication();
-
-            //var options = {method: 'HEAD', host: parseWebUrl.host, path: parseWebUrl.path},
-            //    req = http.request(options, function (r) {
-            //        console.log('headers',r.headers)
-            //    });
-            //
-            //console.log('options',options)
-            //
-            //
-            //req.end();
-
         }
 
         setTimeout(function () {
@@ -199,19 +215,13 @@ function LOAD_APPLICATION() {
 
 
         //open the developer tools
-        mainWindow.openDevTools();
+        //mainWindow.openDevTools();
         mainWindow.webContents.on('did-finish-load', function (e) {
             console.log('did-finish-loading')
 
             var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );angular.bootstrap(document, [\'' + version.ngModuleName + '\']);}()';
 
             mainWindow.webContents.executeJavaScript(insertScript);
-
-            //setTimeout(function () {
-            //
-            //    //mainWindow.webContents.executeJavaScript("alert('"+__dirname.replace(/[\\/]/g,'/')+"');");
-            //
-            //}, 10000);
 
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {

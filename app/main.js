@@ -101,6 +101,7 @@ function createMainWindow(size) {
     win.loadUrl(webUrl);
     //win.loadUrl('file://' + __dirname + '/index.html');
 
+    win.openDevTools();
     win.on('closed', function () {
         mainWindow = null;
     });
@@ -211,17 +212,18 @@ function LOAD_APPLICATION() {
         mainWindow.webContents.on('dom-ready', function (e) {
             console.log('dom-ready')
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
+
         });
 
 
         //open the developer tools
-        //mainWindow.openDevTools();
         mainWindow.webContents.on('did-finish-load', function (e) {
             console.log('did-finish-loading')
 
-            var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );angular.bootstrap(document, [\'' + version.ngModuleName + '\']);}()';
+            var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );}()';
 
             mainWindow.webContents.executeJavaScript(insertScript);
+            mainWindow.webContents.executeJavaScript('angular.bootstrap(document, [\'' + version.ngModuleName + '\']);');
 
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {
@@ -241,10 +243,19 @@ function LOAD_APPLICATION() {
 
             angular.listen(function (data) {
 
+                console.log('listen',data)
+
                 switch (data.eventType) {
                     case 'getVersion':
+                        console.log('getVersion',releaseUrl)
+
                         getVersion(releaseUrl, function (status, obj) {
                             data.msg.version = obj;
+
+                            console.log('status',status)
+                            console.log('obj',obj)
+
+
                             angular.send(data);
                         });
                         break;

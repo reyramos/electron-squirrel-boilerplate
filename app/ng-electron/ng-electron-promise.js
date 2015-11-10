@@ -9,8 +9,7 @@
 (function (angular) {
     'use strict';
 
-    //TODO://MAKE SURE TO CHANGE TO YOUR APP REFERENCE
-    angular.module('APP_MODULE_NAME').run(ElectronRunFunc).factory("electron", Electronfunc);
+    angular.module('APP_MODULE_NAME').factory("electron", Electronfunc);
 
 
     var ELECTRON_BRIDGE_HOST = 'ELECTRON_BRIDGE_HOST',
@@ -66,13 +65,10 @@
         listening.apply(data)
     }
 
+    Electronfunc.$inject = ['$q','$rootScope'];
 
-    ElectronRunFunc.$inject = ['$rootScope', 'electron'];
-    Electronfunc.$inject = ['$q'];
-
-    function Electronfunc($q) {
+    function Electronfunc($q, $rootScope) {
         var o = new Object();
-
 
         //ipc -> host (main process)
         o.send = function (eventType, data) {
@@ -165,11 +161,6 @@
         }
 
 
-        return o;
-    }
-
-
-    function ElectronRunFunc($rootScope, electron) {
         //Start listening for host messages
         if (ipc) {
             console.log('ngElectron has joined the room.');
@@ -184,9 +175,14 @@
              and we are in a more closed enviroment
              as it is.
              */
-            $rootScope.$electron = electron;
+            $rootScope.$electron = o;
         }
 
+
+        return o;
     }
+
+
+
 
 })(window.angular);

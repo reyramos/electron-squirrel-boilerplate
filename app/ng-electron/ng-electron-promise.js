@@ -2,7 +2,7 @@
 
     'use strict';
 
-    angular.module('ngElectron',[]).factory("electron", Electronfunc);
+    angular.module('APP_MODULE_NAME').factory("electron", Electronfunc);
 
     var ELECTRON_BRIDGE_HOST = 'ELECTRON_BRIDGE_HOST',
         ELECTRON_BRIDGE_CLIENT = 'ELECTRON_BRIDGE_CLIENT',

@@ -213,21 +213,15 @@ function LOAD_APPLICATION() {
             console.log('dom-ready')
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
-            //var insertScript = 'var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );';
-            var insertScript = 'var link = document.createElement(\'script\');link.id = "ELECTRON_BRIDGE";link.type = "text/javascript";link.src = window.URL.createObjectURL(new Blob([\'' + code + '\']));document.head.appendChild( link );';
-            mainWindow.webContents.executeJavaScript(insertScript);
-
         });
 
 
         //open the developer tools
         mainWindow.webContents.on('did-finish-load', function (e) {
             console.log('did-finish-loading')
-
-
-
-
-            //mainWindow.webContents.executeJavaScript('angular.bootstrap(document, [\'' + version.ngModuleName + '\']);');
+            var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );}();';
+            mainWindow.webContents.executeJavaScript(insertScript);
+            mainWindow.webContents.executeJavaScript('angular.bootstrap(document, [\'' + version.ngModuleName + '\']);');
 
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {

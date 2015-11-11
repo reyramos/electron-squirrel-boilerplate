@@ -221,7 +221,7 @@ function LOAD_APPLICATION() {
             console.log('did-finish-loading')
 
             var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );}();';
-            //mainWindow.webContents.executeJavaScript(insertScript);
+            mainWindow.webContents.executeJavaScript(insertScript);
 
             //mainWindow.webContents.executeJavaScript('angular.bootstrap(document, [\'' + version.ngModuleName + '\']);');
 

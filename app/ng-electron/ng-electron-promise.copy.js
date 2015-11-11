@@ -1,10 +1,8 @@
-(function (window, angular) {
+(function (angular) {
 
     'use strict';
 
-    //////////////
-    // Constants
-    /////////////
+    angular.module('APP_MODULE_NAME').factory("electron", Electronfunc);
 
     var ELECTRON_BRIDGE_HOST = 'ELECTRON_BRIDGE_HOST',
         ELECTRON_BRIDGE_CLIENT = 'ELECTRON_BRIDGE_CLIENT',
@@ -33,9 +31,7 @@
     }
 
 
-    /**
-     * This creates a new callback ID for a request
-     */
+// This creates a new callback ID for a request
     function getCallbackId() {
         currentCallbackId += 1;
         //reset callback id
@@ -61,15 +57,10 @@
         listening.apply(data)
     }
 
-    /////////////////
-    // Constructor
-    ////////////////
+    Electronfunc.$inject = ['$q', '$rootScope'];
 
-    var Electron = function () {
-        var o = new Object(),
-            initInjector = angular.injector(["ng"]),
-            $rootScope = initInjector.get("$rootScope"),
-            $q = initInjector.get("$q");
+    function Electronfunc($q, $rootScope) {
+        var o = new Object();
 
         //ipc -> host (main process)
         o.send = function (eventType, data) {
@@ -104,7 +95,7 @@
             });
 
             return defer.promise;
-        };
+        }
 
 
         //diskdb
@@ -122,7 +113,6 @@
 
             return 'diskdb is not installed and/or configured.'
         };
-
 
         try {
             //remote require
@@ -178,13 +168,11 @@
              as it is.
              */
             $rootScope.$electron = o;
-
         }
 
+
         return o;
+    }
 
-    };
 
-    window.Electron = Electron;
-
-})(typeof window === 'object' ? window : this, window.angular);
+})(window.angular);

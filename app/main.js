@@ -219,9 +219,11 @@ function LOAD_APPLICATION() {
         //open the developer tools
         mainWindow.webContents.on('did-finish-load', function (e) {
             console.log('did-finish-loading')
+
             var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );}();';
-            mainWindow.webContents.executeJavaScript(insertScript);
-            mainWindow.webContents.executeJavaScript('angular.bootstrap(document, [\'' + version.ngModuleName + '\']);');
+            //mainWindow.webContents.executeJavaScript(insertScript);
+
+            //mainWindow.webContents.executeJavaScript('angular.bootstrap(document, [\'' + version.ngModuleName + '\']);');
 
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {

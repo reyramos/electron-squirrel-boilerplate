@@ -232,6 +232,7 @@ function LOAD_APPLICATION() {
         //open the developer tools
         mainWindow.webContents.on('did-finish-load', function (e) {
             console.log('did-finish-loading')
+            mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
 
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {

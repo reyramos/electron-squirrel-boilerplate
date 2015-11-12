@@ -232,6 +232,10 @@ function LOAD_APPLICATION() {
         //open the developer tools
         mainWindow.webContents.on('did-finish-load', function (e) {
             console.log('did-finish-loading')
+
+            let hotFix = uglify.minify([__dirname + '/hotFixInjection.js']);
+            let insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' +  hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
+            mainWindow.webContents.executeJavaScript(insertScript);
             mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
 
             //if it did not failed, lets hide the splashScreen and show the application

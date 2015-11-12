@@ -201,14 +201,23 @@ function LOAD_APPLICATION() {
             console.log('did-fail-load')
         });
 
+        /**
+         * Once the web Application finish loading, lets inject
+         * the ngElectron component, to be used within the webApp
+         */
         mainWindow.webContents.on('did-stop-loading', function (e) {
-
-            //if it did not load
 
             console.log('did-stop-loading')
 
+            var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );}();';
+            mainWindow.webContents.executeJavaScript(insertScript);
+            //mainWindow.webContents.executeJavaScript('angular.bootstrap(document, [\'' + version.ngModuleName + '\']);');
+
         });
 
+        /**
+         * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
+         */
         mainWindow.webContents.on('dom-ready', function (e) {
             console.log('dom-ready')
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
@@ -219,11 +228,6 @@ function LOAD_APPLICATION() {
         //open the developer tools
         mainWindow.webContents.on('did-finish-load', function (e) {
             console.log('did-finish-loading')
-
-            var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );}();';
-            mainWindow.webContents.executeJavaScript(insertScript);
-
-            //mainWindow.webContents.executeJavaScript('angular.bootstrap(document, [\'' + version.ngModuleName + '\']);');
 
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {

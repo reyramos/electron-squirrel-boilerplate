@@ -1,5 +1,9 @@
 /**
  * Created by Ramor11 on 11/12/2015.
+ *
+ * THIS IS A TEMPORARY HOT FIX FOR ELECTRON INJECTION WITHIN THE WEBVIEW WEBAPPLICATION
+ * TO BE REMOVE AT A LATER RELEASE
+ *
  */
 !(function (angular) {
     'use strict';

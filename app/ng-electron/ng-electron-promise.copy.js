@@ -76,42 +76,35 @@
 
             if (!ipc)return;
 
-            var data = typeof (data) === "object" ? data : {},
-                defer = new Promise(function (resolve, reject) {
-                    // do a thing, possibly async, then…
-
-                    var callback_id = getCallbackId(),
-                        etype = typeof arguments[0],
-                        dtype = typeof arguments[1];
-
-                    if (etype === 'object') {
-                        data = eventType;
-                        eventType = (typeof(data.promise) === "undefined" ? callback_id : data.promise);
-                    }
+            var defer = $q.defer(),
+                data = typeof (data) === "object" ? data : {};
 
 
-                    //set the caller
-                    service.onmessage[callback_id] = {
-                        time: new Date(),
-                        cb:{
-                            resolve:resolve,
-                            reject:reject
-                        }
-                    };
+            var callback_id = getCallbackId(),
+                etype = typeof arguments[0],
+                dtype = typeof arguments[1];
+
+            if (etype === 'object') {
+                data = eventType;
+                eventType = (typeof(data.promise) === "undefined" ? callback_id : data.promise);
+            }
 
 
-                    ipc.send(ELECTRON_BRIDGE_HOST, {
-                        eventType: eventType,
-                        promise: callback_id,
-                        msg: data
-                    });
-                });
+            //set the caller
+            service.onmessage[callback_id] = {
+                time: new Date(),
+                cb: defer
+            };
 
 
-            return defer;
+            ipc.send(ELECTRON_BRIDGE_HOST, {
+                eventType: eventType,
+                promise: callback_id,
+                msg: data
+            });
+
+            return defer.promise;
         };
-
-
 
 
         ////diskdb

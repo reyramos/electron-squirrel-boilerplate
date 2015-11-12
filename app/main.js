@@ -1,6 +1,6 @@
 'use strict';
 
-let openDevTools = false;
+let openDevTools = true;
 
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
@@ -146,8 +146,9 @@ function validateURL(url) {
             };
 
 
-        var req = require(parse.scheme).request(options, function (res) {
-            console.log('STATUS: ' + res.statusCode);
+        var req = require(parse.scheme).get(options, function (res) {
+            console.log("statusCode: ", res.statusCode);
+            console.log("headers: ", res.headers);
 
             var invalids = [500];
             webUrl = invalids.indexOf(res.statusCode) === -1 ? url : version[version["WORKING_ENVIRONMENT"]];

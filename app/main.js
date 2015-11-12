@@ -34,13 +34,12 @@ if (fs.existsSync(localFilePath)) {
 }
 
 
-
 let webUrl = !localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment;
 //load the required node js scheme
 let http = require('http');
 
 
-console.log('webUrl',webUrl)
+console.log('webUrl', webUrl)
 
 
 // prevent window being GC'd
@@ -126,7 +125,7 @@ function createMainWindow(size) {
 function validateURL(url) {
 
     function _finally(url) {
-        console.log('validateURL._finally:',url)
+        console.log('validateURL._finally:', url)
 
         //update variables
         webUrl = url;
@@ -136,15 +135,38 @@ function validateURL(url) {
 
 
     return new Promise(function (fulfill, reject) {
-        require(utilities.parse_url(url).scheme).get(url, function (res) {
-            webUrl = res.statusCode === 200 ? url : version[version["WORKING_ENVIRONMENT"]];
-            fulfill(_finally(webUrl));
-        }).on('error', function (e) {
+        var parse = utilities.parse_url(url),
+            options = {
+                host: parse.host,
+                port: parse.scheme === 'https' ? 443 : 80,
+                method: 'GET',
+                rejectUnauthorized: false,
+                requestCert: true,
+                agent: false
+            };
 
-            console.log('error:',e)
+
+        var req = require(parse.scheme).request(options, function (res) {
+            console.log('STATUS: ' + res.statusCode);
+
+            var invalids = [500];
+            webUrl = invalids.indexOf(res.statusCode) === -1 ? url : version[version["WORKING_ENVIRONMENT"]];
+
+
+            fulfill(_finally(webUrl));
+
+
+        });
+
+        req.on('error', function (e) {
+            console.log('error:', e)
 
             fulfill(_finally(version[version["WORKING_ENVIRONMENT"]]));
         });
+
+        req.end();
+
+
     });
 }
 
@@ -264,7 +286,7 @@ function LOAD_APPLICATION() {
             if (loadingSuccess) {
                 //Electron Bug, when this is open, it injects the executeJavascript code, we are just gonna remove it
                 //before we show the app
-                if(!openDevTools)mainWindow.closeDevTools();
+                if (!openDevTools)mainWindow.closeDevTools();
 
 
                 if (splashScreen)

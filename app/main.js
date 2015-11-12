@@ -1,5 +1,7 @@
 'use strict';
 
+let openDevTools = true;
+
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
 const angular = require('./ng-electron/ng-bridge');
@@ -31,9 +33,15 @@ if (fs.existsSync(localFilePath)) {
     localConfig = require(localFilePath);
 }
 
+
+
 let webUrl = !localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment;
 //load the required node js scheme
 let http = require('http');
+
+
+console.log('webUrl',webUrl)
+
 
 // prevent window being GC'd
 let mainWindow = null;
@@ -102,7 +110,7 @@ function createMainWindow(size) {
         title: 'LabCorp Phoenix'
     });
 
-    console.log('webUrl', webUrl);
+    console.log('createMainWindow => ', webUrl);
     win.loadUrl(webUrl);
     //win.loadUrl('file://' + __dirname + '/index.html');
 
@@ -118,6 +126,8 @@ function createMainWindow(size) {
 function validateURL(url) {
 
     function _finally(url) {
+        console.log('validateURL._finally:',url)
+
         //update variables
         webUrl = url;
         http = require(utilities.parse_url(url).scheme);
@@ -130,6 +140,9 @@ function validateURL(url) {
             webUrl = res.statusCode === 200 ? url : version[version["WORKING_ENVIRONMENT"]];
             fulfill(_finally(webUrl));
         }).on('error', function (e) {
+
+            console.log('error:',e)
+
             fulfill(_finally(version[version["WORKING_ENVIRONMENT"]]));
         });
     });
@@ -251,7 +264,7 @@ function LOAD_APPLICATION() {
             if (loadingSuccess) {
                 //Electron Bug, when this is open, it injects the executeJavascript code, we are just gonna remove it
                 //before we show the app
-                mainWindow.closeDevTools();
+                if(!openDevTools)mainWindow.closeDevTools();
 
 
                 if (splashScreen)

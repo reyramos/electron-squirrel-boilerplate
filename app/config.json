@@ -1,0 +1,4 @@
+{
+  "app_name": "LabCorp Phoenix",
+  "environment": "http://qa-phoenix.labcorp.com/web-ui/"
+}

@@ -24,13 +24,13 @@
     } catch (e) {
         console.error('modules not loaded:ipc => ', e)
     }
-
-    try {
-        diskdb = require('diskdb');
-
-    } catch (e) {
-        console.error('modules not loaded:diskdb => ', e)
-    }
+    //
+    //try {
+    //    diskdb = require('diskdb');
+    //
+    //} catch (e) {
+    //    console.error('modules not loaded:diskdb => ', e)
+    //}
 
 
     /**
@@ -110,21 +110,21 @@
         };
 
 
-        //diskdb
-        o.db = function (collection) {
-            if (diskdb) {
-                var collection_arr = [];
-                if (typeof collection == 'object') {
-                    collection_arr = collection;
-                } else if (typeof collection == 'string') {
-                    collection_arr.push(collection);
-                }
-
-                return diskdb.connect(db_silo, collection_arr);
-            }
-
-            return 'diskdb is not installed and/or configured.'
-        };
+        ////diskdb
+        //o.db = function (collection) {
+        //    if (diskdb) {
+        //        var collection_arr = [];
+        //        if (typeof collection == 'object') {
+        //            collection_arr = collection;
+        //        } else if (typeof collection == 'string') {
+        //            collection_arr.push(collection);
+        //        }
+        //
+        //        return diskdb.connect(db_silo, collection_arr);
+        //    }
+        //
+        //    return 'diskdb is not installed and/or configured.'
+        //};
 
 
         try {

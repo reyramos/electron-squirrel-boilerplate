@@ -1,6 +1,6 @@
 'use strict';
 
-let openDevTools = true;
+let openDevTools = false;
 
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');

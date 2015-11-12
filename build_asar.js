@@ -15,7 +15,7 @@ const APPLICATION_SRC = path.join(__dirname, config.source);
 const DEVELOPMENT_SRC = path.join(__dirname, config.development);
 const BUILD_DESTINATION = path.join(__dirname, config.distribution);
 
-const RELEASE = utilities.parse_url(config["DEV"]).scheme + '://' + utilities.parse_url(config["DEV"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
+const RELEASE = utilities.parse_url(config["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(config["VERSION_SERVER"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
 
 //searches for icon.png file in the application src to set the Add/Remove icon

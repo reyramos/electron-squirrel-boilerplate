@@ -106,7 +106,7 @@ function createMainWindow(size) {
     win.loadUrl(webUrl);
     //win.loadUrl('file://' + __dirname + '/index.html');
 
-    //win.openDevTools();
+    win.openDevTools();
     win.on('closed', function () {
         mainWindow = null;
     });
@@ -249,6 +249,11 @@ function LOAD_APPLICATION() {
 
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {
+                //Electron Bug, when this is open, it injects the executeJavascript code, we are just gonna remove it
+                //before we show the app
+                mainWindow.closeDevTools();
+
+
                 if (splashScreen)
                     splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
                 setTimeout(function () {

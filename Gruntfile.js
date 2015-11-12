@@ -107,7 +107,6 @@ module.exports = function (grunt) {
     grunt.registerTask(
         'msi-build', [
             'execute:build-wxs',
-            'clean:asar'
         ]
     );
 

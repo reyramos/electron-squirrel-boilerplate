@@ -1,4 +1,4 @@
-!(function (window, angular) {
+!(function (window, undefined) {
 
     'use strict';
 
@@ -25,12 +25,12 @@
         console.error('modules not loaded:ipc => ', e)
     }
 
-    //try {
-    //    diskdb = require('diskdb');
-    //
-    //} catch (e) {
-    //    console.error('modules not loaded:diskdb => ', e)
-    //}
+    try {
+        diskdb = require('diskdb');
+
+    } catch (e) {
+        console.error('modules not loaded:diskdb => ', e)
+    }
 
 
     /**
@@ -66,10 +66,8 @@
     ////////////////
 
     var Electron = function () {
-        var o = new Object(),
-            initInjector = angular.injector(["ng"]),
-            $rootScope = initInjector.get("$rootScope"),
-            $q = initInjector.get("$q");
+        var o = new Object(), $rootScope = window.angular || angular ? angular.injector(["ng"]).get("$rootScope") : null;
+
 
         //ipc -> host (main process)
         o.send = function (eventType, data) {
@@ -93,9 +91,9 @@
                     //set the caller
                     service.onmessage[callback_id] = {
                         time: new Date(),
-                        cb:{
-                            resolve:resolve,
-                            reject:reject
+                        cb: {
+                            resolve: resolve,
+                            reject: reject
                         }
                     };
 
@@ -112,23 +110,21 @@
         };
 
 
+        //diskdb
+        o.db = function (collection) {
+            if (diskdb) {
+                var collection_arr = [];
+                if (typeof collection == 'object') {
+                    collection_arr = collection;
+                } else if (typeof collection == 'string') {
+                    collection_arr.push(collection);
+                }
 
+                return diskdb.connect(db_silo, collection_arr);
+            }
 
-        ////diskdb
-        //o.db = function (collection) {
-        //    if (diskdb) {
-        //        var collection_arr = [];
-        //        if (typeof collection == 'object') {
-        //            collection_arr = collection;
-        //        } else if (typeof collection == 'string') {
-        //            collection_arr.push(collection);
-        //        }
-        //
-        //        return diskdb.connect(db_silo, collection_arr);
-        //    }
-        //
-        //    return 'diskdb is not installed and/or configured.'
-        //};
+            return 'diskdb is not installed and/or configured.'
+        };
 
 
         try {
@@ -174,7 +170,10 @@
         if (ipc) {
             console.log('ngElectron has joined the room.');
             ipc.on(ELECTRON_BRIDGE_CLIENT, function (data) {
-                $rootScope.$broadcast(ELECTRON_HOST_ID, data);
+
+                if ($rootScope)
+                    $rootScope.$broadcast(ELECTRON_HOST_ID, data);
+
                 onMessage(data)
             });
             /*
@@ -184,7 +183,8 @@
              and we are in a more closed enviroment
              as it is.
              */
-            $rootScope.$electron = o;
+            if ($rootScope)
+                $rootScope.$electron = o;
 
         }
 
@@ -194,4 +194,4 @@
 
     window.Electron = Electron;
 
-})(typeof window === 'object' ? window : this, window.angular);
+})(typeof window === 'object' ? window : this);

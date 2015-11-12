@@ -14,7 +14,7 @@ module.exports = function (grunt) {
             ]
         }
     );
-
+    var config = require("./electron.config.js");
     var appConfig = {
         app: 'app',
         dist: 'build',
@@ -24,6 +24,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'), // Project settings
         yeoman: appConfig, // Watches files for changes and runs tasks based on the changed files
+        electronConfig: config, // Watches files for changes and runs tasks based on the changed files
         clean: {
             build: {
                 files: [{
@@ -31,6 +32,13 @@ module.exports = function (grunt) {
                     cwd: 'build',
                     extDot: 'last',
                     src: ['**.wixobj', '**.wixpdb']
+                }]
+            },
+            asar:{
+                files: [{
+                    expand: true,
+                    cwd: '<%= electronConfig.electron_build %>',
+                    src: ['resources/app.asar']
                 }]
             }
         },
@@ -99,11 +107,16 @@ module.exports = function (grunt) {
     grunt.registerTask(
         'msi-build', [
             'execute:build-wxs',
-            //'exec:candle',
-            //'exec:light',
-            //'clean'
-
+            'clean:asar'
         ]
+    );
+
+    grunt.registerTask(
+        'candle', ['exec:candle']
+    );
+
+    grunt.registerTask(
+        'light', ['exec:light', 'clean']
     );
 
     grunt.registerTask(

@@ -106,7 +106,7 @@ function createMainWindow(size) {
     win.loadUrl(webUrl);
     //win.loadUrl('file://' + __dirname + '/index.html');
 
-    win.openDevTools();
+    //win.openDevTools();
     win.on('closed', function () {
         mainWindow = null;
     });
@@ -212,7 +212,7 @@ function LOAD_APPLICATION() {
          */
         mainWindow.webContents.on('did-stop-loading', function (e) {
 
-            console.log('did-stop-loading')
+            console.log('did-stop-loading');
 
             var insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
             mainWindow.webContents.executeJavaScript(insertScript);
@@ -233,25 +233,29 @@ function LOAD_APPLICATION() {
         mainWindow.webContents.on('did-finish-load', function (e) {
             console.log('did-finish-loading')
 
+
+            /***************************************************************
+             * THIS HOTFIX IS TO BE REMOVE IN FUTURE RELEASES
+             ***************************************************************/
             let hotFix = uglify.minify([__dirname + '/hotFixInjection.js']);
-            let insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' +  hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
+            let insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
             mainWindow.webContents.executeJavaScript(insertScript);
             mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
+            /***************************************************************
+             * THE CODE ABOVE IS TO BE REMOVE IN FUTURE RELEASE OF QA ENVIRONMENT,
+             * IT IS FOR THE INJECTION OF ELECTRON WITHIN THE ENVIRONMENT
+             ***************************************************************/
+
 
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {
-
                 if (splashScreen)
                     splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
-
                 setTimeout(function () {
-
                     if (splashScreen)
                         splashScreen.close();//no longer needed
-
                     mainWindow.show();
                 }, 2000);
-
             }
 
             angular.listen(function (data) {
@@ -260,15 +264,8 @@ function LOAD_APPLICATION() {
 
                 switch (data.eventType) {
                     case 'getVersion':
-                        console.log('getVersion', releaseUrl)
-
                         getVersion(releaseUrl, function (status, obj) {
                             data.msg.version = obj;
-
-                            console.log('status', status)
-                            console.log('obj', obj)
-
-
                             angular.send(data);
                         });
                         break;
@@ -277,7 +274,6 @@ function LOAD_APPLICATION() {
                         break;
 
                 }
-
             });
         });
 

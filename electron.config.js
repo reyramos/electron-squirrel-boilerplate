@@ -5,7 +5,6 @@ module.exports = {
     "manufacturer": "LabCorp Inc",
     "source": "app",
     "development": "app",
-    "ngModuleName": "phxApp",
     "distribution": "build",
     "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
     "electron_build": "./electron-v0.34.2-win32-x64",

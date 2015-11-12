@@ -8,9 +8,14 @@ const ipc = require('ipc');
 const app = require('app');
 const fs = require('fs');
 const version = require('./version.json');
-const MenuItem = require('menu-item');
 const utilities = require('./utilities');
-const code = String(fs.readFileSync(__dirname + '/ng-electron/ng-electron-promise.min.js', 'utf8')).replace(/APP_MODULE_NAME/g, version.ngModuleName);
+const uglify = require("uglify-js");
+
+//read the file as string and minify for code injection
+let results = uglify.minify([__dirname + '/ng-electron/ng-electron-promise.js']);
+//minify file
+const code = results.code;
+
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE,
 //This url contains the version that is hosted on the remote server for package control
@@ -209,9 +214,8 @@ function LOAD_APPLICATION() {
 
             console.log('did-stop-loading')
 
-            var insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + code + '\');s.appendChild(newContent);document.body.appendChild( s );}();';
+            var insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
             mainWindow.webContents.executeJavaScript(insertScript);
-            //mainWindow.webContents.executeJavaScript('angular.bootstrap(document, [\'' + version.ngModuleName + '\']);');
 
         });
 

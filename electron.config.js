@@ -12,6 +12,6 @@ module.exports = {
     "DEV": "https://dev-demographics-phoenix.labcorp.com/web-ui/",
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
     "VERSION_SERVER": "https://dev-phoenix.labcorp.com/web-ui/",
-    "WORKING_ENVIRONMENT": "DEV"
+    "WORKING_ENVIRONMENT": "UAT"
 };
 

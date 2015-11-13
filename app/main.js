@@ -1,6 +1,6 @@
 'use strict';
 
-let openDevTools = false;
+let openDevTools = true;
 
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
@@ -33,7 +33,6 @@ if (fs.existsSync(localFilePath)) {
     localConfig = require(localFilePath);
 }
 
-
 let webUrl = !localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment;
 //load the required node js scheme
 let http = require('http');
@@ -45,8 +44,6 @@ console.log('webUrl', webUrl)
 // prevent window being GC'd
 let mainWindow = null;
 let splashScreen = null;
-
-
 /**
  * Create the main Electron Application
  */
@@ -124,6 +121,25 @@ function createMainWindow(size) {
 
 function validateURL(url) {
 
+    /**
+     * Build the Splash Screen
+     */
+    splashScreen = new BrowserWindow({
+        width: 602,
+        height: 502,
+        resizable: false,
+        transparent: true,
+        frame: false,
+        'always-on-top': true
+    });
+    splashScreen.loadUrl('file://' + __dirname + '/dialogs/spash-screen.html?');
+    splashScreen.on('closed', function () {
+        splashScreen = null;
+    })
+
+    var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Validating Path ...";';
+    splashScreen.webContents.executeJavaScript(insertScript);
+
     function _finally(url) {
         console.log('validateURL._finally:', url)
 
@@ -150,6 +166,10 @@ function validateURL(url) {
             console.log("statusCode: ", res.statusCode);
             console.log("headers: ", res.headers);
 
+            var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Status: '+res.statusCode+'";';
+            splashScreen.webContents.executeJavaScript(insertScript);
+
+
             var invalids = [500];
             webUrl = invalids.indexOf(res.statusCode) === -1 ? url : version[version["WORKING_ENVIRONMENT"]];
 
@@ -161,6 +181,11 @@ function validateURL(url) {
 
         req.on('error', function (e) {
             console.log('error:', e)
+
+
+            var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Validating Error:";stop();';
+            splashScreen.webContents.executeJavaScript(insertScript);
+
 
             fulfill(_finally(version[version["WORKING_ENVIRONMENT"]]));
         });
@@ -176,21 +201,8 @@ function LOAD_APPLICATION() {
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
 
 
-    /**
-     * Build the Splash Screen
-     */
-    splashScreen = new BrowserWindow({
-        width: 602,
-        height: 502,
-        resizable: false,
-        transparent: true,
-        frame: false,
-        'always-on-top': true
-    });
-    splashScreen.loadUrl('file://' + __dirname + '/dialogs/spash-screen.html?');
-    splashScreen.on('closed', function () {
-        splashScreen = null;
-    })
+
+
 
     /**
      * Once the Splash Screen finish loading, check the version, start to load the application
@@ -200,11 +212,13 @@ function LOAD_APPLICATION() {
 
         if (!mainWindow) {
             startMainApplication();
+
         }
 
         setTimeout(function () {
             getVersion(releaseUrl, function (status, obj) {
-                var vrsCompare = utilities.versionCompare(obj.version, version.version);
+                var vrsCompare = utilities.versionCompare(obj.version, version.version),
+                    filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl + '&id=' + mainWindow.id;
                 if (vrsCompare > 0) {
                     var download = new BrowserWindow({
                         width: 402,
@@ -213,7 +227,10 @@ function LOAD_APPLICATION() {
                         frame: false,
                         'always-on-top': true
                     });
-                    download.loadUrl('file://' + __dirname + '/dialogs/download.html?version=' + obj.version + '&id=' + mainWindow.id);
+
+                    console.log('filePath',filePath)
+
+                    download.loadUrl(filePath);
                     download.on('closed', function () {
                         download = null;
                     });
@@ -227,19 +244,23 @@ function LOAD_APPLICATION() {
     function startMainApplication() {
         var loadingSuccess = true;
 
+        var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Loading Application...";';
+        splashScreen.webContents.executeJavaScript(insertScript);
+
         mainWindow = createMainWindow(size);
 
         mainWindow.webContents.on('did-start-loading', function (e) {
-            //var insertScript = 'var s = document.querySelector( \'.message\' );s.innerHTML="Loading ...";';
-            //splashScreen.webContents.executeJavaScript(insertScript);
+            var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Loading Application...";';
+            splashScreen.webContents.executeJavaScript(insertScript);
         });
 
         mainWindow.webContents.on('did-fail-load', function (e) {
-            var insertScript = 'stop();';
-            splashScreen.webContents.executeJavaScript(insertScript);
             loadingSuccess = false;
             mainWindow.close();//no longer needed
             console.log('did-fail-load')
+
+            var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Failed Loading Application...";stop();';
+            splashScreen.webContents.executeJavaScript(insertScript);
         });
 
         /**
@@ -259,6 +280,10 @@ function LOAD_APPLICATION() {
          * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
          */
         mainWindow.webContents.on('dom-ready', function (e) {
+
+            var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Ready...";';
+            splashScreen.webContents.executeJavaScript(insertScript);
+
             console.log('dom-ready')
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
@@ -300,15 +325,12 @@ function LOAD_APPLICATION() {
             }
 
             angular.listen(function (data) {
-
                 console.log('listen', data)
-
                 switch (data.eventType) {
                     case 'getVersion':
-                        getVersion(releaseUrl, function (status, obj) {
-                            data.msg.version = obj;
-                            angular.send(data);
-                        });
+                        data.msg.version = version;
+                        console.log('getVersion:', version)
+                        angular.send(data);
                         break;
                     default :
                         angular.send(data);

@@ -8,8 +8,9 @@
 
 <script>
     var remote = require('remote'),
+            utilities = require('../utilities.js'),
             currentWindow = remote.getCurrentWindow(),
-            mainWindow = _GET('id'),
+            versionUrl = _GET('url'),
             releasePath = null,
             anHttpRequest = new XMLHttpRequest();
 
@@ -25,23 +26,20 @@
         return search;
     }
 
+
+    !function () {
+        var parts = versionUrl.split('/');
+        utilities.getVersion(versionUrl, function (status, obj) {
+            parts[parts.length - 1] = 'v' + obj.version + '.msi';
+            releasePath = parts.join('/');
+            document.querySelector('#version').innerHTML = obj.version;
+        })
+    }();
+
+
     function download() {
-
-        anHttpRequest.open("GET", '../version.json', true);
-        anHttpRequest.send(null);
-
-        anHttpRequest.onreadystatechange = function () {
-            var config = JSON.parse(anHttpRequest.responseText);
-
-            releasePath = config["DEV"] + require('path').join(config.releasePath, config["WORKING_ENVIRONMENT"].toLowerCase(), 'v' + _GET('version') + '.msi').replace(/\\/g, '/');
-            require('shell').openExternal(releasePath);
-        };
-
-//        var newWindow = window.open(urlBuilds, 'download');
-//        currentWindow.hide();
-//        setTimeout(function () {
-//            newWindow.close();
-//        }, 2000);
+        require('shell').openExternal(releasePath);
+        currentWindow.close();
     }
 
 </script>
@@ -49,7 +47,8 @@
 <div class="modal-box in">
     <div class="panel panel-danger">
         <div class="panel-heading"><h3 class="panel-title">Upgrade Available</h3></div>
-        <div class="panel-body">A new version is available, Please download and install.</div>
+        <div class="panel-body">A new version is available <span id="version"></span> , Please download and install.
+        </div>
         <div class="panel-footer">
             <a href="javascript:download()">Download</a>
             <a href="javascript:currentWindow.close()" class="pull-right">Cancel</a>

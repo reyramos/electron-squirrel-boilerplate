@@ -40,13 +40,21 @@
             background-color: #2f99bb;
 
         }
+
+        .status-text {
+            font-size: 12px;
+            padding: 0px 3px;
+            position: absolute;
+        }
     </style>
 </head>
 
 <body>
 <div class="splashscreen">
     <div class="loader">
-        <span class="bar"></span>
+        <div class="bar">
+            <span class="status-text">Loading...</span>
+        </div>
     </div>
 </div>
 
@@ -105,7 +113,7 @@
             return;
         }
         var rnd = 0,
-            stat = status;
+                stat = status;
 
         if (stat >= 0 && stat < 0.25) {
             // Start out between 3 - 6% increments
@@ -124,7 +132,7 @@
             rnd = 0;
         }
 
-        var prct = Number.parseFloat(stat) +  Number.parseFloat(rnd);
+        var prct = Number.parseFloat(stat) + Number.parseFloat(rnd);
         set(prct);
     }
     function stop() {
@@ -134,7 +142,7 @@
     }
 
     function complete() {
-        completeTimeout =  window.setTimeout(function() {
+        completeTimeout = window.setTimeout(function () {
             set(1);
             started = false;
             status = 0;

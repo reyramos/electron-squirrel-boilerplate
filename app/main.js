@@ -1,6 +1,6 @@
 'use strict';
 
-let openDevTools = true;
+let openDevTools = false;
 
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
@@ -137,8 +137,9 @@ function validateURL(url) {
         splashScreen = null;
     })
 
-    var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Validating Path ...";';
-    splashScreen.webContents.executeJavaScript(insertScript);
+
+    updateLoadinStatus("Validating Path ...")
+
 
     function _finally(url) {
         console.log('validateURL._finally:', url)
@@ -166,9 +167,7 @@ function validateURL(url) {
             console.log("statusCode: ", res.statusCode);
             console.log("headers: ", res.headers);
 
-            var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Status: '+res.statusCode+'";';
-            splashScreen.webContents.executeJavaScript(insertScript);
-
+            updateLoadinStatus("Status: " + res.statusCode)
 
             var invalids = [500];
             webUrl = invalids.indexOf(res.statusCode) === -1 ? url : version[version["WORKING_ENVIRONMENT"]];
@@ -181,10 +180,7 @@ function validateURL(url) {
 
         req.on('error', function (e) {
             console.log('error:', e)
-
-
-            var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Validating Error:";stop();';
-            splashScreen.webContents.executeJavaScript(insertScript);
+            updateLoadinStatus("Validating Error:", true)
 
 
             fulfill(_finally(version[version["WORKING_ENVIRONMENT"]]));
@@ -196,12 +192,21 @@ function validateURL(url) {
     });
 }
 
+
+function updateLoadinStatus(msg, stop) {
+    var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="' + msg + '";';
+
+    if (stop)
+        insertScript += "stop();";
+
+    if (splashScreen)
+        splashScreen.webContents.executeJavaScript(insertScript);
+
+}
+
 function LOAD_APPLICATION() {
     var electronScreen = require('screen');
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
-
-
-
 
 
     /**
@@ -228,7 +233,7 @@ function LOAD_APPLICATION() {
                         'always-on-top': true
                     });
 
-                    console.log('filePath',filePath)
+                    console.log('filePath', filePath)
 
                     download.loadUrl(filePath);
                     download.on('closed', function () {
@@ -244,14 +249,13 @@ function LOAD_APPLICATION() {
     function startMainApplication() {
         var loadingSuccess = true;
 
-        var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Loading Application...";';
-        splashScreen.webContents.executeJavaScript(insertScript);
+        updateLoadinStatus("Loading Application...")
+
 
         mainWindow = createMainWindow(size);
 
         mainWindow.webContents.on('did-start-loading', function (e) {
-            var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Loading Application...";';
-            splashScreen.webContents.executeJavaScript(insertScript);
+            updateLoadinStatus("Loading Application...")
         });
 
         mainWindow.webContents.on('did-fail-load', function (e) {
@@ -259,8 +263,9 @@ function LOAD_APPLICATION() {
             mainWindow.close();//no longer needed
             console.log('did-fail-load')
 
-            var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Failed Loading Application...";stop();';
-            splashScreen.webContents.executeJavaScript(insertScript);
+            updateLoadinStatus("Loading Application...", true)
+
+
         });
 
         /**
@@ -281,8 +286,8 @@ function LOAD_APPLICATION() {
          */
         mainWindow.webContents.on('dom-ready', function (e) {
 
-            var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="Ready...";';
-            splashScreen.webContents.executeJavaScript(insertScript);
+            updateLoadinStatus("Ready...")
+
 
             console.log('dom-ready')
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
@@ -313,6 +318,7 @@ function LOAD_APPLICATION() {
                 //Electron Bug, when this is open, it injects the executeJavascript code, we are just gonna remove it
                 //before we show the app
                 if (!openDevTools)mainWindow.closeDevTools();
+                updateLoadinStatus("Ready...")
 
 
                 if (splashScreen)

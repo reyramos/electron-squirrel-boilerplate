@@ -1,17 +1,10 @@
-///**
-// * ngElectron service for AngularJS
-// * (c)2015 C. Byerley @develephant
-// * http://develephant.github.io/ngElectron
-// * See also: https://develephant.gitgub.io/amy
-// * Version 0.4.0
-// */
+!(function (window, angular) {
 
-(function (angular) {
     'use strict';
 
-    //TODO://MAKE SURE TO CHANGE TO YOUR APP REFERENCE
-    angular.module('phxApp').run(ElectronRunFunc).factory("electron", Electronfunc);
-
+    //////////////
+    // Constants
+    /////////////
 
     var ELECTRON_BRIDGE_HOST = 'ELECTRON_BRIDGE_HOST',
         ELECTRON_BRIDGE_CLIENT = 'ELECTRON_BRIDGE_CLIENT',
@@ -27,19 +20,22 @@
 
     try {
         ipc = require('ipc');
+
     } catch (e) {
         console.error('modules not loaded:ipc => ', e)
     }
 
+    //try {
+    //    diskdb = require('diskdb');
+    //
+    //} catch (e) {
+    //    console.error('modules not loaded:diskdb => ', e)
+    //}
 
-    try {
-        diskdb = require('diskdb');
-    } catch (e) {
-        console.error('modules not loaded:diskdb => ', e)
-    }
 
-
-    // This creates a new callback ID for a request
+    /**
+     * This creates a new callback ID for a request
+     */
     function getCallbackId() {
         currentCallbackId += 1;
         //reset callback id
@@ -65,13 +61,15 @@
         listening.apply(data)
     }
 
+    /////////////////
+    // Constructor
+    ////////////////
 
-    ElectronRunFunc.$inject = ['$rootScope', 'electron'];
-    Electronfunc.$inject = ['$q'];
-
-    function Electronfunc($q) {
-        var  o = new Object();
-
+    var Electron = function () {
+        var o = new Object(),
+            initInjector = angular.injector(["ng"]),
+            $rootScope = initInjector.get("$rootScope"),
+            $q = initInjector.get("$q");
 
         //ipc -> host (main process)
         o.send = function (eventType, data) {
@@ -79,7 +77,7 @@
             if (!ipc)return;
 
             var defer = $q.defer(),
-                data = typeof (data) === "object"?data:{};
+                data = typeof (data) === "object" ? data : {};
 
 
             var callback_id = getCallbackId(),
@@ -101,29 +99,30 @@
 
             ipc.send(ELECTRON_BRIDGE_HOST, {
                 eventType: eventType,
-                promise:callback_id,
+                promise: callback_id,
                 msg: data
             });
 
             return defer.promise;
-        }
-
-
-        //diskdb
-        o.db = function (collection) {
-            if (diskdb) {
-                var collection_arr = [];
-                if (typeof collection == 'object') {
-                    collection_arr = collection;
-                } else if (typeof collection == 'string') {
-                    collection_arr.push(collection);
-                }
-
-                return diskdb.connect(db_silo, collection_arr);
-            }
-
-            return 'diskdb is not installed and/or configured.'
         };
+
+
+        ////diskdb
+        //o.db = function (collection) {
+        //    if (diskdb) {
+        //        var collection_arr = [];
+        //        if (typeof collection == 'object') {
+        //            collection_arr = collection;
+        //        } else if (typeof collection == 'string') {
+        //            collection_arr.push(collection);
+        //        }
+        //
+        //        return diskdb.connect(db_silo, collection_arr);
+        //    }
+        //
+        //    return 'diskdb is not installed and/or configured.'
+        //};
+
 
         try {
             //remote require
@@ -164,11 +163,6 @@
         }
 
 
-        return o;
-    }
-
-
-    function ElectronRunFunc($rootScope, electron) {
         //Start listening for host messages
         if (ipc) {
             console.log('ngElectron has joined the room.');
@@ -183,9 +177,14 @@
              and we are in a more closed enviroment
              as it is.
              */
-            $rootScope.$electron = electron;
+            $rootScope.$electron = o;
+
         }
 
-    }
+        return o;
 
-})(window.angular);
+    };
+
+    window.Electron = Electron;
+
+})(typeof window === 'object' ? window : this, window.angular);

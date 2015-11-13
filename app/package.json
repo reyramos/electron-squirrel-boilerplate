@@ -4,11 +4,13 @@
   "description": "",
   "main": "main.js",
   "author": "",
-  "license": "ISC",
   "dependencies": {
     "diskdb": "^0.1.14",
+    "node.extend": "^1.1.3",
     "phpjs": "1.3.2",
-    "q": "^1.0.0",
-    "node.extend": "^1.1.3"
+    "q": "^1.0.0"
+  },
+  "devDependencies": {
+    "uglify-js": "^2.6.0"
   }
 }

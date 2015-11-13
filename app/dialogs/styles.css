@@ -2,35 +2,35 @@
 
 @font-face {
     font-family: 'PhxLightFont';
-    src: url('./fonts/light/roboto_light_300.woff') format('woff');
+    src: url('../fonts/light/roboto_light_300.woff') format('woff');
     font-weight: 300;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'PhxRegularFont';
-    src: url('./fonts/regular/roboto_regular_400.woff') format('woff');
+    src: url('../fonts/regular/roboto_regular_400.woff') format('woff');
     font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'PhxMediumFont';
-    src: url('./fonts/medium/roboto_medium_500.woff') format('woff');
+    src: url('../fonts/medium/roboto_medium_500.woff') format('woff');
     font-weight: 500;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'PhxCondensedFont';
-    src: url('./fonts/condensed/roboto_condensed_400.woff') format('woff');
+    src: url('../fonts/condensed/roboto_condensed_400.woff') format('woff');
     font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'PhxBoldFont';
-    src: url('./fonts/regular/roboto_regular_400.woff') format('woff');
+    src: url('../fonts/regular/roboto_regular_400.woff') format('woff');
     font-weight: bold;
     font-style: normal;
 }
@@ -40,7 +40,12 @@ body, html {
     height: 100%;
     padding: 0px;
     margin: 0px;
-    font-family: PhxLightFont, "Helvetica Neue", Helvetica, Arial, sans-serif;;
+    font-family: PhxLightFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: #ffffff;
+}
+
+.pull-right{
+    float: right;
 }
 
 .modal-box .panel, .modal-box .panel-heading {
@@ -62,12 +67,9 @@ body, html {
 }
 
 .panel-danger {
-    border-color: #a94442;
+    border-color: #2F8DBB;
 }
 
-.panel-danger {
-    border-color: #ebccd1;
-}
 
 .panel {
     margin-bottom: 18px;
@@ -133,7 +135,7 @@ body, html {
 
 .panel-danger > .panel-heading {
     color: #ffffff;
-    background-color: #a94442;
+    background-color: #2f99bb;
 }
 
 .modal-box .panel, .modal-box .panel-heading {
@@ -145,11 +147,6 @@ body, html {
     margin: 0px;
 }
 
-.panel-danger > .panel-heading {
-    color: #a94442;
-    background-color: #f2dede;
-    border-color: #ebccd1;
-}
 
 .panel-heading {
     padding: 10px 15px;

@@ -7,29 +7,51 @@
 </head>
 
 <script>
-    var version = window.location.search.split('version=')[1] || window.location.hash.split('version=')[1],
-            urlBuilds = "http://dev-eligibility-phoenix.labcorp.com/reyramos/builds/v" + version + '.msi';
+    var remote = require('remote'),
+            utilities = require('../utilities.js'),
+            currentWindow = remote.getCurrentWindow(),
+            versionUrl = _GET('url'),
+            releasePath = null,
+            anHttpRequest = new XMLHttpRequest();
 
-    function download() {
-        var newWindow = window.open(urlBuilds, 'download'),
-                remote = require('remote');
+    function _GET(string) {
+        var query = window.location.search.replace(/\?/, '').split('&') || window.location.hash.replace(/\?/, '').split('&'),
+                search = "";
+        for (var i in query) {
+            if (query[i].indexOf(string + "=") > -1) {
+                return query[i].replace(string + "=", "");
+            }
+        }
 
-        remote.getCurrentWindow().hide();
-
-        setTimeout(function () {
-            newWindow.close();
-        }, 2000);
+        return search;
     }
 
+
+    !function () {
+        var parts = versionUrl.split('/');
+        utilities.getVersion(versionUrl, function (status, obj) {
+            parts[parts.length - 1] = 'v' + obj.version + '.msi';
+            releasePath = parts.join('/');
+            document.querySelector('#version').innerHTML = obj.version;
+        })
+    }();
+
+
+    function download() {
+        require('shell').openExternal(releasePath);
+        currentWindow.close();
+    }
 
 </script>
 <body>
 <div class="modal-box in">
     <div class="panel panel-danger">
         <div class="panel-heading"><h3 class="panel-title">Upgrade Available</h3></div>
-        <div class="panel-body">A new version of LabCorp Phoenix is available, Please download and install.</div>
+        <div class="panel-body">A new version is available <span id="version"></span> , Please download and install.
+        </div>
         <div class="panel-footer">
             <a href="javascript:download()">Download</a>
+            <a href="javascript:currentWindow.close()" class="pull-right">Cancel</a>
 
         </div>
     </div>

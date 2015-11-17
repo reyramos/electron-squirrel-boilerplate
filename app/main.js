@@ -2,6 +2,8 @@
 
 let openDevTools = false;
 
+require('web-contents');
+
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
 const angular = require('./ng-electron/ng-bridge');

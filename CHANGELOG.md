@@ -1,4 +1,12 @@
-<a name="1.2.6"></a>
+<a name="1.2.11"></a>
+# 1.2.11  JET LIGHTNING (2015-11-17)
+
+## Enhancements
+
+- Update Electron v0.35.0-win32-ia32
+
+
+<a name="1.2.10"></a>
 # 1.2.10  SAPPHIRE FALCON (2015-11-13)
 
 ## Enhancements

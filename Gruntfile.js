@@ -115,7 +115,10 @@ module.exports = function (grunt) {
     );
 
     grunt.registerTask(
-        'light', ['exec:light', 'clean']
+        'light', [
+            'exec:light',
+            //'clean'
+        ]
     );
 
     grunt.registerTask(

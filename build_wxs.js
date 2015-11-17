@@ -216,15 +216,16 @@ function getComponents(files, filePath) {
 
         switch (ext) {
             case 'exe':
-                idComponent = file;
+                idComponent = file.replace(/\./g, '_').toUpperCase();
 
                 COMPONENTS += ['<Component',
-                    'Id=\'' + file + '\'',
+                    'Id=\'' + idComponent + '\'',
                     'Guid=\'' + uuid.v1() + '\'>',
                     '<File Id=\'' + file + '\'',
                     'Source=\'' + filePath + file + '\'',
                     'KeyPath="yes" Checksum="yes"',
-                    'Vital=\'yes\'/>',
+                    //'Vital=\'yes\'' +
+                    '/>',
                     '<RemoveFolder Id="APPLICATIONROOTDIRECTORY"',
                     'On="uninstall"/>',
                     '</Component>'].join(" ");
@@ -245,7 +246,8 @@ function getComponents(files, filePath) {
                     //registry Information
                     '<RegistryKey Root="HKCU"',
                     'Key="Software\\Microsoft\\' + appName + '"',
-                    'Action="createAndRemoveOnUninstall">',
+                    'ForceCreateOnInstall="yes"' +
+                    '>',
                     '<RegistryValue Type="integer" Name="' + appName + '" Value="1" KeyPath="yes"/>',
                     '<RegistryValue Type="string" Value="Default Value"/>',
                     '</RegistryKey>',
@@ -273,7 +275,8 @@ function getComponents(files, filePath) {
                     //registry Information
                     '<RegistryKey Root="HKCU"',
                     'Key="Software\\' + appName + '"',
-                    'Action="createAndRemoveOnUninstall">',
+                    'ForceCreateOnInstall="yes"' +
+                    '>',
                     '<RegistryValue Type="integer" Name="installed" Value="1" KeyPath="yes"/>',
                     '<RegistryValue Type="string" Value="Default Value"/>',
                     '</RegistryKey>',
@@ -281,7 +284,6 @@ function getComponents(files, filePath) {
 
                     '</Component>',
                     '</DirectoryRef>'].join(" ");
-
 
                 COMPONENTS_REFS += '<ComponentRef Id="ApplicationShortcutDesktop" />';
 
@@ -295,7 +297,9 @@ function getComponents(files, filePath) {
                     'Id=\'' + idFile + '\'',
                     //'Name=\'' + file + '\'',
                     'Source=\'' + filePath + file + '\'',
-                    'KeyPath="yes" Vital=\'yes\' />',
+                    'KeyPath="yes" ' +
+                    //'Vital=\'yes\' ' +
+                    '/>',
                     '<RemoveFile Id="Remove' + idComponent + '" Name="' + file + '" On="both"/>',
                     '</Component>'].join(" ");
                 break;

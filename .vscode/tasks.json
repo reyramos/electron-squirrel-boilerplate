@@ -1,5 +1,5 @@
 {
  "version": "0.1.0",
  "command": "node_modules\\electron-prebuilt\\dist\\electron.exe",
- "args": ["app"]
+ "args": ["--debug=5858","app"]
 }

@@ -247,6 +247,9 @@ function getComponents(files, filePath) {
                 ].join(" ");
 
 
+                /**************************************************************
+                 * CREATE THE APPLICATION SHORTCUT ON DESKTOP
+                 **************************************************************/
 
                 COMPONENTS += ['<Shortcut Id="ApplicationShortcutDesktop" Name="' + APP_NAME + '"',
                     'Description="' + APP_DESCRIPTION + '"',
@@ -262,64 +265,16 @@ function getComponents(files, filePath) {
                 ].join(" ");
 
 
+                //registry Information
+                COMPONENTS += ['<RegistryKey Root="HKLM"',
+                    'Key="Software\\Microsoft\\' + appName + '"',
+                    'ForceCreateOnInstall="yes">',
+                    '<RegistryValue Type="integer" Name="SomeIntegerValue" Value="1"/>',
+                    '<RegistryValue Type="string" Value="~ WIN7RTM"/>',
+
+                    '</RegistryKey>'].join(" ");
 
                 COMPONENTS += '</Component>';
-
-                //
-                //DIRECTORY_REF += ['<DirectoryRef Id="ApplicationProgramsFolder">',
-                //    '<Component Id="ApplicationShortcut" Guid="' + uuid.v1() + '">',
-                //    '<Shortcut Id="ApplicationStartMenuShortcut"',
-                //    'Name="' + APP_NAME + '"',
-                //    'Description="' + APP_DESCRIPTION + '"',
-                //    'Target="[#' + file + ']"',
-                //    'WorkingDirectory="APPLICATIONROOTDIRECTORY"/>' +
-                //    '<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>',
-                //
-                //    //registry Information
-                //    '<RegistryKey Root="HKCU"',
-                //    'Key="Software\\Microsoft\\' + appName + '"',
-                //    'ForceCreateOnInstall="yes"' +
-                //    '>',
-                //    '<RegistryValue Type="integer" Name="' + appName + '" Value="1" KeyPath="yes"/>',
-                //    '<RegistryValue Type="string" Value="Default Value"/>',
-                //    '</RegistryKey>',
-                //
-                //
-                //    '</Component>',
-                //    '</DirectoryRef>'].join(" ");
-
-
-
-                //COMPONENTS_REFS += '<ComponentRef Id="ApplicationShortcut" />';
-
-                /**************************************************************
-                 * CREATE THE APPLICATION SHORTCUT ON DESKTOP
-                 **************************************************************/
-                //DIRECTORY_REF += ['<DirectoryRef Id="DesktopFolder">',
-                //    '<Component Id="ApplicationShortcutDesktop" Guid="' + uuid.v1() + '">',
-                //    '<Shortcut Id="ApplicationDesktopShortcut"',
-                //    'Name="' + APP_NAME + '"',
-                //    'Description="' + APP_DESCRIPTION + '"',
-                //    'Target="[#' + file + ']"',
-                //    'WorkingDirectory="APPLICATIONROOTDIRECTORY"/>',
-                //
-                //    //remove desktop folder
-                //    '<RemoveFolder Id="DesktopFolder" On="uninstall"/>',
-                //
-                //    //registry Information
-                //    '<RegistryKey Root="HKCU"',
-                //    'Key="Software\\' + appName + '"',
-                //    'ForceCreateOnInstall="yes"' +
-                //    '>',
-                //    '<RegistryValue Type="integer" Name="installed" Value="1" KeyPath="yes"/>',
-                //    '<RegistryValue Type="string" Value="Default Value"/>',
-                //    '</RegistryKey>',
-                //
-                //
-                //    '</Component>',
-                //    '</DirectoryRef>'].join(" ");
-                //
-                //COMPONENTS_REFS += '<ComponentRef Id="ApplicationShortcutDesktop" />';
 
 
                 break;

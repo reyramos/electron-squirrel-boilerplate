@@ -96,10 +96,10 @@ function getVersion(url, callback) {
 
     });
 }
-let refresh = 0;
+var refresh = 0;
 function createMainWindow(size) {
 
-    let win = new BrowserWindow({
+    const win = new BrowserWindow({
         width: size.width,
         height: size.height,
         resizable: true,
@@ -108,25 +108,16 @@ function createMainWindow(size) {
         title: 'LabCorp Phoenix'
     });
 
-    return new Promise(function (response, reject) {
-        console.log('createMainWindow => ', webUrl);
-        win.loadUrl(webUrl);
+    console.log('createMainWindow => ', webUrl);
+    win.loadUrl(webUrl);
 
-        win.openDevTools();
-        win.on('closed', function () {
-            mainWindow = null;
-        });
-
-
-        win.webContents.on('did-finish-load', function (e) {
-            if (!refresh) {
-                console.log('reloadIgnoringCache', refresh)
-                win.webContents.reloadIgnoringCache()
-                refresh++;
-                response(win)
-            }
-        })
+    win.openDevTools();
+    win.on('closed', function () {
+        mainWindow = null;
     });
+
+    return win;
+
 }
 
 function validateURL(url) {
@@ -134,19 +125,23 @@ function validateURL(url) {
     /**
      * Build the Splash Screen
      */
-    splashScreen = new BrowserWindow({
-        width: 602,
-        height: 502,
-        resizable: false,
-        transparent: true,
-        frame: false,
-        'always-on-top': true
-    });
-    splashScreen.loadUrl('file://' + __dirname + '/dialogs/spash-screen.html?');
-    splashScreen.on('closed', function () {
-        splashScreen = null;
-    })
+    //splashScreen = new BrowserWindow({
+    //    width: 602,
+    //    height: 502,
+    //    resizable: false,
+    //    transparent: true,
+    //    frame: false,
+    //    'always-on-top': true
+    //});
+    //splashScreen.loadUrl('file://' + __dirname + '/dialogs/spash-screen.html?');
+    //splashScreen.on('closed', function () {
+    //    splashScreen = null;
+    //})
 
+    //if(!refresh){
+    //    win.webContents.reloadIgnoringCache()
+    //    refresh++;
+    //}
 
     updateLoadinStatus("Validating Path ...")
 
@@ -192,6 +187,7 @@ function validateURL(url) {
         req.on('error', function (e) {
             console.log('error:', e)
             updateLoadinStatus("Validating Error:", true)
+
 
             fulfill(_finally(version[version["WORKING_ENVIRONMENT"]]));
         });
@@ -259,112 +255,112 @@ function LOAD_APPLICATION() {
     function startMainApplication() {
         var loadingSuccess = true;
 
-        updateLoadinStatus("Loading Application...");
-
-        createMainWindow(size).then(function (browserWindow) {
-            mainWindow = browserWindow;
-
-            mainWindow.webContents.on('did-start-loading', function (e) {
-                updateLoadinStatus("Loading Application...")
-            });
-
-            mainWindow.webContents.on('did-fail-load', function (e) {
-                loadingSuccess = false;
-                try {
-                    mainWindow.destroy();//no longer needed
-                } catch (e) {
-                }
-
-                try {
-                    mainWindow.close();//no longer needed
-                } catch (e) {
-                }
-                console.log('did-fail-load')
-
-                updateLoadinStatus("Loading Application...", true)
+        updateLoadinStatus("Loading Application...")
 
 
-            });
+        mainWindow = createMainWindow(size);
 
-            /**
-             * Once the web Application finish loading, lets inject
-             * the ngElectron component, to be used within the webApp
-             */
-            mainWindow.webContents.on('did-stop-loading', function (e) {
 
-                console.log('did-stop-loading');
+        mainWindow.webContents.on('did-start-loading', function (e) {
+            updateLoadinStatus("Loading Application...")
+        });
 
-                var insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
-                mainWindow.webContents.executeJavaScript(insertScript);
+        mainWindow.webContents.on('did-fail-load', function (e) {
+            loadingSuccess = false;
+            try {
+                mainWindow.destroy();//no longer needed
+            } catch (e) {
+            }
 
-            });
+            try {
+                mainWindow.close();//no longer needed
+            } catch (e) {
+            }
+            console.log('did-fail-load')
 
-            /**
-             * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
-             */
-            mainWindow.webContents.on('dom-ready', function (e) {
+            updateLoadinStatus("Loading Application...", true)
 
+
+        });
+
+        /**
+         * Once the web Application finish loading, lets inject
+         * the ngElectron component, to be used within the webApp
+         */
+        mainWindow.webContents.on('did-stop-loading', function (e) {
+
+            console.log('did-stop-loading');
+
+            var insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
+            mainWindow.webContents.executeJavaScript(insertScript);
+
+        });
+
+        /**
+         * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
+         */
+        mainWindow.webContents.on('dom-ready', function (e) {
+
+            updateLoadinStatus("Ready...")
+
+
+            console.log('dom-ready')
+            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
+
+        });
+
+
+        //open the developer tools
+        mainWindow.webContents.on('did-finish-load', function (e) {
+            console.log('did-finish-loading')
+
+
+            /***************************************************************
+             * THIS HOTFIX IS TO BE REMOVE IN FUTURE RELEASES
+             ***************************************************************/
+            let hotFix = uglify.minify([__dirname + '/hotFixInjection.js']);
+            let insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
+            mainWindow.webContents.executeJavaScript(insertScript);
+            mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
+            /***************************************************************
+             * THE CODE ABOVE IS TO BE REMOVE IN FUTURE RELEASE OF QA ENVIRONMENT,
+             * IT IS FOR THE INJECTION OF ELECTRON WITHIN THE ENVIRONMENT
+             ***************************************************************/
+
+
+            //if it did not failed, lets hide the splashScreen and show the application
+            if (loadingSuccess) {
+                //Electron Bug, when this is open, it injects the executeJavascript code, we are just gonna remove it
+                //before we show the app
+                if (!openDevTools)mainWindow.closeDevTools();
                 updateLoadinStatus("Ready...")
 
 
-                console.log('dom-ready')
-                mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
-
-            });
-
-
-            //open the developer tools
-            mainWindow.webContents.on('did-finish-load', function (e) {
-                console.log('did-finish-loading')
-
-
-                /***************************************************************
-                 * THIS HOTFIX IS TO BE REMOVE IN FUTURE RELEASES
-                 ***************************************************************/
-                let hotFix = uglify.minify([__dirname + '/hotFixInjection.js']);
-                let insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
-                mainWindow.webContents.executeJavaScript(insertScript);
-                mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
-                /***************************************************************
-                 * THE CODE ABOVE IS TO BE REMOVE IN FUTURE RELEASE OF QA ENVIRONMENT,
-                 * IT IS FOR THE INJECTION OF ELECTRON WITHIN THE ENVIRONMENT
-                 ***************************************************************/
-
-
-                //if it did not failed, lets hide the splashScreen and show the application
-                if (loadingSuccess) {
-                    //Electron Bug, when this is open, it injects the executeJavascript code, we are just gonna remove it
-                    //before we show the app
-                    if (!openDevTools)mainWindow.closeDevTools();
-                    updateLoadinStatus("Ready...")
-
-
+                if (splashScreen)
+                    splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
+                setTimeout(function () {
                     if (splashScreen)
-                        splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
-                    setTimeout(function () {
-                        if (splashScreen)
-                            splashScreen.close();//no longer needed
-                        mainWindow.show();
-                    }, 2000);
+                        splashScreen.close();//no longer needed
+                    mainWindow.show();
+                }, 2000);
+            }
+
+            angular.listen(function (data) {
+                console.log('listen', data)
+                switch (data.eventType) {
+                    case 'getVersion':
+                        data.msg.version = version;
+                        console.log('getVersion:', version)
+                        angular.send(data);
+                        break;
+                    default :
+                        angular.send(data);
+                        break;
+
                 }
-
-                angular.listen(function (data) {
-                    console.log('listen', data)
-                    switch (data.eventType) {
-                        case 'getVersion':
-                            data.msg.version = version;
-                            console.log('getVersion:', version)
-                            angular.send(data);
-                            break;
-                        default :
-                            angular.send(data);
-                            break;
-
-                    }
-                });
             });
-
         });
+
     }
 }
 

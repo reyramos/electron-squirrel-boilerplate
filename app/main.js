@@ -344,6 +344,7 @@ function LOAD_APPLICATION() {
                     setTimeout(function () {
                         if (splashScreen)
                             splashScreen.close();//no longer needed
+
                         mainWindow.show();
                     }, 2000);
                 }

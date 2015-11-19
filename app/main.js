@@ -127,6 +127,7 @@ function createMainWindow(size) {
             }
         })
     });
+
 }
 
 function validateURL(url) {
@@ -344,7 +345,6 @@ function LOAD_APPLICATION() {
                     setTimeout(function () {
                         if (splashScreen)
                             splashScreen.close();//no longer needed
-
                         mainWindow.show();
                     }, 2000);
                 }

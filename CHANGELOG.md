@@ -1,9 +1,10 @@
 <a name="1.2.11"></a>
-# 1.2.11  JET LIGHTNING (2015-11-17)
+# 1.2.11  JET LIGHTNING (2015-11-19)
 
 ## Enhancements
 
-- Update Electron v0.35.0-win32-ia32
+- Update electron-v0.35.0-win32-x64
+- Force reload while bootstrapping browserWindow.webContent.on('did-finish-load) => browserWindow.webContents.reloadIgnoringCache()
 
 
 <a name="1.2.10"></a>

@@ -235,7 +235,6 @@ function LOAD_APPLICATION() {
 
         if (!mainWindow) {
             startMainApplication();
-
         }
 
         setTimeout(function () {

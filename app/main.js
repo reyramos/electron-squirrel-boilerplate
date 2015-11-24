@@ -110,24 +110,23 @@ function createMainWindow(size) {
         icon: path.join(__dirname, 'icon.ico'),
         title: 'LabCorp Phoenix'
     });
+    console.log('createMainWindow => ', webUrl);
+    win.loadURL(webUrl);
+    win.openDevTools();
+    win.on('closed', function () {
+        mainWindow = null;
+    });
 
     return new Promise(function (response, reject) {
-        console.log('createMainWindow => ', webUrl);
-        win.loadURL(webUrl);
-
-        win.openDevTools();
-        win.on('closed', function () {
-            mainWindow = null;
-        });
 
         win.webContents.on('did-finish-load', function (e) {
-
 
             console.log('did-finish-load', refresh)
 
             if (refresh) {
                 refresh = false;
-                console.log('reloadIgnoringCache', refresh)
+                console.log('REFRESHING ULR => ', webUrl)
+
                 win.webContents.reloadIgnoringCache()
                 response(win)
             }
@@ -156,16 +155,16 @@ function validateURL(url) {
 
     updateLoadinStatus("Validating Path ...")
 
-    function _finally(url) {
-        console.log('validateURL._finally:', url)
-
-        //update variables
-        webUrl = url;
-        http = require(utilities.parse_url(url).scheme);
-
-
-        return url;
-    }
+    //function _finally(url) {
+    //    console.log('validateURL._finally:', url)
+    //
+    //    //update variables
+    //    webUrl = url;
+    //    http = require(utilities.parse_url(url).scheme);
+    //
+    //
+    //    return url;
+    //}
 
 
     return new Promise(function (fulfill, reject) {
@@ -180,7 +179,7 @@ function validateURL(url) {
             };
 
 
-        var req = require(parse.scheme).get(options, function (res) {
+        var req = require(parse.scheme).request(options, function (res) {
             console.log("statusCode: ", res.statusCode);
             console.log("headers: ", res.headers);
 
@@ -192,7 +191,7 @@ function validateURL(url) {
 
             console.log('webUrl', webUrl)
 
-            fulfill(_finally(webUrl));
+            fulfill(webUrl);
 
 
         });
@@ -220,12 +219,17 @@ function updateLoadinStatus(msg, stop) {
     if (splashScreen)
         splashScreen.webContents.executeJavaScript(insertScript);
 
+    console.log('=====================')
+    console.log(msg)
+
 }
 
 function LOAD_APPLICATION() {
     var electronScreen = require('screen');
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
 
+
+    updateLoadinStatus(webUrl);
 
     /**
      * Once the Splash Screen finish loading, check the version, start to load the application
@@ -269,6 +273,7 @@ function LOAD_APPLICATION() {
         updateLoadinStatus("Loading Application...");
 
         createMainWindow(size).then(function (browserWindow) {
+
             mainWindow = browserWindow;
 
             mainWindow.webContents.on('did-start-loading', function (e) {
@@ -349,7 +354,7 @@ function LOAD_APPLICATION() {
                     if (splashScreen)
                         splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
                     setTimeout(function () {
-                        if (splashScreen){
+                        if (splashScreen) {
                             splashScreen.close();//no longer needed
                             splashScreen.destroy();
                         }

@@ -2,13 +2,16 @@
 
 let openDevTools = false;
 
+//This is to refesh the application while loading, to reloadIgnoringCache
+let refresh = true;
+
 require('web-contents');
 
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
 const angular = require('./ng-electron/ng-bridge');
 const path = require('path');
-const ipc = require('ipc');
+const ipc = require('electron').ipcMain;
 const app = require('app');
 const fs = require('fs');
 const version = require('./version.json');
@@ -96,7 +99,7 @@ function getVersion(url, callback) {
 
     });
 }
-let refresh = 0;
+
 function createMainWindow(size) {
 
     let win = new BrowserWindow({
@@ -110,24 +113,26 @@ function createMainWindow(size) {
 
     return new Promise(function (response, reject) {
         console.log('createMainWindow => ', webUrl);
-        win.loadUrl(webUrl);
+        win.loadURL(webUrl);
 
         win.openDevTools();
         win.on('closed', function () {
             mainWindow = null;
         });
 
-
         win.webContents.on('did-finish-load', function (e) {
-            if (!refresh) {
+
+
+            console.log('did-finish-load', refresh)
+
+            if (refresh) {
+                refresh = false;
                 console.log('reloadIgnoringCache', refresh)
                 win.webContents.reloadIgnoringCache()
-                refresh++;
                 response(win)
             }
         })
     });
-
 }
 
 function validateURL(url) {
@@ -143,7 +148,7 @@ function validateURL(url) {
         frame: false,
         'always-on-top': true
     });
-    splashScreen.loadUrl('file://' + __dirname + '/dialogs/spash-screen.html?');
+    splashScreen.loadURL('file://' + __dirname + '/dialogs/spash-screen.html?');
     splashScreen.on('closed', function () {
         splashScreen = null;
     })
@@ -184,6 +189,8 @@ function validateURL(url) {
             var invalids = [500];
             webUrl = invalids.indexOf(res.statusCode) === -1 ? url : version[version["WORKING_ENVIRONMENT"]];
 
+
+            console.log('webUrl', webUrl)
 
             fulfill(_finally(webUrl));
 
@@ -246,7 +253,7 @@ function LOAD_APPLICATION() {
 
                     console.log('filePath', filePath)
 
-                    download.loadUrl(filePath);
+                    download.loadURL(filePath);
                     download.on('closed', function () {
                         download = null;
                     });
@@ -343,8 +350,12 @@ function LOAD_APPLICATION() {
                     if (splashScreen)
                         splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
                     setTimeout(function () {
-                        if (splashScreen)
+                        if (splashScreen){
                             splashScreen.close();//no longer needed
+                            splashScreen.destroy();
+                        }
+
+
                         mainWindow.show();
                     }, 2000);
                 }

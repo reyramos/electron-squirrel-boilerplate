@@ -1,3 +1,11 @@
+<a name="1.2.14"></a>
+# 1.2.14  UNKNOWN WARNING (2015-11-24)
+
+## Bug Fix
+
+- Failed to alert the user of Upgrades
+- Failed to allowed for environment changes
+
 <a name="1.2.12"></a>
 # 1.2.12  ROWDY CLERIC (2015-11-24)
 

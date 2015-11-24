@@ -19,7 +19,7 @@
 
 
     try {
-        ipc = require('electron').ipcMain;
+        ipc = require('ipc');
 
     } catch (e) {
         console.error('modules not loaded:ipc => ', e)

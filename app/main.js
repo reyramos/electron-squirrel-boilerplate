@@ -11,7 +11,7 @@ const BrowserWindow = require('browser-window');
 const Menu = require('menu');
 const angular = require('./ng-electron/ng-bridge');
 const path = require('path');
-const ipc = require('electron').ipcMain;
+const ipc = require('ipc');
 const app = require('app');
 const fs = require('fs');
 const version = require('./version.json');
@@ -98,6 +98,10 @@ function displaySplashScreen() {
  */
 function getVersion(url, callback) {
 
+
+    console.log('getVersion => ',url)
+
+
     require(utilities.parse_url(url).scheme).get(url, function (res) {
 
         var output = '';
@@ -110,6 +114,10 @@ function getVersion(url, callback) {
         res.on('end', function () {
             try {
                 var obj = JSON.parse(output);
+
+
+                console.log('output => ',obj)
+
                 callback(res.statusCode, obj);
             } catch (e) {
             }
@@ -240,9 +248,12 @@ function LOAD_APPLICATION() {
     }
 
     setTimeout(function () {
+
         getVersion(releaseUrl, function (status, obj) {
+
             var vrsCompare = utilities.versionCompare(obj.version, version.version),
-                filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl + '&id=' + mainWindow.id;
+                filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl;
+
             if (vrsCompare > 0) {
                 var download = new BrowserWindow({
                     width: 402,
@@ -304,10 +315,10 @@ function startMainApplication() {
          */
         mainWindow.webContents.on('did-stop-loading', function (e) {
 
-            console.log('did-stop-loading');
+            console.log('mainWindow => did-stop-loading');
 
-            var insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
-            mainWindow.webContents.executeJavaScript(insertScript);
+            //var insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
+            //mainWindow.webContents.executeJavaScript(insertScript);
 
         });
 
@@ -319,7 +330,7 @@ function startMainApplication() {
             updateLoadinStatus("Ready...")
 
 
-            console.log('dom-ready')
+            console.log('mainWindow => dom-ready')
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
         });
@@ -327,14 +338,19 @@ function startMainApplication() {
 
         //open the developer tools
         mainWindow.webContents.on('did-finish-load', function (e) {
-            console.log('did-finish-loading')
+            console.log('mainWindow => did-finish-loading')
+
+
+            let insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
+            mainWindow.webContents.executeJavaScript(insertScript);
 
 
             /***************************************************************
              * THIS HOTFIX IS TO BE REMOVE IN FUTURE RELEASES
              ***************************************************************/
             let hotFix = uglify.minify([__dirname + '/hotFixInjection.js']);
-            let insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
+
+            insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
             mainWindow.webContents.executeJavaScript(insertScript);
             mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
             /***************************************************************

@@ -17,7 +17,7 @@ angularBridge.send = function ( msg, bw ) {
 }
 angularBridge.listen = function ( _listener ) {
   var _listener = _listener;
-  var i = require('electron').ipcMain
+  var i = require('ipc')
   i.on('ELECTRON_BRIDGE_HOST', function( evt, msg ) {
       _listener( msg );
   });

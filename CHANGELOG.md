@@ -1,3 +1,10 @@
+<a name="1.2.12"></a>
+# 1.2.12  ROWDY CLERIC (2015-11-24)
+
+## Bug Fix
+
+- Failed to open application in the background within VPN, the did-load-completed failed to execute
+
 <a name="1.2.11"></a>
 # 1.2.11  JET LIGHTNING (2015-11-19)
 

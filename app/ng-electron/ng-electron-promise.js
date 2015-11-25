@@ -19,7 +19,7 @@
 
 
     try {
-        ipc = require('ipc');
+        ipc = require('electron').ipcRenderer;
 
     } catch (e) {
         console.error('modules not loaded:ipc => ', e)
@@ -169,7 +169,7 @@
         //Start listening for host messages
         if (ipc) {
             console.log('ngElectron has joined the room.');
-            ipc.on(ELECTRON_BRIDGE_CLIENT, function (data) {
+            ipc.on(ELECTRON_BRIDGE_CLIENT, function (evnt, data) {
 
                 if ($rootScope)
                     $rootScope.$broadcast(ELECTRON_HOST_ID, data);

@@ -9,9 +9,8 @@ require('web-contents');
 
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
-const angular = require('./ng-electron/ng-bridge');
+const bridge = require('./ng-electron/ng-bridge');
 const path = require('path');
-const ipc = require('ipc');
 const app = require('app');
 const fs = require('fs');
 const version = require('./version.json');
@@ -99,7 +98,7 @@ function displaySplashScreen() {
 function getVersion(url, callback) {
 
 
-    console.log('getVersion => ',url)
+    console.log('getVersion => ', url)
 
 
     require(utilities.parse_url(url).scheme).get(url, function (res) {
@@ -116,7 +115,7 @@ function getVersion(url, callback) {
                 var obj = JSON.parse(output);
 
 
-                console.log('output => ',obj)
+                console.log('output => ', obj)
 
                 callback(res.statusCode, obj);
             } catch (e) {
@@ -141,8 +140,7 @@ function createMainWindow(size) {
         icon: path.join(__dirname, 'icon.ico'),
         title: 'LabCorp Phoenix',
         webPreferences: {
-            webSecurity: true,
-            allowDisplayingInsecureContent: true
+            webSecurity: false
         }
     });
     console.log('createMainWindow => ', webUrl);
@@ -360,36 +358,36 @@ function startMainApplication() {
 
 
             //if it did not failed, lets hide the splashScreen and show the application
-            //if (loadingSuccess) {
-            //Electron Bug, when this is open, it injects the executeJavascript code, we are just gonna remove it
-            //before we show the app
-            if (!openDevTools)mainWindow.closeDevTools();
-            updateLoadinStatus("Ready...")
+            if (loadingSuccess) {
+                //Electron Bug, when this is open, it injects the executeJavascript code, we are just gonna remove it
+                //before we show the app
+                if (!openDevTools)mainWindow.closeDevTools();
+                updateLoadinStatus("Ready...")
 
 
-            if (splashScreen)
-                splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
-            setTimeout(function () {
-                if (splashScreen) {
-                    splashScreen.close();//no longer needed
-                    splashScreen.destroy();
-                }
+                if (splashScreen)
+                    splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
+                setTimeout(function () {
+                    if (splashScreen) {
+                        splashScreen.close();//no longer needed
+                        splashScreen.destroy();
+                    }
 
 
-                mainWindow.show();
-            }, 2000);
-            //}
+                    mainWindow.show();
+                }, 2000);
+            }
 
-            angular.listen(function (data) {
+            bridge.listen(function (data) {
                 console.log('listen', data)
                 switch (data.eventType) {
                     case 'getVersion':
                         data.msg.version = version;
                         console.log('getVersion:', version)
-                        angular.send(data);
+                        bridge.send(data);
                         break;
                     default :
-                        angular.send(data);
+                        bridge.send(data);
                         break;
 
                 }

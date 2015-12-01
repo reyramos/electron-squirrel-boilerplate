@@ -37,7 +37,7 @@ if (fs.existsSync(localFilePath)) {
     localConfig = require(localFilePath);
 }
 
-let webUrl = !localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment;
+let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment)+"?date="+new Date().toJSON();
 //load the required node js scheme
 let http = require('http');
 

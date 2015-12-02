@@ -2,8 +2,7 @@
 
 let openDevTools = false;
 
-//This is to refesh the application while loading, to reloadIgnoringCache
-let refresh = true;
+
 
 require('web-contents');
 
@@ -21,7 +20,8 @@ const uglify = require("uglify-js");
 let results = uglify.minify([__dirname + '/ng-electron/ng-electron-promise.js']);
 //minify file
 const code = results.code;
-
+//This is to refesh the application while loading, to reloadIgnoringCache
+let refresh = true;
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE,
 //This url contains the version that is hosted on the remote server for package control
@@ -37,7 +37,7 @@ if (fs.existsSync(localFilePath)) {
     localConfig = require(localFilePath);
 }
 
-let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment)+"?date="+new Date().toJSON();
+let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment) + "?date=" + new Date().toJSON();
 //load the required node js scheme
 let http = require('http');
 
@@ -132,37 +132,55 @@ function getVersion(url, callback) {
 
 function createMainWindow(size) {
 
-    let win = new BrowserWindow({
-        width: size.width,
-        height: size.height,
-        resizable: true,
-        show: false,
-        icon: path.join(__dirname, 'icon.ico'),
-        title: 'LabCorp Phoenix',
-        webPreferences: {
-            webSecurity: false
-        }
-    });
-    console.log('createMainWindow => ', webUrl);
-    win.loadURL(webUrl);
-    win.openDevTools();
-    win.on('closed', function () {
-        mainWindow = null;
-    });
+    function initialize() {
+        let win = new BrowserWindow({
+            width: size.width,
+            height: size.height,
+            resizable: true,
+            show: false,
+            icon: path.join(__dirname, 'icon.ico'),
+            title: 'LabCorp Phoenix',
+            webPreferences: {
+                webSecurity: false
+            }
+        });
+        console.log('createMainWindow => ', webUrl);
+        win.loadURL(webUrl);
+        win.openDevTools();
+        win.on('closed', function () {
+            mainWindow = null;
+        });
+
+        return win;
+
+    }
 
     return new Promise(function (response, reject) {
 
-        win.webContents.on('did-finish-load', function (e) {
+        var temp = initialize(),
+            returnWindow = null;
 
-            console.log('did-finish-load', refresh)
+        temp.webContents.on('did-finish-load', function (e) {
 
-            if (refresh) {
-                refresh = false;
-                console.log('REFRESHING ULR => ', webUrl)
+            console.log('did-finish-load', refresh);
 
-                win.webContents.reloadIgnoringCache()
-                response(win)
-            }
+
+            temp.destroy();
+            console.log('kill window => reopen')
+
+            returnWindow = initialize();
+            returnWindow.webContents.on('did-finish-load', function (e) {
+
+                console.log('did-finish-load', refresh)
+
+                if (refresh) {
+                    refresh = false;
+                    console.log('REFRESHING ULR => ', webUrl)
+
+                    returnWindow.webContents.reloadIgnoringCache()
+                    response(returnWindow)
+                }
+            })
         })
     });
 }

@@ -43,7 +43,7 @@ let http = require('http');
 
 
 console.log('webUrl', webUrl)
-
+deleteFolderRecursive(app.getDataPath())
 
 // prevent window being GC'd
 let mainWindow = null;
@@ -132,58 +132,61 @@ function getVersion(url, callback) {
 
 function createMainWindow(size) {
 
-    function initialize() {
-        let win = new BrowserWindow({
-            width: size.width,
-            height: size.height,
-            resizable: true,
-            show: false,
-            icon: path.join(__dirname, 'icon.ico'),
-            title: 'LabCorp Phoenix',
-            webPreferences: {
-                webSecurity: false
-            }
-        });
-        console.log('createMainWindow => ', webUrl);
-        win.loadURL(webUrl);
-        win.openDevTools();
-        win.on('closed', function () {
-            mainWindow = null;
-        });
+    let win = new BrowserWindow({
+        width: size.width,
+        height: size.height,
+        resizable: true,
+        show: false,
+        icon: path.join(__dirname, 'icon.ico'),
+        title: 'LabCorp Phoenix',
+        webPreferences: {
+            webSecurity: false
+        }
+    });
+    console.log('createMainWindow => ', webUrl);
+    win.loadURL(webUrl);
+    win.openDevTools();
+    win.on('closed', function () {
+        mainWindow = null;
+    });
 
-        return win;
-
-    }
 
     return new Promise(function (response, reject) {
 
-        var temp = initialize(),
-            returnWindow = null;
-
-        temp.webContents.on('did-finish-load', function (e) {
+         win.webContents.on('did-finish-load', function (e) {
 
             console.log('did-finish-load', refresh);
 
 
-            temp.destroy();
-            console.log('kill window => reopen')
+            if (refresh) {
+                refresh = false;
+                console.log('REFRESHING ULR => ', webUrl)
 
-            returnWindow = initialize();
-            returnWindow.webContents.on('did-finish-load', function (e) {
-
-                console.log('did-finish-load', refresh)
-
-                if (refresh) {
-                    refresh = false;
-                    console.log('REFRESHING ULR => ', webUrl)
-
-                    returnWindow.webContents.reloadIgnoringCache()
-                    response(returnWindow)
-                }
-            })
+                win.webContents.reloadIgnoringCache()
+                response(win)
+            }
         })
     });
 }
+
+
+function deleteFolderRecursive(path) {
+    if( fs.existsSync(path) ) {
+        console.log('REMOVE DIRECTORY => ', path)
+
+
+        fs.readdirSync(path).forEach(function(file,index){
+            var curPath = path + "/" + file;
+            if(fs.lstatSync(curPath).isDirectory()) { // recurse
+                deleteFolderRecursive(curPath);
+            } else { // delete file
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(path);
+    }
+};
+
 
 function validateURL(url) {
 

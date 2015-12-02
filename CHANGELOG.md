@@ -1,3 +1,12 @@
+<a name="1.2.17"></a>
+# 1.2.17  DESERT OCTOPUS (2015-12-02)
+
+## Enhancements
+
+- On application load, destroy the application roaming profiles, to load a new profile, this will disable cache.
+
+
+
 <a name="1.2.15"></a>
 # 1.2.15  Flaming Metaphor (2015-12-02)
 

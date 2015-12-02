@@ -1,3 +1,11 @@
+<a name="1.2.15"></a>
+# 1.2.15  Flaming Metaphor (2015-12-02)
+
+## Enhancements
+
+- Added date query string to rendering process while it loads the BrowserWindow, Hopefully this will resolve the cache issue.
+
+
 <a name="1.2.14"></a>
 # 1.2.14  UNKNOWN WARNING (2015-11-24)
 

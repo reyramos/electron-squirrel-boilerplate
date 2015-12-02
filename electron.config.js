@@ -1,5 +1,5 @@
 module.exports = {
-    "version": "1.2.14",
+    "version": "1.2.15",
     "app_name": "LabCorp Phoenix",
     "app_description": "LabCorp Application",
     "manufacturer": "LabCorp Inc",
@@ -14,6 +14,6 @@ module.exports = {
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
     "BETA": "https://qa-phoenix.labcorp.com/web-ui/",
     "VERSION_SERVER": "https://dev-phoenix.labcorp.com/web-ui/",
-    "WORKING_ENVIRONMENT": "PROD"
+    "WORKING_ENVIRONMENT": "QA"
 };
 

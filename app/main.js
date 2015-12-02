@@ -3,7 +3,6 @@
 let openDevTools = false;
 
 
-
 require('web-contents');
 
 const BrowserWindow = require('browser-window');
@@ -153,7 +152,7 @@ function createMainWindow(size) {
 
     return new Promise(function (response, reject) {
 
-         win.webContents.on('did-finish-load', function (e) {
+        win.webContents.on('did-finish-load', function (e) {
 
             console.log('did-finish-load', refresh);
 
@@ -171,19 +170,27 @@ function createMainWindow(size) {
 
 
 function deleteFolderRecursive(path) {
-    if( fs.existsSync(path) ) {
+    if (fs.existsSync(path)) {
         console.log('REMOVE DIRECTORY => ', path)
 
 
-        fs.readdirSync(path).forEach(function(file,index){
+        fs.readdirSync(path).forEach(function (file, index) {
             var curPath = path + "/" + file;
-            if(fs.lstatSync(curPath).isDirectory()) { // recurse
+            if (fs.lstatSync(curPath).isDirectory()) { // recurse
                 deleteFolderRecursive(curPath);
             } else { // delete file
-                fs.unlinkSync(curPath);
+                try {
+                    fs.unlinkSync(curPath);
+                } catch (e) {
+                    console.log('error => ', e)
+                }
             }
         });
-        fs.rmdirSync(path);
+        try {
+            fs.rmdirSync(path);
+        } catch (e) {
+            console.log('error => ', e)
+        }
     }
 };
 

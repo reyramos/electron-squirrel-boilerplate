@@ -42,7 +42,7 @@ let http = require('http');
 
 
 console.log('webUrl', webUrl)
-deleteFolderRecursive(app.getDataPath())
+deleteFolderRecursive(app.getPath('userData'))
 
 // prevent window being GC'd
 let mainWindow = null;

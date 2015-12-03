@@ -1,3 +1,10 @@
+<a name="1.3.0"></a>
+# 1.3.0 facelift (2015-12-03)
+
+## Enhancements
+- Introduce new ICON design
+- Decrease splash screen image smaller
+
 <a name="1.2.19"></a>
 # 1.2.19  Soft Curb (2015-12-03)
 

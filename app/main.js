@@ -1,6 +1,6 @@
 'use strict';
 
-let openDevTools = true;
+let openDevTools = false;
 
 require('web-contents');
 

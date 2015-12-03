@@ -1,3 +1,19 @@
+<a name="1.2.19"></a>
+# 1.2.19  Soft Curb (2015-12-03)
+
+## Enhancements
+- Remove brute force of the removal of the roaming profile for desktop application
+- Replace brute force with chrome command line switches
+- Add remote-debugging-port 8989
+- Added command --disable-cache
+
+<a name="1.2.18"></a>
+# 1.2.18  Nuclear Detergent (2015-12-02)
+
+## Bug
+- Use error catch on destroying roaming files.
+
+
 <a name="1.2.17"></a>
 # 1.2.17  DESERT OCTOPUS (2015-12-02)
 

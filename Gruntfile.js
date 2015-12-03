@@ -129,7 +129,7 @@ module.exports = function (grunt) {
     grunt.registerTask(
         'light', [
             'exec:light',
-            //'clean'
+            'clean'
         ]
     );
 

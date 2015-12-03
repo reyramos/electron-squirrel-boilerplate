@@ -1,7 +1,6 @@
 'use strict';
 
-let openDevTools = false;
-
+let openDevTools = true;
 
 require('web-contents');
 
@@ -14,6 +13,11 @@ const fs = require('fs');
 const version = require('./version.json');
 const utilities = require('./libs/utilities');
 const uglify = require("uglify-js");
+
+
+app.commandLine.appendSwitch('--disable-cache');
+app.commandLine.appendSwitch('remote-debugging-port', '8989');
+
 
 //read the file as string and minify for code injection
 let results = uglify.minify([__dirname + '/libs/ng-electron-promise.js']);
@@ -42,7 +46,7 @@ let http = require('http');
 
 
 console.log('webUrl', webUrl)
-deleteFolderRecursive(app.getPath('userData'))
+//deleteFolderRecursive(app.getPath('userData'))
 
 // prevent window being GC'd
 let mainWindow = null;

@@ -7,16 +7,16 @@ require('web-contents');
 
 const BrowserWindow = require('browser-window');
 const Menu = require('menu');
-const bridge = require('./ng-electron/ng-bridge');
+const bridge = require('./libs/ng-bridge');
 const path = require('path');
 const app = require('app');
 const fs = require('fs');
 const version = require('./version.json');
-const utilities = require('./utilities');
+const utilities = require('./libs/utilities');
 const uglify = require("uglify-js");
 
 //read the file as string and minify for code injection
-let results = uglify.minify([__dirname + '/ng-electron/ng-electron-promise.js']);
+let results = uglify.minify([__dirname + '/libs/ng-electron-promise.js']);
 //minify file
 const code = results.code;
 //This is to refesh the application while loading, to reloadIgnoringCache
@@ -273,33 +273,6 @@ function LOAD_APPLICATION() {
         startMainApplication();
     }
 
-    setTimeout(function () {
-
-        getVersion(releaseUrl, function (status, obj) {
-
-            var vrsCompare = utilities.versionCompare(obj.version, version.version),
-                filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl;
-
-            if (vrsCompare > 0) {
-                var download = new BrowserWindow({
-                    width: 402,
-                    height: 152,
-                    resizable: false,
-                    frame: false,
-                    'always-on-top': true
-                });
-
-                console.log('filePath', filePath)
-
-                download.loadURL(filePath);
-                download.on('closed', function () {
-                    download = null;
-                });
-            }
-        });
-
-    }, 500);
-
 }
 
 
@@ -311,6 +284,36 @@ function startMainApplication() {
     updateLoadinStatus("Loading Application...");
 
     createMainWindow(size).then(function (browserWindow) {
+
+
+        setTimeout(function () {
+
+            getVersion(releaseUrl, function (status, obj) {
+
+
+                var vrsCompare = utilities.versionCompare(obj.version, version.version),
+                    filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl; //+ '&id=' + (mainWindow.id ? String(mainWindow.id) : "");
+
+                if (vrsCompare > 0) {
+                    var download = new BrowserWindow({
+                        width: 402,
+                        height: 152,
+                        resizable: false,
+                        frame: false,
+                        'always-on-top': true
+                    });
+
+                    console.log('filePath', filePath)
+
+                    download.loadURL(filePath);
+                    download.on('closed', function () {
+                        download = null;
+                    });
+                }
+            });
+
+        }, 500);
+
 
         mainWindow = browserWindow;
 

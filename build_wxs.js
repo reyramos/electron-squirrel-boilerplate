@@ -1,6 +1,6 @@
 var path = require('path'),
     fs = require('fs'),
-    utilities = require('./app/utilities.js'),
+    utilities = require('./app/libs/utilities.js'),
     config = require("./electron.config.js");
 
 /*******************************************************************

@@ -53,14 +53,20 @@ module.exports = function (grunt) {
         exec: {
             'candle': {
                 cmd: function () {
-                    var files = getFilesPath('wxs', 'wixobj');
-                    return 'candle.exe ' + files[0] + ' -o ' + files[1];
+                    var files = getFilesPath('wxs', 'wixobj'),
+                        command = 'candle.exe -ext "'+ "C:\\Program Files (x86)\\WiX Toolset v3.9\\bin\\WixUtilExtension.dll" +'" ' + files[0] + ' -o ' + files[1]+'';
+
+
+                    return command;
                 }
             },
             'light': {
                 cmd: function () {
-                    var files = getFilesPath('wixobj', 'msi');
-                    return 'light.exe ' + files[0] + ' -o ' + files[1];
+                    var files = getFilesPath('wixobj', 'msi'),
+                        command = 'light.exe -ext "'+ "C:\\Program Files (x86)\\WiX Toolset v3.9\\bin\\WixUtilExtension.dll" +'" ' + files[0] + ' -o ' + files[1]+'';
+
+                    return command;
+
                 }
             }
         }

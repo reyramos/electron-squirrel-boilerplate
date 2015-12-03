@@ -34,7 +34,7 @@ module.exports = function (grunt) {
                     src: ['**.wixobj', '**.wixpdb']
                 }]
             },
-            asar:{
+            asar: {
                 files: [{
                     expand: true,
                     cwd: '<%= electronConfig.electron_build %>',
@@ -54,7 +54,10 @@ module.exports = function (grunt) {
             'candle': {
                 cmd: function () {
                     var files = getFilesPath('wxs', 'wixobj'),
-                        command = 'candle.exe -ext "'+ "C:\\Program Files (x86)\\WiX Toolset v3.9\\bin\\WixUtilExtension.dll" +'" ' + files[0] + ' -o ' + files[1]+'';
+                        command = ['candle.exe',
+                            '-ext "C:\\Program Files (x86)\\WiX Toolset v3.9\\bin\\WixUtilExtension.dll"',
+                            files[0] + ' -o ' + files[1]
+                        ].join(" ");
 
 
                     return command;
@@ -63,7 +66,10 @@ module.exports = function (grunt) {
             'light': {
                 cmd: function () {
                     var files = getFilesPath('wixobj', 'msi'),
-                        command = 'light.exe -ext "'+ "C:\\Program Files (x86)\\WiX Toolset v3.9\\bin\\WixUtilExtension.dll" +'" ' + files[0] + ' -o ' + files[1]+'';
+                        command = ['light.exe',
+                            '-ext "C:\\Program Files (x86)\\WiX Toolset v3.9\\bin\\WixUtilExtension.dll"',
+                            files[0] + ' -o ' + files[1]
+                        ].join(" ");
 
                     return command;
 
@@ -129,8 +135,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'build', [
-             'electron-build',
-             'msi-build'
+            'electron-build',
+            'msi-build'
         ]
     );
     grunt.registerTask(

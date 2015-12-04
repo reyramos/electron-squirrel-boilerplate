@@ -262,6 +262,7 @@ function getComponents(files, filePath) {
 
                 //registry Information
                 COMPONENTS += ['<RegistryKey Root="HKLM"',
+                    //'Id=""',
                     'Key="Software\\Microsoft\\' + appName + '"',
                     'ForceCreateOnInstall="yes">',
                     '<RegistryValue Type="integer" Name="SomeIntegerValue" Value="1"/>',

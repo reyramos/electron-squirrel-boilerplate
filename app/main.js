@@ -6,7 +6,7 @@ require('web-contents');
 
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
-const Menu = require('menu');
+const Menu = electron.Menu;
 const bridge = require('./libs/ng-bridge');
 const path = require('path');
 const app = electron.app;
@@ -14,11 +14,16 @@ const fs = require('fs');
 const version = require('./version.json');
 const utilities = require('./libs/utilities');
 const uglify = require("uglify-js");
+const Tray = electron.Tray;
+const globalShortcut = electron.globalShortcut;
 
 
 app.commandLine.appendSwitch('--disable-cache');
+app.commandLine.appendArgument('--disable-cache');
 app.commandLine.appendSwitch('remote-debugging-port', '8989');
 
+
+var appIcon = null;
 
 //read the file as string and minify for code injection
 let results = uglify.minify([__dirname + '/libs/ng-electron-promise.js']);
@@ -46,6 +51,13 @@ let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConf
 let http = require('http');
 
 
+
+
+
+
+
+
+
 console.log('webUrl', webUrl)
 //deleteFolderRecursive(app.getPath('userData'))
 
@@ -71,6 +83,12 @@ app.on('window-all-closed', function () {
 function displaySplashScreen() {
 
 
+    var ret = globalShortcut.register('ctrl+d', function() {
+        if(mainWindow){
+            mainWindow.toggleDevTools()
+        }
+    });
+
     /**
      * Build the Splash Screen
      */
@@ -81,6 +99,8 @@ function displaySplashScreen() {
         transparent: true,
         frame: false,
         title:"LabCorp Phoenix",
+        acceptFirstMouse:true,
+        autoHideMenuBar:true,
         'always-on-top': true
     });
     splashScreen.loadURL('file://' + __dirname + '/dialogs/spash-screen.html?');
@@ -308,7 +328,10 @@ function startMainApplication() {
                         height: 152,
                         resizable: false,
                         frame: false,
-                        'always-on-top': true
+                        title: 'LabCorp Phoenix',
+                        'always-on-top': true,
+                        acceptFirstMouse:true,
+                        autoHideMenuBar:true,
                     });
 
                     console.log('filePath', filePath)
@@ -365,7 +388,6 @@ function startMainApplication() {
         mainWindow.webContents.on('dom-ready', function (e) {
 
             updateLoadinStatus("Ready...")
-
 
             console.log('mainWindow => dom-ready')
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");

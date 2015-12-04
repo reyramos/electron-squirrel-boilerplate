@@ -27,13 +27,10 @@ const ELECTRON_PATH = path.join(__dirname, config.electron_build);
 const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
 
 
-var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, config.exeName+'.exe');
+var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, config.exeName + '.exe');
 
-fs.rename(path.join(ELECTRON_PATH, 'electron.exe'), ELECTRON_EXE_DESTINATION, function(err){
-    if(err)
-        console.error(err)
+fs.rename(path.join(ELECTRON_PATH, 'electron.exe'), ELECTRON_EXE_DESTINATION, function (err) {
 });
-
 
 
 console.log('RELEASE', RELEASE)
@@ -72,7 +69,7 @@ utilities.getVersion(RELEASE, function (status, obj) {
     if (vrsCompare > 0) {
 
 
-        rcedit(ELECTRON_EXE_DESTINATION,rceditOpts , function (error) {
+        rcedit(ELECTRON_EXE_DESTINATION, rceditOpts, function (error) {
             if (error)
                 console.error(error)
             createPackage();

@@ -1,6 +1,7 @@
 var path = require('path'),
     fs = require('fs'),
     utilities = require('./app/libs/utilities.js'),
+    rceditOpts = require('./rcedit.config.js'),
     config = require("./electron.config.js");
 
 
@@ -61,17 +62,7 @@ utilities.getVersion(RELEASE, function (status, obj) {
     const BUILD_VERSION = String(obj.version).trim() || false;
     var vrsCompare = utilities.versionCompare(APP_VERSION, BUILD_VERSION);
     if (vrsCompare > 0) {
-        rcedit(ELECTRON_EXE_DESTINATION, {
-            'version-string': APP_DESCRIPTION,
-            'file-version': APP_VERSION,
-            'product-version': APP_VERSION,
-            'product-name': APP_NAME,
-            'version-string': {
-                'CompanyName': APP_NAME,
-                'LegalCopyright': 'Copyright 2015 '+APP_NAME
-            },
-            'icon': path.join(APPLICATION_SRC, 'icon.ico')
-        }, function (error) {
+        rcedit(ELECTRON_EXE_DESTINATION,rceditOpts , function (error) {
             if (error)
                 console.error(error)
             createPackage();

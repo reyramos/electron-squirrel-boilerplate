@@ -18,11 +18,18 @@ const phpjs = require("phpjs");
 const Tray = electron.Tray;
 const globalShortcut = electron.globalShortcut;
 
+var dialog = require('dialog')
+
+//require('crash-reporter').start();
+
+app.setAppUserModelId('LabCorp Phoenix');
 
 app.commandLine.appendSwitch('--disable-cache');
 app.commandLine.appendArgument('--disable-cache');
 app.commandLine.appendSwitch('remote-debugging-port', '8989');
 
+//app.setUserTasks([]);
+//app.clearRecentDocuments()
 
 var appIcon = null;
 
@@ -79,6 +86,8 @@ app.on('window-all-closed', function () {
 }).on('ready', displaySplashScreen);
 
 function displaySplashScreen() {
+
+
 
 
     globalShortcut.register('ctrl+d', function () {
@@ -447,6 +456,8 @@ function electronInsertion() {
         appName = appName ? ' - ' + appName.toUpperCase() : '';
 
     mainWindow.setTitle(app.getName() + appName);
+    //mainWindow.setSkipTaskbar(true)
+
 
     let insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
     mainWindow.webContents.executeJavaScript(insertScript);

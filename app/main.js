@@ -4,11 +4,12 @@ let openDevTools = false;
 
 require('web-contents');
 
-const BrowserWindow = require('browser-window');
+const electron = require('electron');
+const BrowserWindow = electron.BrowserWindow;
 const Menu = require('menu');
 const bridge = require('./libs/ng-bridge');
 const path = require('path');
-const app = require('app');
+const app = electron.app;
 const fs = require('fs');
 const version = require('./version.json');
 const utilities = require('./libs/utilities');
@@ -79,6 +80,7 @@ function displaySplashScreen() {
         resizable: false,
         transparent: true,
         frame: false,
+        title:"LabCorp Phoenix",
         'always-on-top': true
     });
     splashScreen.loadURL('file://' + __dirname + '/dialogs/spash-screen.html?');
@@ -142,6 +144,8 @@ function createMainWindow(size) {
         show: false,
         icon: path.join(__dirname, 'icon.ico'),
         title: 'LabCorp Phoenix',
+        acceptFirstMouse:true,
+        autoHideMenuBar:true,
         webPreferences: {
             webSecurity: false
         }

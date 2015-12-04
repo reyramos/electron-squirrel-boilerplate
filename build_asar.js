@@ -66,6 +66,10 @@ utilities.getVersion(RELEASE, function (status, obj) {
             'file-version': APP_VERSION,
             'product-version': APP_VERSION,
             'product-name': APP_NAME,
+            'version-string': {
+                'CompanyName': APP_NAME,
+                'LegalCopyright': 'Copyright 2015 '+APP_NAME
+            },
             'icon': path.join(APPLICATION_SRC, 'icon.ico')
         }, function (error) {
             if (error)

@@ -1,6 +1,6 @@
 'use strict';
 
-let openDevTools = false;
+let openDevTools = true;
 
 require('web-contents');
 
@@ -81,7 +81,7 @@ app.on('window-all-closed', function () {
 function displaySplashScreen() {
 
 
-    var ret = globalShortcut.register('ctrl+d', function () {
+    globalShortcut.register('ctrl+d', function () {
         if (mainWindow) {
             mainWindow.toggleDevTools()
         }
@@ -443,7 +443,7 @@ function startMainApplication() {
  */
 function electronInsertion() {
 
-    var appName = utilities.parse_url(mainWindow.webContents.getUrl()).host.replace(/.labcorp.com/g, ''),
+    var appName = utilities.parse_url(mainWindow.webContents.getURL()).host.replace(/.labcorp.com/g, ''),
         appName = appName ? ' - ' + appName.toUpperCase() : '';
 
     mainWindow.setTitle(app.getName() + appName);

@@ -26,7 +26,15 @@ var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.ico');
 const ELECTRON_PATH = path.join(__dirname, config.electron_build);
 const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
 
-var ELECTRON_EXE_DESTINATION = fs.existsSync(path.join(ELECTRON_PATH, 'phoenix.exe')) ? path.join(ELECTRON_PATH, 'phoenix.exe') : "";
+
+var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, config.exeName+'.exe');
+
+fs.rename(path.join(ELECTRON_PATH, 'electron.exe'), ELECTRON_EXE_DESTINATION, function(err){
+    if(err)
+        console.error(err)
+});
+
+
 
 console.log('RELEASE', RELEASE)
 console.log('DEVELOPMENT_SRC', DEVELOPMENT_SRC)
@@ -62,11 +70,15 @@ utilities.getVersion(RELEASE, function (status, obj) {
     const BUILD_VERSION = String(obj.version).trim() || false;
     var vrsCompare = utilities.versionCompare(APP_VERSION, BUILD_VERSION);
     if (vrsCompare > 0) {
+
+
         rcedit(ELECTRON_EXE_DESTINATION,rceditOpts , function (error) {
             if (error)
                 console.error(error)
             createPackage();
         });
+
+
     } else {
         console.log('\n\nUPDATE YOUR VERSION FILE, VERSION:' + APP_VERSION + ' ALREADY EXIST');
     }

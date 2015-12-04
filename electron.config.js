@@ -6,6 +6,7 @@ module.exports = {
     "source": "app",
     "development": "app",
     "distribution": "build",
+    "exeName": "phoenix",
     "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
     "electron_build": "./electron-v0.35.4-win32-x64",
     "UAT": "https://uat-phoenix.labcorp.com/web-ui/",

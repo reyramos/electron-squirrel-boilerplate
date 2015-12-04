@@ -1,6 +1,6 @@
 'use strict';
 
-let openDevTools = true;
+let openDevTools = false;
 
 require('web-contents');
 
@@ -30,9 +30,6 @@ app.commandLine.appendSwitch('remote-debugging-port', '8989');
 
 //app.setUserTasks([]);
 //app.clearRecentDocuments()
-
-
-console.log('app.getName')
 
 var appIcon = null;
 

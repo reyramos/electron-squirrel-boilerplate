@@ -17,7 +17,7 @@ module.exports = {
         'CompanyName': APP_NAME,
         'LegalCopyright': 'Copyright 2015 '+APP_NAME,
         'FileDescription' : APP_DESCRIPTION,
-        'OriginalFilename' : 'phoenix.exe',
+        'OriginalFilename' : config.exeName+'.exe',
         'FileVersion' : APP_VERSION,
         'ProductVersion' : APP_VERSION,
         'ProductName' : APP_NAME,

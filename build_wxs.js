@@ -25,7 +25,7 @@ const ELECTRON_PATH = path.join(__dirname, config.electron_build);
 const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
 
 
-var ELECTRON_EXE_DESTINATION = fs.existsSync(path.join(ELECTRON_PATH, 'phoenix.exe')) ? path.join(ELECTRON_PATH, 'phoenix.exe') : "";
+var ELECTRON_EXE_DESTINATION = fs.existsSync(path.join(ELECTRON_PATH, config.exeName + '.exe')) ? path.join(ELECTRON_PATH, config.exeName + '.exe') : "";
 
 
 var buildFileName = config.versionFilePath.split('/');
@@ -60,7 +60,7 @@ getVersion(RELEASE, function (status, obj) {
 
     var vrsCompare = utilities.versionCompare(APP_VERSION, BUILD_VERSION);
     if (vrsCompare > 0) {
-        rcedit(ELECTRON_EXE_DESTINATION,rceditOpts , function (error) {
+        rcedit(ELECTRON_EXE_DESTINATION, rceditOpts, function (error) {
             if (error)
                 console.error(error)
             createPackage();
@@ -119,27 +119,28 @@ function createPackage() {
 
 
         walk(ELECTRON_PATH, function (obj) {
-            var id = (obj.filePath.replace(/[^\w\*]/g, " ")).split(/[\s{0,}\\\-_\.]/g),
-                components = getComponents(obj.files, obj.filePath);
+            if (obj.dirname !== 'default_app') {
+                var id = (obj.filePath.replace(/[^\w\*]/g, " ")).split(/[\s{0,}\\\-_\.]/g),
+                    components = getComponents(obj.files, obj.filePath);
 
-            id.forEach(function (ele, index, array) {
-                array[index] = ele.capitalize();
-            });
-            id = id.join("");
+                id.forEach(function (ele, index, array) {
+                    array[index] = ele.capitalize();
+                });
+                id = id.join("");
 
-            if (obj.filePath !== path.join(ELECTRON_PATH, '/')) {
-                DIRECTORY += '<Directory Id="' + id + '" Name="' + obj.dirname + '" />';
-                DIRECTORY_REF += '<DirectoryRef Id="' + id + '">' + components[0] + '</DirectoryRef>';
-            } else {
-                ROOT_DIRECTORY_REFERENCE = '<DirectoryRef Id="APPLICATIONROOTDIRECTORY">' + components[0] + '</DirectoryRef>';
+                if (obj.filePath !== path.join(ELECTRON_PATH, '/')) {
+                    DIRECTORY += '<Directory Id="' + id + '" Name="' + obj.dirname + '" />';
+                    DIRECTORY_REF += '<DirectoryRef Id="' + id + '">' + components[0] + '</DirectoryRef>';
+                } else {
+                    ROOT_DIRECTORY_REFERENCE = '<DirectoryRef Id="APPLICATIONROOTDIRECTORY">' + components[0] + '</DirectoryRef>';
+                }
+
+                COMPONENTS_REFS += components[1];
+                if (components[2]) {
+                    //if this exist then lets add it
+                    DIRECTORY_REF += components[2];
+                }
             }
-
-            COMPONENTS_REFS += components[1];
-            if (components[2]) {
-                //if this exist then lets add it
-                DIRECTORY_REF += components[2];
-            }
-
         });
 
 

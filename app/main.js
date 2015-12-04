@@ -22,7 +22,7 @@ var dialog = require('dialog')
 
 //require('crash-reporter').start();
 
-app.setAppUserModelId('LabCorp Phoenix');
+app.setAppUserModelId(app.getName());
 
 app.commandLine.appendSwitch('--disable-cache');
 app.commandLine.appendArgument('--disable-cache');
@@ -30,6 +30,9 @@ app.commandLine.appendSwitch('remote-debugging-port', '8989');
 
 //app.setUserTasks([]);
 //app.clearRecentDocuments()
+
+
+console.log('app.getName')
 
 var appIcon = null;
 
@@ -105,7 +108,7 @@ function displaySplashScreen() {
         resizable: false,
         transparent: true,
         frame: false,
-        title: "LabCorp Phoenix",
+        title:  app.getName(),
         autoHideMenuBar: true,
         'always-on-top': true
     });
@@ -169,7 +172,7 @@ function createMainWindow(size) {
         resizable: true,
         show: false,
         icon: path.join(__dirname, 'icon.ico'),
-        title: 'LabCorp Phoenix',
+        title:  app.getName(),
         autoHideMenuBar: true,
         webPreferences: {
             webSecurity: false
@@ -339,7 +342,7 @@ function startMainApplication() {
                         height: 152,
                         resizable: false,
                         frame: false,
-                        title: 'LabCorp Phoenix',
+                        title:  app.getName(),
                         'always-on-top': true,
                         autoHideMenuBar: true
                     });

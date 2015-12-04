@@ -10,7 +10,7 @@
 			"args": [],
 			"cwd": ".",
 			// next line is very important
-			"runtimeExecutable": "node_modules/electron-prebuilt/dist/electron.exe",
+			"runtimeExecutable": "node_modules/electron-prebuilt/dist/phoenix.exe",
 			"runtimeArguments": [],
 			"env": {},
 			"sourceMaps": false

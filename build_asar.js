@@ -26,7 +26,7 @@ var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.ico');
 const ELECTRON_PATH = path.join(__dirname, config.electron_build);
 const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
 
-var ELECTRON_EXE_DESTINATION = fs.existsSync(path.join(ELECTRON_PATH, 'electron.exe')) ? path.join(ELECTRON_PATH, 'electron.exe') : "";
+var ELECTRON_EXE_DESTINATION = fs.existsSync(path.join(ELECTRON_PATH, 'phoenix.exe')) ? path.join(ELECTRON_PATH, 'phoenix.exe') : "";
 
 console.log('RELEASE', RELEASE)
 console.log('DEVELOPMENT_SRC', DEVELOPMENT_SRC)

@@ -13,15 +13,15 @@ const APPLICATION_SRC = path.join(__dirname, config.source);
 
 
 module.exports = {
-    'FileDescription' : APP_DESCRIPTION,
-    'OriginalFilename' : 'electron.exe',
-    'FileVersion' : APP_VERSION,
-    'ProductVersion' : APP_VERSION,
-    'ProductName' : APP_NAME,
-    'InternalName' : APP_NAME,
-    'versionString': {
+    'version-string': {
         'CompanyName': APP_NAME,
-        'LegalCopyright': 'Copyright 2015 '+APP_NAME
+        'LegalCopyright': 'Copyright 2015 '+APP_NAME,
+        'FileDescription' : APP_DESCRIPTION,
+        'OriginalFilename' : 'phoenix.exe',
+        'FileVersion' : APP_VERSION,
+        'ProductVersion' : APP_VERSION,
+        'ProductName' : APP_NAME,
+        'InternalName' : APP_NAME
     },
     'icon': path.join(APPLICATION_SRC, 'icon.ico')
 };

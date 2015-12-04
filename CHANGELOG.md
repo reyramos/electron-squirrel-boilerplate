@@ -1,3 +1,23 @@
+<a name="1.3.1"></a>
+# 1.3.1 Jaerelyx Artigar (2015-12-04)
+
+## Enhancements
+- Provide Environment variable on application title bar.
+- Update electron bridge with extension of  Electron: v0.35.0, Node: 4.1.1 libraries.
+- Move bridge injection on.(did-stop-loading) vs on.(did-finish-load)
+
+
+## Bug Fix
+- Event.on(did-finish-load) was not being called on application environment change.
+- Update the Application title bar to display application name.
+
+## Know Bugs
+- Working on solution to change Application process name from Electron to application name set from main
+
+## Deprecated
+- ctrl+d will be remove on future release of web application, refer to remote-debugging-port <a name="1.2.19"></a>
+
+
 <a name="1.3.0"></a>
 # 1.3.0 facelift (2015-12-03)
 

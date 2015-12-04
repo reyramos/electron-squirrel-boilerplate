@@ -198,6 +198,7 @@ function getComponents(files, filePath) {
 
     appName = appName.join("");
     for (var i in files) {
+
         var file = files[i],
             ext = file.substr((~-file.lastIndexOf(".") >>> 0) + 2),
             id = (file.replace('.' + ext, " ")).split(/[\s{0,}\\\-_\.]/g);
@@ -292,7 +293,6 @@ function getComponents(files, filePath) {
         }
 
         COMPONENTS_REFS += '<ComponentRef Id="' + idComponent + '" />';
-
 
     }
 

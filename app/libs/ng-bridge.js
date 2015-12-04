@@ -5,10 +5,12 @@
  * See also: https://develephant.gitgub.io/amy
  **/
 var angularBridge = new Object();
+var electron = require('electron');
+var BrowserWindow = electron.BrowserWindow;
 
 angularBridge.send = function (msg, bw) {
     var msg = msg;
-    bw = bw || require('browser-window').getFocusedWindow();
+    bw = bw || BrowserWindow.getFocusedWindow();
 
     if (bw) {
         bw.webContents

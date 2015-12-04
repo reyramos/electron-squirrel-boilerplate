@@ -1,6 +1,6 @@
 'use strict';
 
-let openDevTools = false;
+let openDevTools = true;
 
 require('web-contents');
 
@@ -14,6 +14,7 @@ const fs = require('fs');
 const version = require('./version.json');
 const utilities = require('./libs/utilities');
 const uglify = require("uglify-js");
+const phpjs = require("phpjs");
 const Tray = electron.Tray;
 const globalShortcut = electron.globalShortcut;
 
@@ -46,16 +47,9 @@ if (fs.existsSync(localFilePath)) {
     localConfig = require(localFilePath);
 }
 
-let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment) + "?date=" + new Date().toJSON();
+let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment);
 //load the required node js scheme
 let http = require('http');
-
-
-
-
-
-
-
 
 
 console.log('webUrl', webUrl)
@@ -75,6 +69,10 @@ app.on('window-all-closed', function () {
     if (!mainWindow) {
         displaySplashScreen();
     }
+}).on('gpu-process-crashed', function () {
+    if (mainWindow) {
+        mainWindow.destroy();
+    }
 }).on('will-quit', function () {
     console.log('<====================================>');
     console.log('Goodbye');
@@ -83,8 +81,8 @@ app.on('window-all-closed', function () {
 function displaySplashScreen() {
 
 
-    var ret = globalShortcut.register('ctrl+d', function() {
-        if(mainWindow){
+    var ret = globalShortcut.register('ctrl+d', function () {
+        if (mainWindow) {
             mainWindow.toggleDevTools()
         }
     });
@@ -98,9 +96,8 @@ function displaySplashScreen() {
         resizable: false,
         transparent: true,
         frame: false,
-        title:"LabCorp Phoenix",
-        acceptFirstMouse:true,
-        autoHideMenuBar:true,
+        title: "LabCorp Phoenix",
+        autoHideMenuBar: true,
         'always-on-top': true
     });
     splashScreen.loadURL('file://' + __dirname + '/dialogs/spash-screen.html?');
@@ -164,12 +161,16 @@ function createMainWindow(size) {
         show: false,
         icon: path.join(__dirname, 'icon.ico'),
         title: 'LabCorp Phoenix',
-        acceptFirstMouse:true,
-        autoHideMenuBar:true,
+        autoHideMenuBar: true,
         webPreferences: {
             webSecurity: false
         }
     });
+
+    var appName = utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');
+
+    updateLoadinStatus(appName)
+
     console.log('createMainWindow => ', webUrl);
     win.loadURL(webUrl);
     win.openDevTools();
@@ -311,6 +312,7 @@ function startMainApplication() {
 
     updateLoadinStatus("Loading Application...");
 
+
     createMainWindow(size).then(function (browserWindow) {
 
 
@@ -330,8 +332,7 @@ function startMainApplication() {
                         frame: false,
                         title: 'LabCorp Phoenix',
                         'always-on-top': true,
-                        acceptFirstMouse:true,
-                        autoHideMenuBar:true,
+                        autoHideMenuBar: true
                     });
 
                     console.log('filePath', filePath)
@@ -376,9 +377,8 @@ function startMainApplication() {
         mainWindow.webContents.on('did-stop-loading', function (e) {
 
             console.log('mainWindow => did-stop-loading');
-
-            //var insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
-            //mainWindow.webContents.executeJavaScript(insertScript);
+            updateLoadinStatus("Ready...")
+            electronInsertion();
 
         });
 
@@ -386,9 +386,7 @@ function startMainApplication() {
          * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
          */
         mainWindow.webContents.on('dom-ready', function (e) {
-
             updateLoadinStatus("Ready...")
-
             console.log('mainWindow => dom-ready')
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
@@ -398,24 +396,6 @@ function startMainApplication() {
         //open the developer tools
         mainWindow.webContents.on('did-finish-load', function (e) {
             console.log('mainWindow => did-finish-loading')
-
-
-            let insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
-            mainWindow.webContents.executeJavaScript(insertScript);
-
-
-            /***************************************************************
-             * THIS HOTFIX IS TO BE REMOVE IN FUTURE RELEASES
-             ***************************************************************/
-            let hotFix = uglify.minify([__dirname + '/hotFixInjection.js']);
-
-            insertScript = '!function(){var s = document.createElement( \'script\' );var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
-            mainWindow.webContents.executeJavaScript(insertScript);
-            mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
-            /***************************************************************
-             * THE CODE ABOVE IS TO BE REMOVE IN FUTURE RELEASE OF QA ENVIRONMENT,
-             * IT IS FOR THE INJECTION OF ELECTRON WITHIN THE ENVIRONMENT
-             ***************************************************************/
 
 
             //if it did not failed, lets hide the splashScreen and show the application
@@ -456,4 +436,32 @@ function startMainApplication() {
         });
 
     });
+}
+
+/**
+ * Function to insert Electron, and Node objects onto the DOM element.
+ */
+function electronInsertion() {
+
+    var appName = utilities.parse_url(mainWindow.webContents.getUrl()).host.replace(/.labcorp.com/g, ''),
+        appName = appName ? ' - ' + appName.toUpperCase() : '';
+
+    mainWindow.setTitle(app.getName() + appName);
+
+    let insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
+    mainWindow.webContents.executeJavaScript(insertScript);
+
+    /***************************************************************
+     * THIS HOTFIX IS TO BE REMOVE IN FUTURE RELEASES
+     ***************************************************************/
+    let hotFix = uglify.minify([__dirname + '/hotFixInjection.js']);
+
+    insertScript = '!function(){if(document.querySelector(\'#electron-object\'))return;var s = document.createElement( \'script\' );s.id = \'electron-object\';var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
+    mainWindow.webContents.executeJavaScript(insertScript);
+    mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
+    /***************************************************************
+     * THE CODE ABOVE IS TO BE REMOVE IN FUTURE RELEASE OF QA ENVIRONMENT,
+     * IT IS FOR THE INJECTION OF ELECTRON WITHIN THE ENVIRONMENT
+     ***************************************************************/
+
 }

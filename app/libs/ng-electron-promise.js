@@ -128,17 +128,20 @@
 
 
         try {
+
+            var electron = require('electron');
+
             //remote require
-            o.require = require('remote').require;
-            o.remote = require('remote');
+            o.remote = electron.remote;
+            o.require = o.remote.require;
 
             //Electron api
             o.app = o.require('app');
             o.browserWindow = o.require('browser-window');
             o.clipboard = o.require('clipboard');
             o.dialog = o.require('dialog');
-            o.menu = o.require('menu');
-            o.menuItem = o.require('menu-item');
+            o.menu = o.remote.Menu;
+            o.menuItem = o.remote.MenuItem;
             o.nativeImage = o.require('native-image');
             o.powerMonitor = o.require('power-monitor');
             o.protocol = o.require('protocol');
@@ -161,6 +164,13 @@
             o.querystring = o.require('querystring');
             o.url = o.require('url');
             o.zlib = o.require('zlib');
+            o.lokijs = o.require('lokijs');
+            o.phpjs = o.require('phpjs');
+            o.uuid = o.require('uuid');
+            o.uglify = o.require('uglify-js');
+
+            o = extend({}, o, electron);
+
         } catch (e) {
             console.error('electron modules not loaded => ', e)
         }
@@ -168,7 +178,10 @@
 
         //Start listening for host messages
         if (ipc) {
-            console.log('ngElectron has joined the room.');
+            console.log('<====================================================> ')
+            console.log('ngElectron has joined the room => ', o);
+            console.log('<====================================================> ')
+
             ipc.on(ELECTRON_BRIDGE_CLIENT, function (evnt, data) {
 
                 if ($rootScope)
@@ -193,5 +206,107 @@
     };
 
     window.Electron = Electron;
+
+
+    function isFunction(obj) {
+        return typeObj(obj) === "function";
+    }
+
+    var class2type = {};
+    var hasOwn = class2type.hasOwnProperty;
+
+    function typeObj(obj) {
+        if (obj == null) {
+            return obj + "";
+        }
+        // Support: Android<4.0, iOS<6 (functionish RegExp)
+        return typeof obj === "object" || typeof obj === "function" ?
+        class2type[toString.call(obj)] || "object" :
+            typeof obj;
+    }
+
+    function isPlainObject(obj) {
+        // Not plain objects:
+        // - Any object or value whose internal [[Class]] property is not "[object Object]"
+        // - DOM nodes
+        // - window
+        if (typeObj(obj) !== "object" || obj.nodeType) {
+            return false;
+        }
+
+        if (obj.constructor && !hasOwn.call(obj.constructor.prototype, "isPrototypeOf")) {
+            return false;
+        }
+
+        // If the function hasn't returned already, we're confident that
+        // |obj| is a plain object, created by {} or constructed with new Object
+        return true;
+    }
+
+
+    function extend() {
+        var options, name, src, copy, copyIsArray, clone,
+            target = arguments[0] || {},
+            i = 1,
+            length = arguments.length,
+            deep = false;
+
+        // Handle a deep copy situation
+        if (typeof target === "boolean") {
+            deep = target;
+
+            // Skip the boolean and the target
+            target = arguments[i] || {};
+            i++;
+        }
+
+        // Handle case when target is a string or something (possible in deep copy)
+        if (typeof target !== "object" && !isFunction(target)) {
+            target = {};
+        }
+
+        // Extend jQuery itself if only one argument is passed
+        if (i === length) {
+            target = this;
+            i--;
+        }
+
+        for (; i < length; i++) {
+            // Only deal with non-null/undefined values
+            if ((options = arguments[i]) != null) {
+                // Extend the base object
+                for (name in options) {
+                    src = target[name];
+                    copy = options[name];
+
+                    // Prevent never-ending loop
+                    if (target === copy) {
+                        continue;
+                    }
+
+                    // Recurse if we're merging plain objects or arrays
+                    if (deep && copy && ( isPlainObject(copy) || (copyIsArray = Array.isArray(copy)) )) {
+                        if (copyIsArray) {
+                            copyIsArray = false;
+                            clone = src && Array.isArray(src) ? src : [];
+
+                        } else {
+                            clone = src && isPlainObject(src) ? src : {};
+                        }
+
+                        // Never move original objects, clone them
+                        target[name] = extend(deep, clone, copy);
+
+                        // Don't bring in undefined values
+                    } else if (copy !== undefined) {
+                        target[name] = copy;
+                    }
+                }
+            }
+        }
+
+        // Return the modified object
+        return target;
+    };
 
 })(typeof window === 'object' ? window : this);

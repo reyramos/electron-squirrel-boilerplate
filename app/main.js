@@ -84,9 +84,9 @@ app.on('window-all-closed', function () {
 
 function displaySplashScreen() {
 
-
-
-
+    //
+    //
+    //
     //globalShortcut.register('ctrl+d', function () {
     //    if (mainWindow) {
     //        mainWindow.toggleDevTools()
@@ -374,7 +374,7 @@ function startMainApplication() {
             }
             console.log('did-fail-load')
 
-            updateLoadinStatus("Loading Application...", true)
+            updateLoadinStatus("Failed to load ...", true)
 
         });
 

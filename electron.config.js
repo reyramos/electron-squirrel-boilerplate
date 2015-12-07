@@ -8,7 +8,7 @@ module.exports = {
     "distribution": "build",
     "exeName": "phoenix",
     "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
-    "electron_build": "./electron-v0.35.4-win32-x64",
+    "electron_build": "./electron-v0.35.4-win32-ia32",
     "UAT": "https://uat-phoenix.labcorp.com/web-ui/",
     "PROD": "https://phoenix.labcorp.com/web-ui/",
     "DEV": "https://dev-demographics-phoenix.labcorp.com/web-ui/",

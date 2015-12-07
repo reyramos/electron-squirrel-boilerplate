@@ -25,7 +25,7 @@ const ELECTRON_PATH = path.join(__dirname, config.electron_build);
 const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
 
 
-var ELECTRON_EXE_DESTINATION = fs.existsSync(path.join(ELECTRON_PATH, config.exeName + '.exe')) ? path.join(ELECTRON_PATH, config.exeName + '.exe') : "";
+var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, config.exeName + '.exe');
 
 
 var buildFileName = config.versionFilePath.split('/');

@@ -16,7 +16,7 @@ const utilities = require('./libs/utilities');
 const uglify = require("uglify-js");
 const phpjs = require("phpjs");
 const Tray = electron.Tray;
-const globalShortcut = electron.globalShortcut;
+//const globalShortcut = electron.globalShortcut;
 
 var dialog = require('dialog')
 
@@ -25,7 +25,6 @@ var dialog = require('dialog')
 app.setAppUserModelId(app.getName());
 
 app.commandLine.appendSwitch('--disable-cache');
-app.commandLine.appendArgument('--disable-cache');
 app.commandLine.appendSwitch('remote-debugging-port', '8989');
 
 //app.setUserTasks([]);
@@ -90,11 +89,11 @@ function displaySplashScreen() {
 
 
 
-    globalShortcut.register('ctrl+d', function () {
-        if (mainWindow) {
-            mainWindow.toggleDevTools()
-        }
-    });
+    //globalShortcut.register('ctrl+d', function () {
+    //    if (mainWindow) {
+    //        mainWindow.toggleDevTools()
+    //    }
+    //});
 
     /**
      * Build the Splash Screen
@@ -183,6 +182,9 @@ function createMainWindow(size) {
     console.log('createMainWindow => ', webUrl);
     win.loadURL(webUrl);
     win.openDevTools();
+
+    console.log('DONE LOADING URL => ', webUrl);
+
     win.on('closed', function () {
         mainWindow = null;
     });
@@ -197,9 +199,8 @@ function createMainWindow(size) {
 
             if (refresh) {
                 refresh = false;
-                console.log('REFRESHING ULR => ', webUrl)
-
                 win.webContents.reloadIgnoringCache()
+                console.log('REFRESHING ULR => ', webUrl)
                 response(win)
             }
         })

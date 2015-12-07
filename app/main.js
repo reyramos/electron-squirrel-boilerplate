@@ -18,8 +18,6 @@ const phpjs = require("phpjs");
 const Tray = electron.Tray;
 //const globalShortcut = electron.globalShortcut;
 
-var dialog = require('dialog')
-
 //require('crash-reporter').start();
 
 app.setAppUserModelId(app.getName());

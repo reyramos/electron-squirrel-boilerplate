@@ -15,6 +15,6 @@ module.exports = {
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
     "BETA": "https://qa-phoenix.labcorp.com/web-ui/",
     "VERSION_SERVER": "https://dev-phoenix.labcorp.com/web-ui/",
-    "WORKING_ENVIRONMENT": "DEV"
+    "WORKING_ENVIRONMENT": "PROD"
 };
 

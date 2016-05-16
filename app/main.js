@@ -3,6 +3,7 @@
 let openDevTools = false;
 
 require('web-contents');
+console.log("TEST");
 
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
@@ -386,6 +387,7 @@ function startMainApplication() {
 
             console.log('mainWindow => did-stop-loading');
             updateLoadinStatus("Ready...")
+            mainWindow.webContents.send('send-console', e);
             electronInsertion();
 
         });
@@ -394,7 +396,7 @@ function startMainApplication() {
          * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
          */
         mainWindow.webContents.on('dom-ready', function (e) {
-            updateLoadinStatus("Ready...")
+            updateLoadinStatus("Ready...", e)
             console.log('mainWindow => dom-ready')
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
@@ -419,7 +421,9 @@ function startMainApplication() {
                 setTimeout(function () {
                     if (splashScreen) {
                         splashScreen.close();//no longer needed
-                        splashScreen.destroy();
+                        if (splashScreen) {
+                            splashScreen.destroy();
+                        }
                     }
 
 
@@ -468,7 +472,20 @@ function electronInsertion() {
 
     insertScript = '!function(){if(document.querySelector(\'#electron-object\'))return;var s = document.createElement( \'script\' );s.id = \'electron-object\';var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
     mainWindow.webContents.executeJavaScript(insertScript);
-    mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
+
+    // the command angular.bootstrap, despite angular's documentation, will throw a Javascript exception
+    // if angular.bootstrap is called when the application is already bootstrapped. The Javascript for 
+    // bootstrapping the application has been expanded to check whether the application has already been
+    // bootstrapped (i.e. has an injector).
+    // mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
+    mainWindow.webContents.executeJavaScript(`
+        var doc = angular.element(document);
+        var isInitialized = doc.injector();
+        if (!isInitialized) {
+            angular.bootstrap(document, ["phxApp"]);
+        }
+    `);
+
     /***************************************************************
      * THE CODE ABOVE IS TO BE REMOVE IN FUTURE RELEASE OF QA ENVIRONMENT,
      * IT IS FOR THE INJECTION OF ELECTRON WITHIN THE ENVIRONMENT

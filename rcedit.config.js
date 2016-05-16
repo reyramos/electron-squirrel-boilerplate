@@ -15,7 +15,7 @@ const APPLICATION_SRC = path.join(__dirname, config.source);
 module.exports = {
     'version-string': {
         'CompanyName': APP_NAME,
-        'LegalCopyright': 'Copyright 2015 '+APP_NAME,
+        'LegalCopyright': 'Copyright 2016 '+APP_NAME,
         'FileDescription' : APP_DESCRIPTION,
         'OriginalFilename' : config.exeName+'.exe',
         'FileVersion' : APP_VERSION,

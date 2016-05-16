@@ -62,14 +62,6 @@ utilities.getVersion(RELEASE, function (status, obj) {
     if (fs.existsSync(DEVELOPMENT_SRC)) {
         file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
     }
-    //// TODO: APPLICATION_SRC and DEVELOPMENT_SRC are the same, therefore, version.json is written twice.  Is there a scenario where they are different?
-    //if (fs.existsSync(DEVELOPMENT_SRC)) {
-    //    file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
-    //}
-    //
-    //// TODO: If obj.version exists, it should be convertable to string. If it doesn't exist (e.g. new env), let's set it to '0.0.0'
-    //const BUILD_VERSION = obj ? String(obj.version).trim() : '0.0.0';
-
 
     const BUILD_VERSION = String(obj.version).trim() || false;
     var vrsCompare = utilities.versionCompare(APP_VERSION, BUILD_VERSION);

@@ -3,7 +3,6 @@
 let openDevTools = false;
 
 require('web-contents');
-console.log("TEST");
 
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
@@ -386,8 +385,7 @@ function startMainApplication() {
         mainWindow.webContents.on('did-stop-loading', function (e) {
 
             console.log('mainWindow => did-stop-loading');
-            updateLoadinStatus("Ready...")
-            mainWindow.webContents.send('send-console', e);
+            updateLoadinStatus("Ready...");
             electronInsertion();
 
         });
@@ -396,7 +394,7 @@ function startMainApplication() {
          * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
          */
         mainWindow.webContents.on('dom-ready', function (e) {
-            updateLoadinStatus("Ready...", e)
+            updateLoadinStatus("Ready...")
             console.log('mainWindow => dom-ready')
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 

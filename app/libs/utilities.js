@@ -83,18 +83,6 @@ service.getVersion = function (url, callback) {
                 callback(res.statusCode, obj);
             } catch (e) {
             }
-            //try {
-            //    var obj;
-            //    // console.log("UTILITIES.service.getVCersion.end: ", output);
-            //    if (res.statusCode === 404) {
-            //        obj = null;
-            //    } else {
-            //        obj = JSON.parse(output);
-            //    }
-            //    callback(res.statusCode, obj);
-            //} catch (e) {
-            //    console.log("UTILITIES.service.getVersion.end.catch ", e, output);
-            //}
 
         });
 

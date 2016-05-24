@@ -385,7 +385,7 @@ function startMainApplication() {
         mainWindow.webContents.on('did-stop-loading', function (e) {
 
             console.log('mainWindow => did-stop-loading');
-            updateLoadinStatus("Ready...")
+            updateLoadinStatus("Ready...");
             electronInsertion();
 
         });
@@ -419,7 +419,9 @@ function startMainApplication() {
                 setTimeout(function () {
                     if (splashScreen) {
                         splashScreen.close();//no longer needed
-                        splashScreen.destroy();
+                        if (splashScreen) {
+                            splashScreen.destroy();
+                        }
                     }
 
 
@@ -468,7 +470,20 @@ function electronInsertion() {
 
     insertScript = '!function(){if(document.querySelector(\'#electron-object\'))return;var s = document.createElement( \'script\' );s.id = \'electron-object\';var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
     mainWindow.webContents.executeJavaScript(insertScript);
-    mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
+
+    // the command angular.bootstrap, despite angular's documentation, will throw a Javascript exception
+    // if angular.bootstrap is called when the application is already bootstrapped. The Javascript for 
+    // bootstrapping the application has been expanded to check whether the application has already been
+    // bootstrapped (i.e. has an injector).
+    // mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
+    mainWindow.webContents.executeJavaScript(`
+        var doc = angular.element(document);
+        var isInitialized = doc.injector();
+        if (!isInitialized) {
+            angular.bootstrap(document, ["phxApp"]);
+        }
+    `);
+
     /***************************************************************
      * THE CODE ABOVE IS TO BE REMOVE IN FUTURE RELEASE OF QA ENVIRONMENT,
      * IT IS FOR THE INJECTION OF ELECTRON WITHIN THE ENVIRONMENT

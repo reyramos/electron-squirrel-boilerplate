@@ -63,7 +63,6 @@ utilities.getVersion(RELEASE, function (status, obj) {
         file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
     }
 
-
     const BUILD_VERSION = String(obj.version).trim() || false;
     var vrsCompare = utilities.versionCompare(APP_VERSION, BUILD_VERSION);
     if (vrsCompare > 0) {

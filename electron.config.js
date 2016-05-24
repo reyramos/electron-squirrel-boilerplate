@@ -1,5 +1,5 @@
 module.exports = {
-    "version": "1.3.3",
+    "version": "1.3.4",
     "app_name": "LabCorp Phoenix",
     "app_description": "LabCorp Application",
     "manufacturer": "LabCorp Inc",
@@ -8,13 +8,14 @@ module.exports = {
     "distribution": "build",
     "exeName": "phoenix",
     "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
-    "electron_build": "./electron-v0.35.4-win32-ia32",
+    "electron_build": "./electron-v0.37.8-win32-ia32",
     "UAT": "https://uat-phoenix.labcorp.com/web-ui/",
     "PROD": "https://phoenix.labcorp.com/web-ui/",
-    "DEV": "https://dev-demographics-phoenix.labcorp.com/web-ui/",
+    "DEV": "https://dev-phoenix.labcorp.com/web-ui/",
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
+    "LOCAL": "http://ken.labcorp.com:8080",
     "BETA": "https://qa-phoenix.labcorp.com/web-ui/",
     "VERSION_SERVER": "https://dev-phoenix.labcorp.com/web-ui/",
-    "WORKING_ENVIRONMENT": "PROD"
+    "WORKING_ENVIRONMENT": "DEV"
 };
 

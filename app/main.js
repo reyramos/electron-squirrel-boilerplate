@@ -89,11 +89,6 @@ app.on('window-all-closed', function () {
 }).on('ready', displaySplashScreen);
 
 
-
-
-
-
-
 function displaySplashScreen() {
 
     /*
@@ -357,8 +352,7 @@ function startMainApplication() {
 }
 
 
-
-function versionCompare(){
+function versionCompare() {
     console.log('check release version => ', releaseUrl)
 
 
@@ -407,7 +401,7 @@ function electronInsertion() {
     /***************************************************************
      * THIS HOTFIX IS TO BE REMOVE IN FUTURE RELEASES
      ***************************************************************/
-    let hotFix = uglify.minify([__dirname + '/hotFixInjection.js']);
+    let hotFix = uglify.minify(path.join(__dirname, 'libs', '/hotFixInjection.js'));
 
     insertScript = '!function(){if(document.querySelector(\'#electron-object\'))return;var s = document.createElement( \'script\' );s.id = \'electron-object\';var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
     mainWindow.webContents.executeJavaScript(insertScript);

@@ -1,6 +1,18 @@
 {
   "name": "electon-web-ui",
-  "version": "1.0.0",
+  "version": "1.2.0",
+  "description": "Electron container if Phoenix Application",
+  "author": "ramor11@labcorp.com",
+  "homepage": "https://git.labcorp.com/projects/PHX/repos/phx-electron/browse/README.md",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://git.labcorp.com/scm/phx/phx-electron.git"
+  },
+  "scripts": {
+    "start": "electron .tmp/main.js",
+    "electron": "electron"
+  },
   "devDependencies": {
     "asar": "^0.7.2",
     "grunt": "^0.4.5",
@@ -12,14 +24,10 @@
     "matchdep": "~0.3.0",
     "node-uuid": "^1.4.3",
     "node.extend": "^1.1.5",
-    "rcedit": "~0.3.0"
+    "rcedit": "~0.3.0",
+    "electron-prebuilt": "^1.2.0"
   },
   "engines": {
     "node": ">=0.10.0"
-  },
-  "scripts": {
-    "start": "electron-v0.37.8-win32-ia32\\phoenix.exe app/"
-  },
-  "author": "",
-  "license": "ISC"
+  }
 }

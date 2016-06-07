@@ -289,19 +289,6 @@ function startMainApplication() {
         });
 
         /**
-         * Once the web Application finish loading, lets inject
-         * the ngElectron component, to be used within the webApp
-         */
-        mainWindow.webContents.on('did-stop-loading', function (e) {
-
-            console.log('mainWindow => did-stop-loading');
-            updateLoadingStatus("Ready...");
-
-            // electronInsertion();
-
-        });
-
-        /**
          * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
          */
         mainWindow.webContents.on('dom-ready', function (e) {
@@ -314,48 +301,59 @@ function startMainApplication() {
 
         //open the developer tools
         mainWindow.webContents.on('did-finish-load', function (e) {
-            console.log('mainWindow => did-finish-loading', loadingSuccess)
+            console.log('mainWindow => did-finish-load')
+
+            //if it did not failed, lets hide the splashScreen and show the application
+            if (loadingSuccess) {
+
+                updateLoadingStatus("Ready...")
 
 
-            // //if it did not failed, lets hide the splashScreen and show the application
-            // if (loadingSuccess) {
-            //
-            //     updateLoadingStatus("Ready...")
-            //
-            //
-            //     if (splashScreen)
-            //         splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
-            //     setTimeout(function () {
-            //         if (splashScreen) {
-            //             splashScreen.close();//no longer needed
-            //             if (splashScreen) {
-            //                 splashScreen.destroy();
-            //             }
-            //         }
-            //
-            //
-            //         mainWindow.show();
-            //     }, 2000);
-            // }
-            //
-            // bridge.listen(function (data) {
-            //     console.log('listen', data)
-            //     switch (data.eventType) {
-            //         case 'getVersion':
-            //             data.msg.version = version;
-            //             console.log('getVersion:', version)
-            //             bridge.send(data);
-            //             break;
-            //         default :
-            //             bridge.send(data);
-            //             break;
-            //
-            //     }
-            // });
+                if (splashScreen)
+                    splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
+
+                setTimeout(function () {
+                    if (splashScreen) {
+                        splashScreen.close();//no longer needed
+                        if (splashScreen) {
+                            splashScreen.destroy();
+                        }
+                    }
+
+
+                    mainWindow.show();
+                }, 2000);
+            }
+
+            bridge.listen(function (data) {
+                console.log('listen', data)
+                switch (data.eventType) {
+                    case 'getVersion':
+                        data.msg.version = version;
+                        console.log('getVersion:', version)
+                        bridge.send(data);
+                        break;
+                    default :
+                        bridge.send(data);
+                        break;
+
+                }
+            });
         });
 
 
+        /**
+         * Once the web Application finish loading, lets inject
+         * the ngElectron component, to be used within the webApp
+         */
+        mainWindow.webContents.on('did-stop-loading', function (e) {
+            console.log('mainWindow => did-stop-loading');
+            updateLoadingStatus("Ready...");
+            electronInsertion();
+        });
+
     });
+
 }
 
 

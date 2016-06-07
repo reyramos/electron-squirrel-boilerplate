@@ -1,34 +1,50 @@
 'use strict';
 
-let openDevTools = false;
 
-// require('web-contents');
+//node js dependencies
+let path = require('path'),
+    fs = require('fs'),
+    version = require('./version.json'),
+    utilities = require('./libs/utilities'),
+    uglify = require("uglify-js"),
+    http = require('http');
 
-const electron = require('electron');
-const BrowserWindow = electron.BrowserWindow;
-const Menu = electron.Menu;
-const bridge = require('./libs/ng-bridge');
-const path = require('path');
-const app = electron.app;
-const fs = require('fs');
-const version = require('./version.json');
-const utilities = require('./libs/utilities');
-const uglify = require("uglify-js");
-const phpjs = require("phpjs");
-const Tray = electron.Tray;
+
+// Module to control application life.
+const {app, remote, BrowserWindow, Menu, MenuItem, Tray} = require('electron');
+const electron = remote;
+// const app = electron.app;
+
+// Module to create native browser window.
+// const BrowserWindow = electron.BrowserWindow;
+// Module to create native application menu and context menu
+// const Menu = electron.Menu;
+// Add icons and context menus to the system’s notification area.
+// const Tray = electron.Tray;
+
+//Detect keyboard events when the application does not have keyboard focus.
 //const globalShortcut = electron.globalShortcut;
 
-//require('crash-reporter').start();
+/*
+ * bridge to send command from webview to electron application
+ * this will allow the webapplication to define electron controlls without the need
+ * to apply changes to app/main.js
+ */
+const bridge = require('./libs/ng-bridge');
 
+
+//require('crash-reporter').start();
 app.setAppUserModelId(app.getName());
 
-app.commandLine.appendSwitch('--disable-cache');
+/*
+ * Append an argument to Chromium’s command line. The argument will be quoted correctly.
+ * http://peter.sh/experiments/chromium-command-line-switches/
+ */
 app.commandLine.appendSwitch('remote-debugging-port', '8989');
+app.commandLine.appendArgument('--disable-cache');
 
 //app.setUserTasks([]);
 //app.clearRecentDocuments()
-
-var appIcon = null;
 
 //read the file as string and minify for code injection
 let results = uglify.minify([__dirname + '/libs/ng-electron-promise.js']);
@@ -41,27 +57,17 @@ let refresh = true;
 //This url contains the version that is hosted on the remote server for package control
 const releaseUrl = utilities.parse_url(version["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(version["VERSION_SERVER"]).host + path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
-
 //If the local machine contains a config app, lets load the environment specified, used for developers
 let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
-    localConfig = null;
-
 //Allows for local path config file
-if (fs.existsSync(localFilePath)) {
-    localConfig = require(localFilePath);
-}
+    localConfig = fs.existsSync(localFilePath) ? require(localFilePath) : null;
 
 let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment);
-//load the required node js scheme
-let http = require('http');
-
-
-console.log('webUrl', webUrl)
-//deleteFolderRecursive(app.getPath('userData'))
 
 // prevent window being GC'd
-let mainWindow = null;
-let splashScreen = null;
+let mainWindow = null,
+    splashScreen = null;
+
 /**
  * Create the main Electron Application
  */
@@ -82,11 +88,18 @@ app.on('window-all-closed', function () {
     console.log('Goodbye');
 }).on('ready', displaySplashScreen);
 
+
+
+
+
+
+
 function displaySplashScreen() {
 
-    //
-    //
-    //
+    /*
+     * Remove this globalShortcut, use port debugger to
+     * debug electron application
+     */
     //globalShortcut.register('ctrl+d', function () {
     //    if (mainWindow) {
     //        mainWindow.toggleDevTools()
@@ -102,7 +115,7 @@ function displaySplashScreen() {
         resizable: false,
         transparent: true,
         frame: false,
-        title:  app.getName(),
+        title: app.getName(),
         autoHideMenuBar: true,
         'always-on-top': true
     });
@@ -112,51 +125,12 @@ function displaySplashScreen() {
     })
 
     splashScreen.webContents.on('did-finish-load', function () {
+        console.log('validate => ', webUrl)
         validateURL(webUrl).then(LOAD_APPLICATION)
     });
 
 }
 
-
-/**
- * getJSON:  REST get request returning JSON object(s)
- * @param options: http options object
- * @param callback: callback to pass the results JSON object(s) back
- */
-function getVersion(url, callback) {
-
-
-    console.log('getVersion => ', url)
-
-
-    require(utilities.parse_url(url).scheme).get(url, function (res) {
-
-        var output = '';
-        res.setEncoding('utf8');
-
-        res.on('data', function (chunk) {
-            output += chunk;
-        });
-
-        res.on('end', function () {
-            try {
-                var obj = JSON.parse(output);
-
-
-                console.log('output => ', obj)
-
-                callback(res.statusCode, obj);
-            } catch (e) {
-            }
-
-        });
-
-    }).on('error', function (e) {
-        //callback(e);
-        console.log('error', e)
-
-    });
-}
 
 function createMainWindow(size) {
 
@@ -166,7 +140,7 @@ function createMainWindow(size) {
         resizable: true,
         show: false,
         icon: path.join(__dirname, 'icon.ico'),
-        title:  app.getName(),
+        title: app.getName(),
         autoHideMenuBar: true,
         webPreferences: {
             webSecurity: false
@@ -175,11 +149,10 @@ function createMainWindow(size) {
 
     var appName = utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');
 
-    updateLoadinStatus(appName)
+    updateLoadingStatus(appName)
 
     console.log('createMainWindow => ', webUrl);
     win.loadURL(webUrl);
-    win.openDevTools();
 
     console.log('DONE LOADING URL => ', webUrl);
 
@@ -191,10 +164,6 @@ function createMainWindow(size) {
     return new Promise(function (response, reject) {
 
         win.webContents.on('did-finish-load', function (e) {
-
-            console.log('did-finish-load', refresh);
-
-
             if (refresh) {
                 refresh = false;
                 win.webContents.reloadIgnoringCache()
@@ -206,36 +175,10 @@ function createMainWindow(size) {
 }
 
 
-function deleteFolderRecursive(path) {
-    if (fs.existsSync(path)) {
-        console.log('REMOVE DIRECTORY => ', path)
-
-
-        fs.readdirSync(path).forEach(function (file, index) {
-            var curPath = path + "/" + file;
-            if (fs.lstatSync(curPath).isDirectory()) { // recurse
-                deleteFolderRecursive(curPath);
-            } else { // delete file
-                try {
-                    fs.unlinkSync(curPath);
-                } catch (e) {
-                    console.log('error => ', e)
-                }
-            }
-        });
-        try {
-            fs.rmdirSync(path);
-        } catch (e) {
-            console.log('error => ', e)
-        }
-    }
-};
-
-
 function validateURL(url) {
 
 
-    updateLoadinStatus("Validating Path ...")
+    updateLoadingStatus("Validating Path ...")
 
     /**
      * Once the Splash Screen finish loading, check the version, start to load the application
@@ -258,7 +201,7 @@ function validateURL(url) {
             console.log("statusCode: ", res.statusCode);
             console.log("headers: ", res.headers);
 
-            updateLoadinStatus("Status: " + res.statusCode)
+            updateLoadingStatus("Status: " + res.statusCode)
 
             var invalids = [500];
             webUrl = invalids.indexOf(res.statusCode) === -1 ? url : version[version["WORKING_ENVIRONMENT"]];
@@ -273,7 +216,7 @@ function validateURL(url) {
 
         req.on('error', function (e) {
             console.log('error:', e)
-            updateLoadinStatus("Validating Error:", true)
+            updateLoadingStatus("Validating Error:", true)
 
             fulfill(version[version["WORKING_ENVIRONMENT"]]);
         });
@@ -285,7 +228,7 @@ function validateURL(url) {
 }
 
 
-function updateLoadinStatus(msg, stop) {
+function updateLoadingStatus(msg, stop) {
     var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="' + msg + '";';
 
     if (stop)
@@ -294,17 +237,13 @@ function updateLoadinStatus(msg, stop) {
     if (splashScreen)
         splashScreen.webContents.executeJavaScript(insertScript);
 
-    console.log('=====================')
-    console.log(msg)
+    console.log('=========updateLoadingStatus============\n', msg)
 
 }
 
 function LOAD_APPLICATION() {
     console.log('LOAD_APPLICATION => ' + webUrl)
-    updateLoadinStatus(webUrl);
-
-
-    console.log('splashScreen => did-finish-load')
+    updateLoadingStatus(webUrl);
 
     if (!mainWindow) {
         startMainApplication();
@@ -312,53 +251,26 @@ function LOAD_APPLICATION() {
 
 }
 
-
 function startMainApplication() {
     var loadingSuccess = true;
-    var electronScreen = require('screen');
+    // var electronScreen = require('screen');
+    const {screen: electronScreen} = require('electron');
+
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
 
-    updateLoadinStatus("Loading Application...");
+    updateLoadingStatus("Loading Application...");
 
+    console.log('size', size)
 
     createMainWindow(size).then(function (browserWindow) {
 
-
-        setTimeout(function () {
-
-            getVersion(releaseUrl, function (status, obj) {
-
-
-                var vrsCompare = utilities.versionCompare(obj.version, version.version),
-                    filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl; //+ '&id=' + (mainWindow.id ? String(mainWindow.id) : "");
-
-                if (vrsCompare > 0) {
-                    var download = new BrowserWindow({
-                        width: 402,
-                        height: 152,
-                        resizable: false,
-                        frame: false,
-                        title:  app.getName(),
-                        'always-on-top': true,
-                        autoHideMenuBar: true
-                    });
-
-                    console.log('filePath', filePath)
-
-                    download.loadURL(filePath);
-                    download.on('closed', function () {
-                        download = null;
-                    });
-                }
-            });
-
-        }, 500);
-
+        console.log('OPENING APPLICATION')
+        setTimeout(versionCompare, 500);
 
         mainWindow = browserWindow;
 
         mainWindow.webContents.on('did-start-loading', function (e) {
-            updateLoadinStatus("Loading Application...")
+            updateLoadingStatus("Loading Application...")
         });
 
         mainWindow.webContents.on('did-fail-load', function (e) {
@@ -373,9 +285,7 @@ function startMainApplication() {
             } catch (e) {
             }
             console.log('did-fail-load')
-
-            updateLoadinStatus("Failed to load ...", true)
-
+            updateLoadingStatus("Failed to load ...", true)
         });
 
         /**
@@ -385,8 +295,9 @@ function startMainApplication() {
         mainWindow.webContents.on('did-stop-loading', function (e) {
 
             console.log('mainWindow => did-stop-loading');
-            updateLoadinStatus("Ready...");
-            electronInsertion();
+            updateLoadingStatus("Ready...");
+
+            // electronInsertion();
 
         });
 
@@ -394,7 +305,7 @@ function startMainApplication() {
          * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
          */
         mainWindow.webContents.on('dom-ready', function (e) {
-            updateLoadinStatus("Ready...")
+            updateLoadingStatus("Ready...")
             console.log('mainWindow => dom-ready')
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
@@ -403,48 +314,80 @@ function startMainApplication() {
 
         //open the developer tools
         mainWindow.webContents.on('did-finish-load', function (e) {
-            console.log('mainWindow => did-finish-loading')
+            console.log('mainWindow => did-finish-loading', loadingSuccess)
 
 
-            //if it did not failed, lets hide the splashScreen and show the application
-            if (loadingSuccess) {
-                //Electron Bug, when this is open, it injects the executeJavascript code, we are just gonna remove it
-                //before we show the app
-                if (!openDevTools)mainWindow.closeDevTools();
-                updateLoadinStatus("Ready...")
-
-
-                if (splashScreen)
-                    splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
-                setTimeout(function () {
-                    if (splashScreen) {
-                        splashScreen.close();//no longer needed
-                        if (splashScreen) {
-                            splashScreen.destroy();
-                        }
-                    }
-
-
-                    mainWindow.show();
-                }, 2000);
-            }
-
-            bridge.listen(function (data) {
-                console.log('listen', data)
-                switch (data.eventType) {
-                    case 'getVersion':
-                        data.msg.version = version;
-                        console.log('getVersion:', version)
-                        bridge.send(data);
-                        break;
-                    default :
-                        bridge.send(data);
-                        break;
-
-                }
-            });
+            // //if it did not failed, lets hide the splashScreen and show the application
+            // if (loadingSuccess) {
+            //
+            //     updateLoadingStatus("Ready...")
+            //
+            //
+            //     if (splashScreen)
+            //         splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
+            //     setTimeout(function () {
+            //         if (splashScreen) {
+            //             splashScreen.close();//no longer needed
+            //             if (splashScreen) {
+            //                 splashScreen.destroy();
+            //             }
+            //         }
+            //
+            //
+            //         mainWindow.show();
+            //     }, 2000);
+            // }
+            //
+            // bridge.listen(function (data) {
+            //     console.log('listen', data)
+            //     switch (data.eventType) {
+            //         case 'getVersion':
+            //             data.msg.version = version;
+            //             console.log('getVersion:', version)
+            //             bridge.send(data);
+            //             break;
+            //         default :
+            //             bridge.send(data);
+            //             break;
+            //
+            //     }
+            // });
         });
 
+
+    });
+}
+
+
+
+function versionCompare(){
+    console.log('check release version => ', releaseUrl)
+
+
+    getVersion(releaseUrl, function (status, obj) {
+
+
+        var vrsCompare = utilities.versionCompare(obj.version, version.version),
+            filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl; //+ '&id=' + (mainWindow.id ? String(mainWindow.id) : "");
+
+        if (vrsCompare > 0) {
+            var download = new BrowserWindow({
+                width: 402,
+                height: 152,
+                resizable: false,
+                frame: false,
+                title: app.getName(),
+                'always-on-top': true,
+                autoHideMenuBar: true
+            });
+
+            console.log('filePath', filePath)
+
+            download.loadURL(filePath);
+            download.on('closed', function () {
+                download = null;
+            });
+        }
     });
 }
 
@@ -489,4 +432,45 @@ function electronInsertion() {
      * IT IS FOR THE INJECTION OF ELECTRON WITHIN THE ENVIRONMENT
      ***************************************************************/
 
+}
+
+
+/**
+ * getJSON:  REST get request returning JSON object(s)
+ * @param options: http options object
+ * @param callback: callback to pass the results JSON object(s) back
+ */
+function getVersion(url, callback) {
+
+
+    console.log('getVersion => ', url)
+
+
+    require(utilities.parse_url(url).scheme).get(url, function (res) {
+
+        var output = '';
+        res.setEncoding('utf8');
+
+        res.on('data', function (chunk) {
+            output += chunk;
+        });
+
+        res.on('end', function () {
+            try {
+                var obj = JSON.parse(output);
+
+
+                console.log('output => ', obj)
+
+                callback(res.statusCode, obj);
+            } catch (e) {
+            }
+
+        });
+
+    }).on('error', function (e) {
+        //callback(e);
+        console.log('error', e)
+
+    });
 }

@@ -11,10 +11,13 @@
   },
   "scripts": {
     "start": "electron app/main.js",
-    "electron": "electron"
+    "build32": "electron-packager app/ --platform=win32 --arch=ia32 --asar",
+    "build64": "electron-packager app/ --platform=win32 --arch=x64 --asar"
   },
   "devDependencies": {
     "asar": "^0.7.2",
+    "electron-packager": "^7.0.3",
+    "electron-prebuilt": "^1.2.0",
     "grunt": "^0.4.5",
     "grunt-cli": "0.1.13",
     "grunt-contrib-clean": "^0.6.0",
@@ -24,8 +27,7 @@
     "matchdep": "~0.3.0",
     "node-uuid": "^1.4.3",
     "node.extend": "^1.1.5",
-    "rcedit": "~0.3.0",
-    "electron-prebuilt": "^1.2.0"
+    "rcedit": "~0.3.0"
   },
   "engines": {
     "node": ">=0.10.0"

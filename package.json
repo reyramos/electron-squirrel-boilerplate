@@ -10,7 +10,7 @@
     "url": "git+https://git.labcorp.com/scm/phx/phx-electron.git"
   },
   "scripts": {
-    "start": "electron .tmp/main.js",
+    "start": "electron app/main.js",
     "electron": "electron"
   },
   "devDependencies": {

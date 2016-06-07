@@ -74,7 +74,7 @@ getVersion(RELEASE, function (status, obj) {
 
 function createPackage() {
     //make the directory for the
-    mkdir(BUILD_DESTINATION);
+    utilities.mkdir(BUILD_DESTINATION);
 
     console.log('Creating WXS Package!');
 
@@ -155,14 +155,14 @@ function createPackage() {
         FILE_WXS = FILE_WXS.replace(/{{APPLICATION_ICON_SOURCE}}/g, APPLICATION_ICON_SOURCE);
 
         if (fs.existsSync(BUILD_DESTINATION)) {
-            file_put_content(path.join(BUILD_DESTINATION, 'v' + APP_VERSION + '.wxs'), FILE_WXS);
+            utilities.file_put_content(path.join(BUILD_DESTINATION, 'v' + APP_VERSION + '.wxs'), FILE_WXS);
             //create the versioning file
-            file_put_content(path.join(BUILD_DESTINATION, buildFileName), JSON.stringify(config));
+            utilities.file_put_content(path.join(BUILD_DESTINATION, buildFileName), JSON.stringify(config));
 
         } else {
-            file_put_content('v' + APP_VERSION + '.wxs', FILE_WXS)
+            utilities.file_put_content('v' + APP_VERSION + '.wxs', FILE_WXS)
             //create the versioning file
-            file_put_content(buildFileName, JSON.stringify(config));
+            utilities.file_put_content(buildFileName, JSON.stringify(config));
         }
 
 
@@ -177,14 +177,6 @@ function createPackage() {
 
 }
 
-function file_put_content(filename, text) {
-
-    fs.writeFile(filename, text, function (err) {
-        if (err) return console.log(err);
-        console.log('CREATED => ', filename)
-    });
-
-}
 
 function getComponents(files, filePath) {
     var COMPONENTS = "",
@@ -300,24 +292,8 @@ function getComponents(files, filePath) {
 
 }
 
-function mkdir(dir) {
-    if (!fs.existsSync(dir)) {
-        console.log('CREATED => ', dir)
-        fs.mkdirSync(dir);
-        return true;
-    }
 
-    return false;
-}
 
-function rmdir(directories, callback) {
-    if (typeof directories === 'string') {
-        directories = [directories];
-    }
-    var args = directories;
-    args.unshift('-rf');
-    child.execFile('rm', args, {env: process.env}, callback);
-};
 
 function grep(elems, callback, invert) {
     var callbackInverse,

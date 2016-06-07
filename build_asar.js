@@ -57,10 +57,10 @@ utilities.getVersion(RELEASE, function (status, obj) {
 
 //create the versioning file
     if (fs.existsSync(APPLICATION_SRC)) {
-        file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
+        utilities.file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
     }
     if (fs.existsSync(DEVELOPMENT_SRC)) {
-        file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
+        utilities.file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
     }
 
     const BUILD_VERSION = String(obj.version).trim() || false;
@@ -84,28 +84,12 @@ utilities.getVersion(RELEASE, function (status, obj) {
 
 function createPackage() {
     //make the directory for the
-    mkdir(BUILD_DESTINATION);
+    utilities.mkdir(BUILD_DESTINATION);
     asar.createPackage(APPLICATION_SRC, ELECTRON_BUILD_DESTINATION, function () {
         console.log('Electron Package Created');
     });
 }
 
-function file_put_content(filename, text) {
 
-    fs.writeFile(filename, text, function (err) {
-        if (err) return console.log(err);
-        console.log('CREATED => ', filename)
-    });
 
-}
-
-function mkdir(dir) {
-    if (!fs.existsSync(dir)) {
-        console.log('CREATED => ', dir)
-        fs.mkdirSync(dir);
-        return true;
-    }
-
-    return false;
-}
 

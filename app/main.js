@@ -2,7 +2,7 @@
 
 let openDevTools = false;
 
-require('web-contents');
+// require('web-contents');
 
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;

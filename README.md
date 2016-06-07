@@ -102,3 +102,31 @@ The current application is using UpgradeCode=8291b2b1-4b33-11e5-975d-29a7531f192
 ## RDC
 2UA2300TTV
 2UA2280PC5
+
+
+## Application LifeCycle
+app (EVENT)
+	window-all-closed => app.quit()
+	activate-with-no-open-windows => displaySplashScreen()
+	gpu-process-crashed => mainWindow.destroy()
+	will-quit
+	ready => displaySplashScreen()
+		
+		
+displaySplashScreen()
+	splashScreen.on(did-finish-load) => 
+		validateURL(promise) => 
+			LOAD_APPLICATION()
+			!mainWindow?startMainApplication():null
+			
+
+startMainApplication()
+	createMainWindow(promise) => return mainWindow
+		mainWindow (EVENT)
+			did-start-loading
+			did-fail-load => mainWindow.close()
+			dom-ready => mainWindow.executeJavaScript("//insert to application electron identifier to webapp") 
+			did-finish-load =>
+			did-stop-loading => electronInsertion()
+			
+	500ms => getVersion()

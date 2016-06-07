@@ -11,8 +11,8 @@
   },
   "scripts": {
     "start": "electron app/main.js",
-    "build32": "electron-packager app/ --platform=win32 --arch=ia32 --asar",
-    "build64": "electron-packager app/ --platform=win32 --arch=x64 --asar"
+    "build32": "./node_modules/.bin/electron-packager app/ --platform=win32 --arch=ia32 --asar",
+    "build64": "./node_modules/.bin/electron-packager app/ --platform=win32 --arch=x64 --asar"
   },
   "devDependencies": {
     "asar": "^0.7.2",

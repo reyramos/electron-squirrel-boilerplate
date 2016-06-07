@@ -2,7 +2,7 @@ module.exports = {
     
     //for every build on msi the numbers will need to increment to update the
     //msi application stored on windows machine
-    "version": "1.3.4",
+    "version": "1.3.3",
 
     "app_name": "LabCorp Phoenix",
     "app_description": "LabCorp Application",
@@ -17,9 +17,6 @@ module.exports = {
 
     //change electron.ext to exeName
     "exeName": "phoenix",
-
-    //electron path location
-    "electron_build": "./electron-v0.37.8-win32-ia32",
 
     //environment
     "STAGE": "https://stage-phoenix.labcorp.com/web-ui/",

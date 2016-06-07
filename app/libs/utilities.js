@@ -96,11 +96,10 @@ service.getVersion = function (url, callback) {
 
 }
 
-service.file_put_content = function (obj) {
+service.file_put_content = function (filename, text) {
 
     fs.writeFile(filename, text, function (err) {
         if (err) return console.log(err);
-        console.log('CREATED => ', filename)
     });
 
 }

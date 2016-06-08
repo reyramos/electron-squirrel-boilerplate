@@ -208,12 +208,15 @@
     window.Electron = Electron;
 
 
+    /**************************************************
+     * jQuery Functionality
+     *************************************************/
+    var class2type = {};
+    var hasOwn = class2type.hasOwnProperty;
+
     function isFunction(obj) {
         return typeObj(obj) === "function";
     }
-
-    var class2type = {};
-    var hasOwn = class2type.hasOwnProperty;
 
     function typeObj(obj) {
         if (obj == null) {
@@ -242,7 +245,6 @@
         // |obj| is a plain object, created by {} or constructed with new Object
         return true;
     }
-
 
     function extend() {
         var options, name, src, copy, copyIsArray, clone,

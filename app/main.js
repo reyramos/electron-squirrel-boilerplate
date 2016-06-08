@@ -19,6 +19,9 @@ let path = require('path'),
 const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut} = require('electron');
 
 
+//read the file as string and minify for code injection
+const code = uglify.minify([path.join(__dirname, 'libs', 'ng-electron-promise.js')]).code;
+
 /*
  * bridge to send command from webview to electron application
  * this will allow the webapplication to define electron controlls without the need
@@ -129,7 +132,8 @@ function createMainWindow(size) {
         title: app.getName(),
         autoHideMenuBar: true,
         webPreferences: {
-            webSecurity: false
+            webSecurity: false,
+            preload: path.join(__dirname, 'libs', 'ng-electron-promise.js')
         }
     });
 
@@ -379,45 +383,14 @@ function versionCompare() {
  */
 function electronInsertion() {
 
-    //read the file as string and minify for code injection
-    const code = uglify.minify([path.join(__dirname, 'libs', 'ng-electron-promise.js')]).code;
-
     var appName = utilities.parse_url(mainWindow.webContents.getURL()).host.replace(/.labcorp.com/g, ''),
         appName = appName ? ' - ' + appName.toUpperCase() : '';
 
     mainWindow.setTitle(app.getName() + appName);
     //mainWindow.setSkipTaskbar(true)
 
-
     let insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
     mainWindow.webContents.executeJavaScript(insertScript);
-
-    /***************************************************************
-     * THIS HOTFIX IS TO BE REMOVE IN FUTURE RELEASES
-     ***************************************************************/
-    let hotFix = uglify.minify(path.join(__dirname, 'libs', '/hotFixInjection.js'));
-
-    insertScript = '!function(){if(document.querySelector(\'#electron-object\'))return;var s = document.createElement( \'script\' );s.id = \'electron-object\';var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
-    mainWindow.webContents.executeJavaScript(insertScript);
-
-    // the command angular.bootstrap, despite angular's documentation, will throw a Javascript exception
-    // if angular.bootstrap is called when the application is already bootstrapped. The Javascript for 
-    // bootstrapping the application has been expanded to check whether the application has already been
-    // bootstrapped (i.e. has an injector).
-    // mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
-    mainWindow.webContents.executeJavaScript(`
-        var doc = angular.element(document);
-        var isInitialized = doc.injector();
-        if (!isInitialized) {
-            angular.bootstrap(document, ["phxApp"]);
-        }
-    `);
-
-    /***************************************************************
-     * THE CODE ABOVE IS TO BE REMOVE IN FUTURE RELEASE OF QA ENVIRONMENT,
-     * IT IS FOR THE INJECTION OF ELECTRON WITHIN THE ENVIRONMENT
-     ***************************************************************/
-
 }
 
 

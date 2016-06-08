@@ -32,7 +32,7 @@ module.exports = {
     //environment where the build.json is goign to be stored for the working environment
     "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
     //environment to build on start up
-    "WORKING_ENVIRONMENT": "DEV"
+    "WORKING_ENVIRONMENT": "LOCAL"
 
 };
 

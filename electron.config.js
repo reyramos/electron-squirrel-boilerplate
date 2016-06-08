@@ -28,11 +28,11 @@ module.exports = {
     "BETA": "https://qa-phoenix.labcorp.com/web-ui/",
 
     //hosting server setting and working environment
-    "VERSION_SERVER": "https://dev-phoenix.labcorp.com/web-ui/", //hosting server for all the build packages
+    "VERSION_SERVER": "https://dev-phoenix.labcorp.com/", //hosting server for all the build packages
     //environment where the build.json is goign to be stored for the working environment
     "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
     //environment to build on start up
-    "WORKING_ENVIRONMENT": "LOCAL"
+    "WORKING_ENVIRONMENT": "DEV"
 
 };
 

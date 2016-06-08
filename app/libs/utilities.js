@@ -90,7 +90,7 @@ service.getVersion = function (url, callback) {
 
     }).on('error', function (e) {
         console.error('ERROR => ', e)
-        //callback(e);
+        callback(e);
     });
 
 

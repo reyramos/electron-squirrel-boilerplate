@@ -1,5 +1,5 @@
 var path = require('path'),
-    config = require("./electron.config.js");
+    config = require("../electron.config.js");
 
 config['build_date'] = new Date().toJSON();
 

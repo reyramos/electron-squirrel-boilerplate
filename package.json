@@ -10,7 +10,8 @@
     "url": "git+https://git.labcorp.com/scm/phx/phx-electron.git"
   },
   "scripts": {
-    "start": "electron app/main.js"
+    "start": "electron app/main.js",
+    "build": "electron-packager app/ --platform=win32 --arch=ia32 --asar --out=build --overwrite"
   },
   "devDependencies": {
     "asar": "^0.7.2",
@@ -25,7 +26,8 @@
     "matchdep": "~0.3.0",
     "node-uuid": "^1.4.3",
     "node.extend": "^1.1.5",
-    "rcedit": "~0.3.0"
+    "rcedit": "~0.3.0",
+    "shelljs": "^0.7.0"
   },
   "engines": {
     "node": ">=0.10.0"

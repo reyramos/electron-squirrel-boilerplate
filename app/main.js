@@ -1,13 +1,11 @@
 'use strict';
 
-
 //node js dependencies
 let path = require('path'),
     fs = require('fs'),
     version = fs.existsSync('./version.json') ? require('./version.json') : function () {
         var config = require("../electron.config.js");
         config['build_date'] = new Date().toJSON();
-        config['WORKING_ENVIRONMENT'] = "LOCAL";
         return config;
     }(),
     utilities = require('./libs/utilities'),

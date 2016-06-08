@@ -1,5 +1,7 @@
 var fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    utilities = require('./app/libs/utilities.js');
+
 
 'use strict';
 module.exports = function (grunt) {
@@ -42,14 +44,6 @@ module.exports = function (grunt) {
                 }]
             }
         },
-        execute: {
-            'build-asar': {
-                src: ['build_asar.js']
-            },
-            'build-wxs': {
-                src: ['build_wxs.js']
-            }
-        },
         exec: {
             'candle': {
                 cmd: function () {
@@ -76,6 +70,18 @@ module.exports = function (grunt) {
                 }
             }
         }
+    });
+
+
+    grunt.registerTask('electron-build', 'Create Electron Package', function (arg) {
+        var build = require('./scripts/build_asar.js');
+        build.apply(this,[grunt, arg])
+    });
+    grunt.registerTask('msi-build', 'Create MSI definition for wix', function (arg) {
+        grunt.log.writeln('msi-build');
+
+        // var build = require('./scripts/build_asar.js');
+        // build.apply(this,[grunt, arg])
     });
 
 
@@ -110,18 +116,6 @@ module.exports = function (grunt) {
     }
 
 
-    grunt.registerTask(
-        'electron-build', [
-            'execute:build-asar'
-        ]
-    );
-    //
-    // grunt.registerTask(
-    //     'msi-build', [
-    //         'execute:build-wxs',
-    //     ]
-    // );
-    //
     // grunt.registerTask(
     //     'candle', ['exec:candle']
     // );
@@ -135,8 +129,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'build', [
-            'electron-build',
-            // 'msi-build'
+            'electron-build'
         ]
     );
     grunt.registerTask(

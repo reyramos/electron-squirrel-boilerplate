@@ -10,9 +10,7 @@
     "url": "git+https://git.labcorp.com/scm/phx/phx-electron.git"
   },
   "scripts": {
-    "start": "electron app/main.js",
-    "build32": "./node_modules/.bin/electron-packager app/ --platform=win32 --arch=ia32 --asar",
-    "build64": "./node_modules/.bin/electron-packager app/ --platform=win32 --arch=x64 --asar"
+    "start": "electron app/main.js"
   },
   "devDependencies": {
     "asar": "^0.7.2",

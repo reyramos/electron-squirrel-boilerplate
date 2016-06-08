@@ -4,26 +4,20 @@
 //node js dependencies
 let path = require('path'),
     fs = require('fs'),
-    version = require('./version.json'),
+    version = fs.existsSync('./version.json') ? require('./version.json') : function () {
+        var config = require("../electron.config.js");
+        config['build_date'] = new Date().toJSON();
+        config['WORKING_ENVIRONMENT'] = "LOCAL";
+        return config;
+    }(),
     utilities = require('./libs/utilities'),
     uglify = require("uglify-js"),
     http = require('http');
 
 
 // Module to control application life.
-const {app, remote, BrowserWindow, Menu, MenuItem, Tray} = require('electron');
-const electron = remote;
-// const app = electron.app;
+const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut} = require('electron');
 
-// Module to create native browser window.
-// const BrowserWindow = electron.BrowserWindow;
-// Module to create native application menu and context menu
-// const Menu = electron.Menu;
-// Add icons and context menus to the system’s notification area.
-// const Tray = electron.Tray;
-
-//Detect keyboard events when the application does not have keyboard focus.
-//const globalShortcut = electron.globalShortcut;
 
 /*
  * bridge to send command from webview to electron application
@@ -44,12 +38,9 @@ app.commandLine.appendSwitch('remote-debugging-port', '8989');
 app.commandLine.appendArgument('--disable-cache');
 
 //app.setUserTasks([]);
-//app.clearRecentDocuments()
+app.clearRecentDocuments();
 
-//read the file as string and minify for code injection
-let results = uglify.minify([__dirname + '/libs/ng-electron-promise.js']);
-//minify file
-const code = results.code;
+
 //This is to refesh the application while loading, to reloadIgnoringCache
 let refresh = true;
 
@@ -387,6 +378,9 @@ function versionCompare() {
  * Function to insert Electron, and Node objects onto the DOM element.
  */
 function electronInsertion() {
+
+    //read the file as string and minify for code injection
+    const code = uglify.minify([path.join(__dirname, 'libs', 'ng-electron-promise.js')]).code;
 
     var appName = utilities.parse_url(mainWindow.webContents.getURL()).host.replace(/.labcorp.com/g, ''),
         appName = appName ? ' - ' + appName.toUpperCase() : '';

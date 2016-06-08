@@ -1,19 +1,17 @@
+# root level ignore
 node_modules/
-**/node_modules
 npm-debug.log
+build/
+rcedit/
+electron-v*/
 *.wxs
 *.msi
 *.wixobj
 *.wixpdb
-build/
-lib/
-**/**/lib/
-**/lib
-**/resources/app.asar
-.tmp
-dist/
-rcedit/
-electron-v*/
+
+# Ignore application level files
+app/node_modules
+app/npm-debug.log
 app/version.json
 
 

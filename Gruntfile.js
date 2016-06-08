@@ -115,28 +115,28 @@ module.exports = function (grunt) {
             'execute:build-asar'
         ]
     );
-
-    grunt.registerTask(
-        'msi-build', [
-            'execute:build-wxs',
-        ]
-    );
-
-    grunt.registerTask(
-        'candle', ['exec:candle']
-    );
-
-    grunt.registerTask(
-        'light', [
-            'exec:light',
-            'clean'
-        ]
-    );
+    //
+    // grunt.registerTask(
+    //     'msi-build', [
+    //         'execute:build-wxs',
+    //     ]
+    // );
+    //
+    // grunt.registerTask(
+    //     'candle', ['exec:candle']
+    // );
+    //
+    // grunt.registerTask(
+    //     'light', [
+    //         'exec:light',
+    //         'clean'
+    //     ]
+    // );
 
     grunt.registerTask(
         'build', [
             'electron-build',
-            'msi-build'
+            // 'msi-build'
         ]
     );
     grunt.registerTask(

@@ -6,6 +6,11 @@ let path = require('path'),
 
 config['build_date'] = new Date().toJSON();
 
+/*
+ * Documentation for electron-packager
+ * https://github.com/electron-userland/electron-packager/blob/master/usage.txt
+ *
+ */
 let command = "./node_modules/.bin/electron-packager app/ --platform=win32 --arch=ia32 --asar --out='build' --overwrite",
     _c = [command];
 

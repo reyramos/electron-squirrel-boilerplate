@@ -31,6 +31,7 @@ module.exports = function (grunt, arg) {
     let versionString = rceditOpts['version-string'],
         appName = [package['productName'], config.platform, config.arch].join("-");
 
+    console.log('appName', appName)
 
     Object.keys(versionString).forEach(function (key) {
         _c.push("--version-string." + key + "=\"" + versionString[key] + "\"")
@@ -96,6 +97,7 @@ module.exports = function (grunt, arg) {
                     } else if (fs.existsSync(path.join(DEVELOPMENT_SRC, 'version.json'))) {
                         // test that the new electron app is created
                         if (fs.existsSync(path.join(path.dirname(__dirname), config.distribution, appName))) {
+                            // (package['productName'].replace(/[\s{0,}\\\-_\.]/g, '_'))
                             grunt.task.run(["msi-build:" + appName]);
                             done(true);
                         } else {

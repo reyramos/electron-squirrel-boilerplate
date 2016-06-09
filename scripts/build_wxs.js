@@ -196,13 +196,7 @@ module.exports = function (grunt, arg) {
                 case 'exe':
 
 
-
-                    idComponent = file.replace(/\./g, '_').toUpperCase();
-
-
-                    console.log('ID =>', idComponent)
-                    console.log('file ID =>', file)
-                    console.log('Source =>', filePath + file)
+                    idComponent = file.replace(/[\s{0,}\\\-_\.]/g, '_').toUpperCase();
 
                     COMPONENTS += ['<Component',
                         'Id=\'' + idComponent + '\'',

@@ -20,6 +20,7 @@ module.exports = {
     "platform": "win32", // all, or one or more of: darwin, linux, mas, win32 (comma-delimited if multiple)
     "arch": "ia32", // all, or one or more of: ia32, x64 (comma-delimited if multiple)
     "electronVersion": "1.2.2", // the version of Electron that is being packaged, see https://github.com/electron/electron/releases
+    "exeName": "phoenix", //executable file name
 
     //environment
     "STAGE": "https://stage-phoenix.labcorp.com/web-ui/",

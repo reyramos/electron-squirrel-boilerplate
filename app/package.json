@@ -2,7 +2,7 @@
   "name": "phx-electron",
   "version": "1.0.0",
   "description": "",
-  "productName": "LabCorp Phoenix",
+  "productName": "phoenix",
   "main": "main.js",
   "author": "LabCorp",
   "dependencies": {

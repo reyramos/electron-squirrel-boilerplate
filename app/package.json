@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "productName": "LabCorp Phoenix",
+  "execName": "phoenix.exe",
   "main": "main.js",
   "author": "LabCorp",
   "dependencies": {

@@ -1,8 +1,22 @@
 {
   "name": "electon-web-ui",
-  "version": "1.0.0",
+  "version": "1.2.0",
+  "description": "Electron container if Phoenix Application",
+  "author": "ramor11@labcorp.com",
+  "homepage": "https://git.labcorp.com/projects/PHX/repos/phx-electron/browse/README.md",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://git.labcorp.com/scm/phx/phx-electron.git"
+  },
+  "scripts": {
+    "start": "electron app/main.js",
+    "build": "electron-packager app/ --platform=win32 --arch=ia32 --asar --out=build --overwrite"
+  },
   "devDependencies": {
     "asar": "^0.7.2",
+    "electron-packager": "^7.0.3",
+    "electron-prebuilt": "^1.2.0",
     "grunt": "^0.4.5",
     "grunt-cli": "0.1.13",
     "grunt-contrib-clean": "^0.6.0",
@@ -10,14 +24,12 @@
     "grunt-execute": "^0.2.2",
     "load-grunt-tasks": "^0.4.0",
     "matchdep": "~0.3.0",
-    "rcedit": "~0.3.0",
     "node-uuid": "^1.4.3",
-    "electron-prebuilt": "~0.33.0"
+    "node.extend": "^1.1.5",
+    "rcedit": "~0.3.0",
+    "shelljs": "^0.7.0"
   },
   "engines": {
     "node": ">=0.10.0"
-  },
-  "scripts": { "start" : "electron-v0.35.4-win32-ia32\\phoenix.exe app/" },
-  "author": "",
-  "license": "ISC"
+  }
 }

@@ -2,12 +2,15 @@
  * Created by redroger on 4/15/14.
  */
 
-String.prototype.capitalize = function() {
+String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
 
 var extend = require('node.extend'),
+    path = require('path'),
+    fs = require('fs'),
+    child = require('child_process'),
     service = {},
     _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
@@ -66,7 +69,6 @@ service.versionCompare = function (v1, v2, options) {
     return 0;
 }
 
-
 service.getVersion = function (url, callback) {
 
     require(service.parse_url(url).scheme).get(url, function (res) {
@@ -87,17 +89,45 @@ service.getVersion = function (url, callback) {
         });
 
     }).on('error', function (e) {
-        console.error('ERROR => ', e)
-        //callback(e);
+        callback(e);
     });
 
 
 }
 
+service.file_put_content = function (filename, text) {
+
+    fs.writeFile(filename, text, function (err) {
+        if (err) return console.log(err);
+    });
+
+}
+
+service.mkdir = function (dir) {
+    if (!fs.existsSync(dir)) {
+        console.log('CREATED => ', dir)
+        fs.mkdirSync(dir);
+        return true;
+    }
+
+    return false;
+}
+
+
+service.rmdir = function (directories, callback) {
+    if (typeof directories === 'string') {
+        directories = [directories];
+    }
+    var args = directories;
+    args.unshift('-rf');
+    child.execFile('rm', args, {env: process.env}, callback);
+};
+
 
 function isFunction(obj) {
     return typeObj(obj) === "function";
 }
+
 var class2type = {};
 var hasOwn = class2type.hasOwnProperty;
 
@@ -195,7 +225,6 @@ service.extend = function () {
     return target;
 };
 
-
 service.parse_url = function (str, component) {
     //       discuss at: http://phpjs.org/functions/parse_url/
     //      original by: Steven Levithan (http://blog.stevenlevithan.com)
@@ -281,7 +310,6 @@ service.parse_url = function (str, component) {
     delete uri.source;
     return uri;
 }
-
 
 service.pathinfo = function (path, options) {
     //  discuss at: http://phpjs.org/functions/pathinfo/

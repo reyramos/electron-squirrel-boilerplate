@@ -1,30 +1,31 @@
 /**
  * Created by Ramor11 on 11/12/2015.
  *
- * THIS IS A TEMPORARY HOT FIX FOR ELECTRON INJECTION WITHIN THE WEBVIEW WEBAPPLICATION
- * TO BE REMOVE AT A LATER RELEASE
+ * THIS IS FOR ELECTRON INJECTION WITHIN THE WEBVIEW WEBAPPLICATION
  *
  */
 !(function (angular) {
     'use strict';
 
-    angular.module('phxApp').factory('electron', function () {
+    angular.module('ng.electron.bridge', []).factory('electron', ['$q', function ($q) {
 
         var objElec = new angular.noop, electron = {exist: false};
 
         var init = function () {
+            var defer = $q.defer();
 
-            return new Promise(function (resolve, reject) {
-                try {
-                    objElec = new Electron();
-                    electron.exist = true;
-                    resolve(true)
-                } catch (e) {
-                    init().then(function () {
-                        init = null;
-                    });
-                }
-            })
+            if (document.documentElement.getAttribute('id') !== 'ELECTRON_PARENT_CONTAINER')return {};
+            try {
+                objElec = new Electron();
+                electron.exist = true;
+                defer.resolve(true)
+            } catch (e) {
+                init().then(function () {
+                    init = null;
+                });
+            }
+
+            return defer.promise;
         }
 
         electron.send = function (eventType, msg) {
@@ -32,11 +33,10 @@
             if (objElec.hasOwnProperty('send')) {
                 return objElec.send(eventType, msg);
             } else {
-                return new Promise(function (resolve, reject) {
-                    resolve(false);
-                    reject(false);
-                });
+                return  $q
             }
+
+
         };
 
         electron.require = function (module) {
@@ -57,6 +57,6 @@
         init();
         return angular.extend({}, objElec, electron);
 
-    });
+    }]);
 
 })(window.angular);

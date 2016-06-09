@@ -15,7 +15,7 @@ module.exports = {
     //build location
     "distribution": "build",
 
-    //build Electron version info
+    //build Electron version
     //<https://github.com/electron-userland/electron-packager/blob/master/usage.txt>
     "platform": "win32", // all, or one or more of: darwin, linux, mas, win32 (comma-delimited if multiple)
     "arch": "ia32", // all, or one or more of: ia32, x64 (comma-delimited if multiple)

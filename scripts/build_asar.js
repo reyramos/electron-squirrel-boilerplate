@@ -1,15 +1,17 @@
 let path = require('path'),
     fs = require('fs'),
-    utilities = require('../app/libs/utilities.js'),
     config = require("../electron.config.js"),
     rceditOpts = require('./rcedit.config.js'),
     shell = require('shelljs');
 
 
+var package = require('../' + config.source + '/package.json');
+var utilities = require('../' + config.source + '/libs/utilities.js');
+
 module.exports = function (grunt, arg) {
 
-
     var done = this.async();
+
     config['build_date'] = new Date().toJSON();
 
     /*
@@ -27,7 +29,8 @@ module.exports = function (grunt, arg) {
      */
 
     let versionString = rceditOpts['version-string'],
-        appName = [versionString['ProductName'], config.platform, config.arch].join("-");
+        appName = [package['productName'], config.platform, config.arch].join("-");
+
 
     Object.keys(versionString).forEach(function (key) {
         _c.push("--version-string." + key + "=\"" + versionString[key] + "\"")

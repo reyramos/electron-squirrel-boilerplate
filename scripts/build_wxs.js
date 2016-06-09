@@ -188,19 +188,26 @@ module.exports = function (grunt, arg) {
             });
             id = id.join("");
 
-            var idComponent = (id + "COMP").replace(/[\s{0,}\\\-_\.]/g, '_').toUpperCase();
-            var idFile = (id + "FILE").replace(/[\s{0,}\\\-_\.]/g, '_').toUpperCase();
+            var idComponent = id + "COMP";
+            var idFile = id + "FILE";
+
 
             switch (ext) {
                 case 'exe':
 
-                    idComponent = file.replace(/[\s{0,}\\\-_\.]/g, '_').toUpperCase();
-                    idFile = file.replace(/[\s{0,}\\\-_\.]/g, '_').toUpperCase();
+
+
+                    idComponent = file.replace(/\./g, '_').toUpperCase();
+
+
+                    console.log('ID =>', idComponent)
+                    console.log('file ID =>', file)
+                    console.log('Source =>', filePath + file)
 
                     COMPONENTS += ['<Component',
                         'Id=\'' + idComponent + '\'',
                         'Guid=\'' + uuid.v1() + '\'>',
-                        '<File Id=\'' + idFile + '\'',
+                        '<File Id=\'' + file + '\'',
                         'Source=\'' + filePath + file + '\'',
                         'KeyPath="yes" Checksum="yes"',
                         //'Vital=\'yes\'' +
@@ -217,7 +224,7 @@ module.exports = function (grunt, arg) {
                         'Advertise="yes"',
                         'Directory="ApplicationProgramsFolder"',
                         'WorkingDirectory="APPLICATIONROOTDIRECTORY">',
-                        '<Icon Id="' + idFile + '"',
+                        '<Icon Id="' + file + '"',
                         'SourceFile="' + filePath + file + '" />',
                         '</Shortcut>',
                         '<RemoveFolder Id="ApplicationStartMenuShortcut"',

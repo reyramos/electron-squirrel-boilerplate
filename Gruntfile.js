@@ -75,30 +75,38 @@ module.exports = function (grunt) {
 
     grunt.registerTask('electron-build', 'Create Electron Package', function (arg) {
         var build = require('./scripts/build_asar.js');
-        build.apply(this,[grunt, arg])
+        build.apply(this, [grunt, arg])
     });
-    grunt.registerTask('msi-build', 'Create MSI definition for wix', function (arg) {
-        grunt.log.writeln('msi-build', arg);
-
-        // var build = require('./scripts/build_asar.js');
-        // build.apply(this,[grunt, arg])
-    });
-
-
-    function validate() {
-        var config = require("./electron.config.js");
-        var APP_VERSION = String(config.version).trim() || false;
-        var BUILD_DESTINATION = path.join(__dirname, config.distribution);
-        var BUILD_FILE = false;
-        try {
-            BUILD_FILE = fs.existsSync(BUILD_DESTINATION) ? require(path.join(BUILD_DESTINATION, 'build.json')) : require('build.json');
-        } catch (e) {
+    grunt.registerTask('msi-build', 'Create MSI definition for wix', function (dirName) {
+        var config = require("./electron.config.js"),
+            done = this.async();
+        // test that the new electron app is created
+        if (fs.existsSync(path.join(__dirname, config.distribution, dirName))) {
+            var build = require('./scripts/build_wxs.js');
+            build.apply(this, [grunt, dirName])
+        } else {
+            grunt.log.writeln("distribution path does not exist");
         }
 
-        var BUILD_VERSION = String(BUILD_FILE.version).trim() || false;
+        done(false);
 
-        return BUILD_VERSION !== APP_VERSION;
-    }
+    });
+
+
+    // function validate() {
+    //     var config = require("./electron.config.js");
+    //     var APP_VERSION = String(config.version).trim() || false;
+    //     var BUILD_DESTINATION = path.join(__dirname, config.distribution);
+    //     var BUILD_FILE = false;
+    //     try {
+    //         BUILD_FILE = fs.existsSync(BUILD_DESTINATION) ? require(path.join(BUILD_DESTINATION, 'build.json')) : require('build.json');
+    //     } catch (e) {
+    //     }
+    //
+    //     var BUILD_VERSION = String(BUILD_FILE.version).trim() || false;
+    //
+    //     return BUILD_VERSION !== APP_VERSION;
+    // }
 
     function getFilesPath(input, output) {
         var config = require("./electron.config.js"),

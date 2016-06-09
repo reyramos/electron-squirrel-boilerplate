@@ -4,8 +4,8 @@
 let path = require('path'),
     fs = require('fs'),
     version = function () {
-        var versionJson = path.join(__dirname, 'version.json'),
-            version = fs.existsSync(versionJson) ? JSON.parse(fs.readFileSync(versionJson, 'utf8')) : require('../electron.config.js');
+        var versionJson = path.join(__dirname,'version.json'),
+            version = fs.existsSync(versionJson)?JSON.parse(fs.readFileSync(versionJson, 'utf8')): require('../electron.config.js');
         return version;
     }(),
     utilities = require('./libs/utilities'),
@@ -50,8 +50,9 @@ const releaseUrl = utilities.parse_url(version["VERSION_SERVER"]).scheme + '://'
 
 //If the local machine contains a config app, lets load the environment specified, used for developers
 let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
-//Allows for local path config file
+    //Allows for local path config file
     localConfig = fs.existsSync(localFilePath) ? require(localFilePath) : null;
+
 
 
 let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment);

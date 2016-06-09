@@ -17,7 +17,7 @@ module.exports = function (grunt, arg) {
      * https://github.com/electron-userland/electron-packager/blob/master/usage.txt
      */
     let command = "\"./node_modules/.bin/electron-packager\" app/",
-        //build the command script based on config files
+    //build the command script based on config files
         _c = [command, "--platform=" + config.platform, "--arch=" + config.arch, "--asar", "--out=" + config.distribution, "--overwrite"];
 
     /*
@@ -34,10 +34,10 @@ module.exports = function (grunt, arg) {
     });
 
 
-    /*
-     * ICON PATH
-     */
+    //ICON PATH
     _c.push("--icon=\"" + rceditOpts['icon'] + "\"")
+    //ELECTRON VERSION <https://github.com/electron/electron/releases>
+    _c.push("--version=\"" + config.electronVersion + "\"")
 
     /*
      * * All platforms *
@@ -56,11 +56,9 @@ module.exports = function (grunt, arg) {
     /*******************************************************************
      APPLICATION VARIABLES
      *******************************************************************/
-    grunt.log.writeln("APP_VERSION =>",APP_VERSION);
-    grunt.log.writeln("APPLICATION_SRC =>",DEVELOPMENT_SRC);
-    grunt.log.writeln("DEVELOPMENT_SRC =>",DEVELOPMENT_SRC);
-
-
+    grunt.log.writeln("APP_VERSION =>", APP_VERSION);
+    grunt.log.writeln("APPLICATION_SRC =>", DEVELOPMENT_SRC);
+    grunt.log.writeln("DEVELOPMENT_SRC =>", DEVELOPMENT_SRC);
 
 
     /**
@@ -68,51 +66,48 @@ module.exports = function (grunt, arg) {
      * So it will force the developer to upgrade their version for the new build
      */
 
-    utilities.getVersion(RELEASE, function (status, obj) {
+    utilities.getVersion(RELEASE, function (err, obj) {
 
-        // create the versioning file
-        if (fs.existsSync(APPLICATION_SRC)) {
-            utilities.file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
-        }
-
-        if (fs.existsSync(DEVELOPMENT_SRC)) {
-            utilities.file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
-        }
-
-        const BUILD_VERSION = String(obj.version).trim() || false;
-        var vrsCompare = utilities.versionCompare(APP_VERSION, BUILD_VERSION);
-        if (vrsCompare > 0) {
-
-
-            var command = (_c.join(" "));
-            shell.exec(command, function (code, stdout, stderr) {
-                if (stdout) {
-                    grunt.log.writeln('ERROR:', error);
-                    done(false);
-                } else if (stderr) {
-
-                    if (fs.existsSync(path.join(DEVELOPMENT_SRC, 'version.json'))) {
-                        grunt.log.writeln("FINISH");
-                    }
-                    // // test that the new electron app is created
-                    // if (fs.existsSync(path.join(config.distribution, appName))) {
-                    //     // grunt.log.writeln('stdout:', stdout);
-                    //     grunt.task.run(['msi-build:' + appName]);
-                    //     done(true);
-                    // } else {
-                    //     grunt.log.writeln("electron path does not exist");
-                    //     done(false);
-                    // }
-                }
-            });
-
-        } else {
-            grunt.log.writeln('\n\nUPDATE YOUR VERSION FILE, VERSION:' + APP_VERSION + ' ALREADY EXIST');
+        if (err) {
+            grunt.log.writeln(err);
             done(false);
+        } else {
+            // create the versioning file
+            if (fs.existsSync(APPLICATION_SRC)) {
+                utilities.file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
+            }
+
+            if (fs.existsSync(DEVELOPMENT_SRC)) {
+                utilities.file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
+            }
+
+            const BUILD_VERSION = String(obj.version).trim() || false;
+            var vrsCompare = utilities.versionCompare(APP_VERSION, BUILD_VERSION);
+            if (vrsCompare > 0) {
+
+
+                var command = (_c.join(" "));
+                shell.exec(command, function (code, stdout, stderr) {
+                    if (stdout) {
+                        grunt.log.writeln('ERROR:', error);
+                        done(false);
+                    } else if (fs.existsSync(path.join(DEVELOPMENT_SRC, 'version.json'))) {
+                        // test that the new electron app is created
+                        if (fs.existsSync(path.join(path.dirname(__dirname), config.distribution, appName))) {
+                            grunt.task.run(['msi-build:' + appName]);
+                            done(true);
+                        } else {
+                            grunt.log.writeln("electron path does not exist");
+                            done(false);
+                        }
+                    }
+                });
+
+            } else {
+                grunt.log.writeln('\n\nUPDATE YOUR VERSION FILE, VERSION:' + APP_VERSION + ' ALREADY EXIST');
+                done(false);
+            }
         }
-    }, function (error) {
-        grunt.log.writeln(error);
-        done(false);
 
     });
 

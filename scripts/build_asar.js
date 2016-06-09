@@ -86,11 +86,9 @@ module.exports = function (grunt, arg) {
             var vrsCompare = utilities.versionCompare(APP_VERSION, BUILD_VERSION);
             if (vrsCompare > 0) {
 
-
-                var command = (_c.join(" "));
-                shell.exec(command, function (code, stdout, stderr) {
+                shell.exec((_c.join(" ")), function (code, stdout, stderr) {
                     if (stdout) {
-                        grunt.log.writeln('ERROR:', error);
+                        grunt.log.writeln('stdout:', stdout);
                         done(false);
                     } else if (fs.existsSync(path.join(DEVELOPMENT_SRC, 'version.json'))) {
                         // test that the new electron app is created

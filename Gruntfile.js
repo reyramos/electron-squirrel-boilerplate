@@ -77,6 +77,7 @@ module.exports = function (grunt) {
         var build = require('./scripts/build_asar.js');
         build.apply(this, [grunt, arg])
     });
+
     grunt.registerTask('msi-build', 'Create MSI definition for wix', function (dirName) {
         var _this = this,
             config = require("./electron.config.js"),
@@ -92,21 +93,6 @@ module.exports = function (grunt) {
 
     });
 
-
-    // function validate() {
-    //     var config = require("./electron.config.js");
-    //     var APP_VERSION = String(config.version).trim() || false;
-    //     var BUILD_DESTINATION = path.join(__dirname, config.distribution);
-    //     var BUILD_FILE = false;
-    //     try {
-    //         BUILD_FILE = fs.existsSync(BUILD_DESTINATION) ? require(path.join(BUILD_DESTINATION, 'build.json')) : require('build.json');
-    //     } catch (e) {
-    //     }
-    //
-    //     var BUILD_VERSION = String(BUILD_FILE.version).trim() || false;
-    //
-    //     return BUILD_VERSION !== APP_VERSION;
-    // }
 
     function getFilesPath(input, output) {
         var config = require("./electron.config.js"),

@@ -48,11 +48,10 @@ module.exports = function (grunt) {
             'candle': {
                 cmd: function () {
                     var files = getFilesPath('wxs', 'wixobj'),
-                        command = ['candle.exe',
+                        command = ['"' + path.join(__dirname, 'staging', 'candle.exe') + '"',
                             '-ext "C:\\Program Files (x86)\\WiX Toolset v3.9\\bin\\WixUtilExtension.dll"',
                             files[0] + ' -o ' + files[1]
                         ].join(" ");
-
 
                     return command;
                 }
@@ -60,13 +59,12 @@ module.exports = function (grunt) {
             'light': {
                 cmd: function () {
                     var files = getFilesPath('wixobj', 'msi'),
-                        command = ['light.exe',
+                        command = ['"' + path.join(__dirname, 'staging', 'light.exe') + '"',
                             '-ext "C:\\Program Files (x86)\\WiX Toolset v3.9\\bin\\WixUtilExtension.dll"',
                             files[0] + ' -o ' + files[1]
                         ].join(" ");
 
                     return command;
-
                 }
             }
         }
@@ -110,16 +108,15 @@ module.exports = function (grunt) {
     }
 
 
-    // grunt.registerTask(
-    //     'candle', ['exec:candle']
-    // );
-    //
-    // grunt.registerTask(
-    //     'light', [
-    //         'exec:light',
-    //         'clean'
-    //     ]
-    // );
+    grunt.registerTask(
+        'candle', ['exec:candle']
+    );
+
+    grunt.registerTask(
+        'light', [
+            'exec:light',
+        ]
+    );
 
     grunt.registerTask(
         'build', [

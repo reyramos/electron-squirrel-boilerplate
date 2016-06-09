@@ -45,6 +45,7 @@ module.exports = function (grunt, arg) {
     buildFileName = buildFileName[buildFileName.length - 1];
 
     const RELEASE = utilities.parse_url(config["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(config["VERSION_SERVER"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
+    grunt.log.writeln('=============================================================\r\n');
 
     grunt.log.writeln("APP_NAME", APP_NAME);
     grunt.log.writeln("APP_DESCRIPTION", APP_DESCRIPTION);
@@ -86,6 +87,7 @@ module.exports = function (grunt, arg) {
             UPGRADE_GUID = uuid.v1();
 
         var APP_CAB = APP_NAME.split(" ");
+
         APP_CAB.forEach(function (ele, index, array) {
             array[index] = ele.capitalize();
         });
@@ -155,7 +157,6 @@ module.exports = function (grunt, arg) {
         gruntWrite(path.join(filePath, buildFileName), JSON.stringify(config));
 
 
-        grunt.log.writeln('=============================================================\r\n');
         grunt.log.writeln('Execute the following command to build the msi file\r\n');
         grunt.log.writeln('GRUNT => exec:candle')
         grunt.log.writeln('GRUNT => exec:light\r\n')
@@ -187,17 +188,19 @@ module.exports = function (grunt, arg) {
             });
             id = id.join("");
 
-            var idComponent = id + "COMP";
-            var idFile = id + "FILE";
+            var idComponent = (id + "COMP").replace(/[\s{0,}\\\-_\.]/g, '_').toUpperCase();
+            var idFile = (id + "FILE").replace(/[\s{0,}\\\-_\.]/g, '_').toUpperCase();
 
             switch (ext) {
                 case 'exe':
-                    idComponent = file.replace(/\./g, '_').toUpperCase();
+
+                    idComponent = file.replace(/[\s{0,}\\\-_\.]/g, '_').toUpperCase();
+                    idFile = file.replace(/[\s{0,}\\\-_\.]/g, '_').toUpperCase();
 
                     COMPONENTS += ['<Component',
                         'Id=\'' + idComponent + '\'',
                         'Guid=\'' + uuid.v1() + '\'>',
-                        '<File Id=\'' + file + '\'',
+                        '<File Id=\'' + idFile + '\'',
                         'Source=\'' + filePath + file + '\'',
                         'KeyPath="yes" Checksum="yes"',
                         //'Vital=\'yes\'' +
@@ -214,7 +217,7 @@ module.exports = function (grunt, arg) {
                         'Advertise="yes"',
                         'Directory="ApplicationProgramsFolder"',
                         'WorkingDirectory="APPLICATIONROOTDIRECTORY">',
-                        '<Icon Id="' + file + '"',
+                        '<Icon Id="' + idFile + '"',
                         'SourceFile="' + filePath + file + '" />',
                         '</Shortcut>',
                         '<RemoveFolder Id="ApplicationStartMenuShortcut"',

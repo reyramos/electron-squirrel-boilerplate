@@ -16,6 +16,7 @@ String.prototype.capitalize = function () {
 /*******************************************************************
  APPLICATION VARIABLES
  *******************************************************************/
+var package = require('../' + config.source + '/package.json');
 
 module.exports = function (grunt, arg) {
 
@@ -38,8 +39,11 @@ module.exports = function (grunt, arg) {
     const ELECTRON_PATH = path.join(BUILD_DESTINATION, arg);
     const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
 
+    var execFile = (package.productName + '.exe').replace(/[\s{0,}\\\-_\.]/g, '_');
+    var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, execFile);
+    fs.renameSync(path.join(ELECTRON_PATH, package.productName + '.exe'), ELECTRON_EXE_DESTINATION)
 
-    var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, rceditOpts['version-string'].ProductName + '.exe');
+
     var buildFileName = config.versionFilePath.split('/');
 
     buildFileName = buildFileName[buildFileName.length - 1];

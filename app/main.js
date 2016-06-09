@@ -4,15 +4,8 @@
 let path = require('path'),
     fs = require('fs'),
     version = function () {
-        var version = require('./version.json');
-
-        if (!Object.keys(version).length) {
-            version = require('../electron.config.js');
-            if (Object.keys(version).length) {
-                console.log('version => ./electron.config.js')
-            }
-        }
-
+        var versionJson = path.join(__dirname, 'version.json'),
+            version = fs.existsSync(versionJson) ? JSON.parse(fs.readFileSync(versionJson, 'utf8')) : require('../electron.config.js');
         return version;
     }(),
     utilities = require('./libs/utilities'),
@@ -59,12 +52,6 @@ const releaseUrl = utilities.parse_url(version["VERSION_SERVER"]).scheme + '://'
 let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
 //Allows for local path config file
     localConfig = fs.existsSync(localFilePath) ? require(localFilePath) : null;
-// localConfig = function(){
-//     var localConfig = require(localFilePath);
-//
-//     if (!Object.keys(localConfig).length)localConfig = null;
-//     return localConfig;
-// }();
 
 
 let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment);
@@ -142,10 +129,9 @@ function createMainWindow(size) {
         icon: path.join(__dirname, 'icon.ico'),
         title: app.getName(),
         autoHideMenuBar: true,
-        webPreferences: {
-            webSecurity: false,
-            preload: path.join(__dirname, 'libs', 'ng-electron-promise.js')
-        }
+        // webPreferences: {
+        //     webSecurity: false
+        // }
     });
 
     var appName = utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');

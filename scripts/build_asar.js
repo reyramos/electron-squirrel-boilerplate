@@ -3,7 +3,6 @@ let path = require('path'),
     utilities = require('../app/libs/utilities.js'),
     config = require("../electron.config.js"),
     rceditOpts = require('./rcedit.config.js'),
-    exec = require('child_process').exec,
     shell = require('shelljs');
 
 
@@ -18,8 +17,8 @@ module.exports = function (grunt, arg) {
      * https://github.com/electron-userland/electron-packager/blob/master/usage.txt
      */
     let command = "\"./node_modules/.bin/electron-packager\" app/",
-    //build the command script based on config files
-        _c = [command, "--platform=" + config.platform, "--arch=" + config.arch, /*"--asar",*/ "--out=" + config.distribution, "--overwrite"];
+        //build the command script based on config files
+        _c = [command, "--platform=" + config.platform, "--arch=" + config.arch, "--asar", "--out=" + config.distribution, "--overwrite"];
 
     /*
      * * win32 target platform only *
@@ -49,14 +48,19 @@ module.exports = function (grunt, arg) {
 
 
     const APP_VERSION = String(config.version).trim() || false;
-    const APPLICATION_SRC = path.join(config.source);
-    const DEVELOPMENT_SRC = path.join(config.development);
+    const APPLICATION_SRC = path.join(path.dirname(__dirname), config.source);
+    const DEVELOPMENT_SRC = path.join(path.dirname(__dirname), config.development);
 
     const RELEASE = utilities.parse_url(config["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(config["VERSION_SERVER"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
     /*******************************************************************
      APPLICATION VARIABLES
      *******************************************************************/
+    grunt.log.writeln("APP_VERSION =>",APP_VERSION);
+    grunt.log.writeln("APPLICATION_SRC =>",DEVELOPMENT_SRC);
+    grunt.log.writeln("DEVELOPMENT_SRC =>",DEVELOPMENT_SRC);
+
+
 
 
     /**
@@ -86,7 +90,7 @@ module.exports = function (grunt, arg) {
                     grunt.log.writeln('ERROR:', error);
                     done(false);
                 } else if (stderr) {
-                    
+
                     if (fs.existsSync(path.join(DEVELOPMENT_SRC, 'version.json'))) {
                         grunt.log.writeln("FINISH");
                     }

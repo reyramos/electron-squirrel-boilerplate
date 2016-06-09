@@ -39,8 +39,7 @@ module.exports = function (grunt, arg) {
     const ELECTRON_PATH = path.join(BUILD_DESTINATION, arg);
     const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
 
-    var execFile = (package.productName + '.exe').replace(/[\s{0,}\\\-_\.]/g, '_');
-    var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, execFile);
+    var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, package.execName);
     fs.renameSync(path.join(ELECTRON_PATH, package.productName + '.exe'), ELECTRON_EXE_DESTINATION)
 
 

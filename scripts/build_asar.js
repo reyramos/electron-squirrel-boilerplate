@@ -93,7 +93,7 @@ module.exports = function (grunt, arg) {
                     } else if (fs.existsSync(path.join(DEVELOPMENT_SRC, 'version.json'))) {
                         // test that the new electron app is created
                         if (fs.existsSync(path.join(path.dirname(__dirname), config.distribution, appName))) {
-                            grunt.task.run(['msi-build:' + appName]);
+                            grunt.task.run(["msi-build:" + appName]);
                             done(true);
                         } else {
                             grunt.log.writeln("electron path does not exist");
@@ -103,6 +103,7 @@ module.exports = function (grunt, arg) {
                 });
 
             } else {
+
                 grunt.log.writeln('\n\nUPDATE YOUR VERSION FILE, VERSION:' + APP_VERSION + ' ALREADY EXIST');
                 done(false);
             }

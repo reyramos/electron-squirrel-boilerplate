@@ -65,13 +65,13 @@ module.exports = function (grunt, arg) {
             // If specified as null, returns a non-decoded Buffer instead of a string.
             encoding: 'utf8'
         });
-        createPackage(FILE_WXS);
+        createPackage(FILE_WXS, done);
     } else {
         grunt.log.writeln("missing path =>", ELECTRON_PATH);
         done(false);
     }
 
-    function createPackage(FILE_WXS) {
+    function createPackage(FILE_WXS, callback) {
         //make the directory for the
         utilities.mkdir(BUILD_DESTINATION);
 
@@ -161,7 +161,7 @@ module.exports = function (grunt, arg) {
         grunt.log.writeln('GRUNT => exec:light\r\n')
         grunt.log.writeln('=============================================================\r\n');
 
-        done(true);
+        callback()
 
     }
 

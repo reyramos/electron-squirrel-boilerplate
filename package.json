@@ -26,8 +26,7 @@
     "matchdep": "~0.3.0",
     "node-uuid": "^1.4.3",
     "node.extend": "^1.1.5",
-    "rcedit": "~0.3.0",
-    "shelljs": "^0.7.0"
+    "rcedit": "~0.3.0"
   },
   "engines": {
     "node": ">=0.10.0"

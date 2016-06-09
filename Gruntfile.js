@@ -78,7 +78,7 @@ module.exports = function (grunt) {
         build.apply(this,[grunt, arg])
     });
     grunt.registerTask('msi-build', 'Create MSI definition for wix', function (arg) {
-        grunt.log.writeln('msi-build');
+        grunt.log.writeln('msi-build', arg);
 
         // var build = require('./scripts/build_asar.js');
         // build.apply(this,[grunt, arg])

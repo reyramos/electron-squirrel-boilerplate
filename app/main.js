@@ -3,15 +3,21 @@
 //node js dependencies
 let path = require('path'),
     fs = require('fs'),
-    version = fs.existsSync('./version.json') ? require('./version.json') : function () {
-        var config = require("../electron.config.js");
-        config['build_date'] = new Date().toJSON();
-        return config;
+    version = function () {
+        var version = require('./version.json');
+
+        if (!Object.keys(version).length) {
+            version = require('../electron.config.js');
+            if (Object.keys(version).length) {
+                console.log('version => ./electron.config.js')
+            }
+        }
+
+        return version;
     }(),
     utilities = require('./libs/utilities'),
     uglify = require("uglify-js"),
     http = require('http');
-
 
 // Module to control application life.
 const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut} = require('electron');
@@ -53,6 +59,13 @@ const releaseUrl = utilities.parse_url(version["VERSION_SERVER"]).scheme + '://'
 let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
 //Allows for local path config file
     localConfig = fs.existsSync(localFilePath) ? require(localFilePath) : null;
+// localConfig = function(){
+//     var localConfig = require(localFilePath);
+//
+//     if (!Object.keys(localConfig).length)localConfig = null;
+//     return localConfig;
+// }();
+
 
 let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment);
 

@@ -3,7 +3,8 @@ let path = require('path'),
     utilities = require('../app/libs/utilities.js'),
     config = require("../electron.config.js"),
     rceditOpts = require('./rcedit.config.js'),
-    exec = require('child_process').exec;
+    exec = require('child_process').exec,
+    shell = require('shelljs');
 
 
 module.exports = function (grunt, arg) {
@@ -18,7 +19,7 @@ module.exports = function (grunt, arg) {
      */
     let command = "\"./node_modules/.bin/electron-packager\" app/",
     //build the command script based on config files
-        _c = [command, "--platform=" + config.platform, "--arch=" + config.arch, "--asar", "--out=" + config.distribution, "--overwrite"];
+        _c = [command, "--platform=" + config.platform, "--arch=" + config.arch, /*"--asar",*/ "--out=" + config.distribution, "--overwrite"];
 
     /*
      * * win32 target platform only *
@@ -56,14 +57,7 @@ module.exports = function (grunt, arg) {
     /*******************************************************************
      APPLICATION VARIABLES
      *******************************************************************/
-    // // create the versioning file
-    // if (fs.existsSync(APPLICATION_SRC)) {
-    //     utilities.file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
-    // }
-    //
-    // if (fs.existsSync(DEVELOPMENT_SRC)) {
-    //     utilities.file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
-    // }
+
 
     /**
      * This functionality is to check if the build.json file exist, if it exist it will check if the version is already created.
@@ -72,29 +66,39 @@ module.exports = function (grunt, arg) {
 
     utilities.getVersion(RELEASE, function (status, obj) {
 
+        // create the versioning file
+        if (fs.existsSync(APPLICATION_SRC)) {
+            utilities.file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
+        }
+
+        if (fs.existsSync(DEVELOPMENT_SRC)) {
+            utilities.file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
+        }
+
         const BUILD_VERSION = String(obj.version).trim() || false;
         var vrsCompare = utilities.versionCompare(APP_VERSION, BUILD_VERSION);
         if (vrsCompare > 0) {
 
 
-
             var command = (_c.join(" "));
-            exec(command, function (error, stdout, stderr) {
-
-                if (error) {
+            shell.exec(command, function (code, stdout, stderr) {
+                if (stdout) {
                     grunt.log.writeln('ERROR:', error);
                     done(false);
-                } else {
-                    // test that the new electron app is created
-                    if (fs.existsSync(path.join(config.distribution, appName))) {
-                        // grunt.log.writeln('stdout:', stdout);
-                        grunt.log.writeln(appName);
-                        grunt.task.run(['msi-build:' + appName]);
-                        done(true);
-                    } else {
-                        grunt.log.writeln("electron path does not exist");
-                        done(false);
+                } else if (stderr) {
+                    
+                    if (fs.existsSync(path.join(DEVELOPMENT_SRC, 'version.json'))) {
+                        grunt.log.writeln("FINISH");
                     }
+                    // // test that the new electron app is created
+                    // if (fs.existsSync(path.join(config.distribution, appName))) {
+                    //     // grunt.log.writeln('stdout:', stdout);
+                    //     grunt.task.run(['msi-build:' + appName]);
+                    //     done(true);
+                    // } else {
+                    //     grunt.log.writeln("electron path does not exist");
+                    //     done(false);
+                    // }
                 }
             });
 

@@ -78,16 +78,16 @@ module.exports = function (grunt) {
         build.apply(this, [grunt, arg])
     });
     grunt.registerTask('msi-build', 'Create MSI definition for wix', function (dirName) {
-        var config = require("./electron.config.js"),
+        var _this = this,
+            config = require("./electron.config.js"),
             done = this.async();
         // test that the new electron app is created
         if (fs.existsSync(path.join(__dirname, config.distribution, dirName))) {
             var build = require('./scripts/build_wxs.js');
-            build.apply(this, [grunt, dirName])
+            build.apply(_this, [grunt, dirName])
         } else {
             grunt.log.writeln("distribution path does not exist");
         }
-
         done(false);
 
     });

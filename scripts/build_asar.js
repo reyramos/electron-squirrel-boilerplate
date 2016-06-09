@@ -37,7 +37,8 @@ module.exports = function (grunt, arg) {
     //ICON PATH
     _c.push("--icon=\"" + rceditOpts['icon'] + "\"")
     //ELECTRON VERSION <https://github.com/electron/electron/releases>
-    _c.push("--version=\"" + config.electronVersion + "\"")
+    if (config.electronVersion)
+        _c.push("--version=\"" + config.electronVersion + "\"")
 
     /*
      * * All platforms *
@@ -68,7 +69,7 @@ module.exports = function (grunt, arg) {
 
     utilities.getVersion(RELEASE, function (err, obj) {
 
-        if (err) {
+        if (!err === 200) {
             grunt.log.writeln(err);
             done(false);
         } else {

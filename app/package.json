@@ -1,9 +1,11 @@
 {
-  "name": "electon-web-ui",
+  "name": "phx-electron",
   "version": "1.0.0",
   "description": "",
+  "productName": "LabCorp Phoenix",
+  "execName": "phoenix.exe",
   "main": "main.js",
-  "author": "",
+  "author": "LabCorp",
   "dependencies": {
     "diskdb": "^0.1.14",
     "node.extend": "^1.1.3",

@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Phoenix Application</title>
+    <script>
+        document.write('<base href="' + document.location + '" />');
+    </script>
+    <script src="scripts/angular.1.2.0.min.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/cover.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body ng-app="app" ng-controller="appController as ctrl">
+
+<div class="site-wrapper">
+
+    <div class="site-wrapper-inner">
+        <!--<iframe id="foo" style="height: 0px;width: 0px;visibility: hidden;border: none;"></iframe>-->
+
+        <div class="cover-container">
+
+            <div class="masthead clearfix">
+                <div class="inner">
+                    <!--<h3 class="masthead-brand">Cover</h3>-->
+                </div>
+            </div>
+
+            <div class="inner cover">
+                <h1 class="cover-heading" ng-bind="ctrl.json.version"></h1>
+
+                <p class="lead description" ng-bind="ctrl.json.app_name">description</p>
+
+                <p class="lead">
+                    <a class="btn btn-primary btn-lg" ng-href="{{ ctrl.json.href }}">Download</a>
+                </p>
+            </div>
+
+            <div class="mastfoot">
+                <div class="inner">
+                    <p ng-bind="ctrl.json.manufacturer"></p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+    angular.module('app', []).controller('appController', ['$http', '$animate', '$document', function ($http, $animate, $document) {
+
+        var self = this,
+                anchor = angular.element('<a></a>');
+        self.json = {};
+
+        !function () {
+
+            return $http.get('build.json').then(function (success) {
+                self.json = success.data;
+                self.json.href = 'v' + self.json.version + '.msi';
+                return self.json;
+            })
+        }();
+
+        self.download = function () {
+            event.stopPropagation();
+            var iframe = $document[0].querySelector('#foo');
+
+            iframe.src = 'v' + self.json.version + '.msi';
+
+//            anchor.attr({'href':'v' + self.json.version + '.msi','target':'_parent' })
+//            $document[0].querySelector('#foo').appendChild(anchor[0])
+//            setTimeout(function () {
+//                anchor[0].click();
+//                anchor.remove()
+//            }, 1)
+
+        }
+    }]);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+	"version": "0.1.0",
+	// List of configurations. Add new configurations or edit existing ones.
+	"configurations": [
+		{
+			"name": "Phoenix Desktop Appds",
+			"type": "node",
+			"program": "app/main.js", // important
+			"stopOnEntry": false,
+			"args": [],
+			"cwd": ".",
+			// next line is very important
+			"runtimeExecutable": "node_modules/electron-prebuilt/dist/phoenix.exe",
+			"runtimeArguments": [],
+			"env": {},
+			"sourceMaps": false
+		}
+	]
+}

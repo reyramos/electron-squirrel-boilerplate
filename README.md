@@ -1,4 +1,7 @@
 ##Electron Web UI
+
+
+
 This is a complete compiler, for electron to create a Microsoft Self Installer. It will create an installation application based of the content in the app folder. 
 The app folder will need to contain the following to build the exe file from electron. It has support to edit resources of the exe file in Windows.
 
@@ -95,3 +98,35 @@ The current application is using UpgradeCode=8291b2b1-4b33-11e5-975d-29a7531f192
 ##Grunt Task
 - build
     - build the application sources to dist, and msi package
+
+## RDC
+2UA2300TTV
+2UA2280PC5
+
+
+## Application LifeCycle
+app (EVENT)
+	window-all-closed => app.quit()
+	activate-with-no-open-windows => displaySplashScreen()
+	gpu-process-crashed => mainWindow.destroy()
+	will-quit
+	ready => displaySplashScreen()
+		
+		
+displaySplashScreen()
+	splashScreen.on(did-finish-load) => 
+		validateURL(promise) => 
+			LOAD_APPLICATION()
+			!mainWindow?startMainApplication():null
+			
+
+startMainApplication()
+	createMainWindow(promise) => return mainWindow
+		mainWindow (EVENT)
+			did-start-loading
+			did-fail-load => mainWindow.close()
+			dom-ready => mainWindow.executeJavaScript("//insert to application electron identifier to webapp") 
+			did-finish-load =>
+			did-stop-loading => electronInsertion()
+			
+	500ms => getVersion()

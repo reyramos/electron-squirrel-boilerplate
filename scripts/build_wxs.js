@@ -56,7 +56,6 @@ module.exports = function (grunt) {
 
 
         if (fs.existsSync(ELECTRON_PATH)) {
-            console.log('rceditOpts',rceditOpts)
             rcedit(ELECTRON_EXE_DESTINATION, rceditOpts, function (error) {
                 if (error) {
                     console.error(error)
@@ -69,12 +68,7 @@ module.exports = function (grunt) {
                     encoding: 'utf8'
                 });
 
-                done(true);
-
-
-                // createPackage(FILE_WXS), function(){
-                // return true;
-                // });
+                createPackage(FILE_WXS, done);
             });
         } else {
             grunt.log.writeln("missing path =>", ELECTRON_PATH);

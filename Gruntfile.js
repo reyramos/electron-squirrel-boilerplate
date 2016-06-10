@@ -22,6 +22,9 @@ module.exports = function (grunt) {
         dist: 'build',
     };
 
+    require('./scripts/build_asar.js')(grunt);
+    require('./scripts/build_wxs.js')(grunt);
+
     // Define the configuration for all the tasks
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'), // Project settings
@@ -68,27 +71,6 @@ module.exports = function (grunt) {
                 }
             }
         }
-    });
-
-
-    grunt.registerTask('electron-build', 'Create Electron Package', function (arg) {
-        var build = require('./scripts/build_asar.js');
-        build.apply(this, [grunt, arg])
-    });
-
-    grunt.registerTask('msi-build', 'Create MSI definition for wix', function (dirName) {
-        var _this = this,
-            config = require("./electron.config.js"),
-            done = this.async();
-        // test that the new electron app is created
-        if (fs.existsSync(path.join(__dirname, config.distribution, dirName))) {
-            var build = require('./scripts/build_wxs.js');
-            build.apply(_this, [grunt, dirName])
-        } else {
-            grunt.log.writeln("distribution path does not exist");
-        }
-        done(false);
-
     });
 
 

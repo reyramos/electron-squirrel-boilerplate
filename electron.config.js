@@ -10,7 +10,6 @@ module.exports = {
 
     //location of main.js and source files
     "source": "app",
-    "development": "app",
 
     //build location
     "distribution": "build",
@@ -27,8 +26,8 @@ module.exports = {
     "PROD": "https://phoenix.labcorp.com/web-ui/",
     "DEV": "https://dev-phoenix.labcorp.com/web-ui/",
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
-    "LOCAL": "http://local.labcorp.com:8080/",
     "BETA": "https://qa-phoenix.labcorp.com/web-ui/",
+    "LOCAL": "https://www.google.com/?gws_rd=ssl",
 
     //hosting server setting and working environment
     //Application will check for version updates host path

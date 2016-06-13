@@ -4,8 +4,8 @@
 let path = require('path'),
     fs = require('fs'),
     version = function () {
-        var versionJson = path.join(__dirname,'version.json'),
-            version = fs.existsSync(versionJson)?JSON.parse(fs.readFileSync(versionJson, 'utf8')): require('../electron.config.js');
+        var versionJson = path.join(__dirname, 'version.json'),
+            version = fs.existsSync(versionJson) ? JSON.parse(fs.readFileSync(versionJson, 'utf8')) : require('../electron.config.js');
         return version;
     }(),
     utilities = require('./libs/utilities'),
@@ -34,7 +34,7 @@ app.setAppUserModelId(app.getName());
  * Append an argument to Chromium’s command line. The argument will be quoted correctly.
  * http://peter.sh/experiments/chromium-command-line-switches/
  */
-app.commandLine.appendSwitch('remote-debugging-port', '8989');
+app.commandLine.appendSwitch('remote-debugging-port', '32400');
 app.commandLine.appendArgument('--disable-cache');
 
 //app.setUserTasks([]);
@@ -50,9 +50,8 @@ const releaseUrl = utilities.parse_url(version["VERSION_SERVER"]).scheme + '://'
 
 //If the local machine contains a config app, lets load the environment specified, used for developers
 let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
-    //Allows for local path config file
+//Allows for local path config file
     localConfig = fs.existsSync(localFilePath) ? require(localFilePath) : null;
-
 
 
 let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment);
@@ -110,19 +109,21 @@ function displaySplashScreen() {
     splashScreen.loadURL('file://' + __dirname + '/dialogs/spash-screen.html?');
     splashScreen.on('closed', function () {
         splashScreen = null;
-    })
+    });
 
     splashScreen.webContents.on('did-finish-load', function () {
         console.log('validate => ', webUrl)
-        validateURL(webUrl).then(LOAD_APPLICATION)
+        validateURL(webUrl).then(LOAD_APPLICATION, function (e) {
+            updateLoadingStatus("Validating Error: " + e.errno, true);
+            setTimeout(app.quit, 5000);
+        })
     });
 
 }
 
 
 function createMainWindow(size) {
-
-    let win = new BrowserWindow({
+    let params = {
         width: size.width,
         height: size.height,
         resizable: true,
@@ -133,7 +134,12 @@ function createMainWindow(size) {
         // webPreferences: {
         //     webSecurity: false
         // }
-    });
+    };
+
+    console.log('params => ', params);
+
+
+    let win = new BrowserWindow(params);
 
     var appName = utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');
 
@@ -150,14 +156,8 @@ function createMainWindow(size) {
 
 
     return new Promise(function (response, reject) {
-
         win.webContents.on('did-finish-load', function (e) {
-            if (refresh) {
-                refresh = false;
-                win.webContents.reloadIgnoringCache()
-                console.log('REFRESHING ULR => ', webUrl)
-                response(win)
-            }
+            response(win)
         })
     });
 }
@@ -173,40 +173,35 @@ function validateURL(url) {
      * in the background
      */
 
-    return new Promise(function (fulfill, reject) {
+    return new Promise(function (resolve, reject) {
         var parse = utilities.parse_url(url),
             options = {
                 host: parse.host,
-                port: parse.scheme === 'https' ? 443 : 80,
-                method: 'GET',
-                rejectUnauthorized: false,
-                requestCert: true,
-                agent: false
+                // port: parse.scheme === 'https' ? 443 : 80,
+                // method: 'GET',
+                // rejectUnauthorized: false,
+                // requestCert: true,
+                // agent: false
+                // headers: {
+                //     'Content-Type': 'application/x-www-form-urlencoded',
+                //     'Content-Length': ''
+                // }
             };
 
+        let scheme = require(parse.scheme);
 
-        var req = require(parse.scheme).request(options, function (res) {
+        var req = scheme.request(options, function (res) {
+
             console.log("statusCode: ", res.statusCode);
             console.log("headers: ", res.headers);
 
             updateLoadingStatus("Status: " + res.statusCode)
 
-            var invalids = [500];
-            webUrl = invalids.indexOf(res.statusCode) === -1 ? url : version[version["WORKING_ENVIRONMENT"]];
+            return [500].indexOf(res.statusCode) === -1 ? resolve(url) : reject(url);
 
-
-            console.log('webUrl', webUrl)
-
-            fulfill(webUrl);
-
-
-        });
-
-        req.on('error', function (e) {
+        }).on('error', function (e) {
             console.log('error:', e)
-            updateLoadingStatus("Validating Error:", true)
-
-            fulfill(version[version["WORKING_ENVIRONMENT"]]);
+            reject(e);
         });
 
         req.end();
@@ -276,23 +271,50 @@ function startMainApplication() {
             updateLoadingStatus("Failed to load ...", true)
         });
 
+        //Application is no longer broadcasting these events
+        // /**
+        //  * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
+        //  */
+        // mainWindow.webContents.on('dom-ready', function (e) {
+        //     // updateLoadingStatus("Ready...")
+        //     console.log('dom-ready')
+        //
+        // });
+        //
+        //
+        // //open the developer tools
+        // mainWindow.webContents.on('did-finish-load', function (e) {
+        //     console.log('mainWindow => did-finish-load')
+        //
+        // });
+        //
+        //
+        // mainWindow.webContents.on('did-frame-finish-load', function (e) {
+        //     console.log('did-frame-finish-load');
+        //     // updateLoadingStatus("Ready...");
+        //     // electronInsertion();
+        // });
+
+
         /**
-         * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
+         * Once the web Application finish loading, lets inject
+         * the ngElectron component, to be used within the webApp
          */
-        mainWindow.webContents.on('dom-ready', function (e) {
-            updateLoadingStatus("Ready...")
-            console.log('mainWindow => dom-ready')
-            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
-
-        });
+        mainWindow.webContents.on('did-stop-loading',onComplete);
 
 
-        //open the developer tools
-        mainWindow.webContents.on('did-finish-load', function (e) {
-            console.log('mainWindow => did-finish-load')
+        function onComplete(e) {
+            console.log('did-stop-loading');
 
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {
+
+                mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
+
+                loadingSuccess = false;
+
+                electronInsertion();
+
 
                 updateLoadingStatus("Ready...")
 
@@ -327,18 +349,8 @@ function startMainApplication() {
 
                 }
             });
-        });
+        }
 
-
-        /**
-         * Once the web Application finish loading, lets inject
-         * the ngElectron component, to be used within the webApp
-         */
-        mainWindow.webContents.on('did-stop-loading', function (e) {
-            console.log('mainWindow => did-stop-loading');
-            updateLoadingStatus("Ready...");
-            electronInsertion();
-        });
 
     });
 
@@ -349,7 +361,10 @@ function versionCompare() {
     console.log('check release version => ', releaseUrl)
 
 
-    getVersion(releaseUrl, function (status, obj) {
+    utilities.getVersion(releaseUrl, function (status, obj) {
+
+
+        if (status !== 200)return;
 
 
         var vrsCompare = utilities.versionCompare(obj.version, version.version),
@@ -391,43 +406,3 @@ function electronInsertion() {
     mainWindow.webContents.executeJavaScript(insertScript);
 }
 
-
-/**
- * getJSON:  REST get request returning JSON object(s)
- * @param options: http options object
- * @param callback: callback to pass the results JSON object(s) back
- */
-function getVersion(url, callback) {
-
-
-    console.log('getVersion => ', url)
-
-
-    require(utilities.parse_url(url).scheme).get(url, function (res) {
-
-        var output = '';
-        res.setEncoding('utf8');
-
-        res.on('data', function (chunk) {
-            output += chunk;
-        });
-
-        res.on('end', function () {
-            try {
-                var obj = JSON.parse(output);
-
-
-                console.log('output => ', obj)
-
-                callback(res.statusCode, obj);
-            } catch (e) {
-            }
-
-        });
-
-    }).on('error', function (e) {
-        //callback(e);
-        console.log('error', e)
-
-    });
-}

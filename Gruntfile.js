@@ -18,9 +18,12 @@ module.exports = function (grunt) {
     );
     var config = require("./electron.config.js");
     var appConfig = {
-        app: 'app',
-        dist: 'build',
+        app: config.source,
+        dist: config.distribution
     };
+
+    require('./scripts/build_asar.js')(grunt);
+    require('./scripts/build_wxs.js')(grunt);
 
     // Define the configuration for all the tasks
     grunt.initConfig({
@@ -28,19 +31,13 @@ module.exports = function (grunt) {
         yeoman: appConfig, // Watches files for changes and runs tasks based on the changed files
         electronConfig: config, // Watches files for changes and runs tasks based on the changed files
         clean: {
-            build: {
+            build: [appConfig.dist],
+            release: {
                 files: [{
                     expand: true,
-                    cwd: 'build',
+                    cwd: appConfig.dist,
                     extDot: 'last',
                     src: ['**.wixobj', '**.wixpdb']
-                }]
-            },
-            asar: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= electronConfig.electron_build %>',
-                    src: ['resources/app.asar']
                 }]
             }
         },
@@ -71,27 +68,6 @@ module.exports = function (grunt) {
     });
 
 
-    grunt.registerTask('electron-build', 'Create Electron Package', function (arg) {
-        var build = require('./scripts/build_asar.js');
-        build.apply(this, [grunt, arg])
-    });
-
-    grunt.registerTask('msi-build', 'Create MSI definition for wix', function (dirName) {
-        var _this = this,
-            config = require("./electron.config.js"),
-            done = this.async();
-        // test that the new electron app is created
-        if (fs.existsSync(path.join(__dirname, config.distribution, dirName))) {
-            var build = require('./scripts/build_wxs.js');
-            build.apply(_this, [grunt, dirName])
-        } else {
-            grunt.log.writeln("distribution path does not exist");
-        }
-        done(false);
-
-    });
-
-
     function getFilesPath(input, output) {
         var config = require("./electron.config.js"),
             APP_VERSION = config.version,
@@ -115,11 +91,13 @@ module.exports = function (grunt) {
     grunt.registerTask(
         'light', [
             'exec:light',
+            'clean:release'
         ]
     );
 
     grunt.registerTask(
         'build', [
+            'clean:build',
             'electron-build'
         ]
     );

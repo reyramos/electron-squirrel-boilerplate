@@ -89,16 +89,17 @@ service.getVersion = function (url, callback) {
         });
 
     }).on('error', function (e) {
-        callback(e);
+        callback(500, e);
     });
 
 
 }
 
-service.file_put_content = function (filename, text) {
+service.file_put_content = function (filename, text, callback) {
 
     fs.writeFile(filename, text, function (err) {
         if (err) return console.log(err);
+        callback()
     });
 
 }

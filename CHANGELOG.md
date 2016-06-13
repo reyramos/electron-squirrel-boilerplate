@@ -1,3 +1,23 @@
+<a name="1.3.4"></a>
+# 1.3.4 Ruby Device(2016-06-09)
+- Upgrade electron to version 1.2.2
+- Node 6.1.0
+- Chromium 51.0.2704.84
+- V8 5.1.281.59
+- Update build script for automation and self downloader
+
+<a name="1.3.3"></a>
+# 1.3.3 JEAN GREY (2015-12-07)
+
+## Enhancement
+- Update ICON image for product recognition
+
+<a name="1.3.2"></a>
+# 1.3.2 OBSIDIAN TRANSISTOR (2015-12-07)
+
+## Bug Fix
+- Downgrade electron from 64bit to 32bit version
+
 <a name="1.3.3"></a>
 # 1.3.3 JEAN GREY (2015-12-07)
 

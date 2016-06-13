@@ -8,7 +8,7 @@ const APP_NAME = config.app_name;
 const APP_DESCRIPTION = config.app_description;
 const MANUFACTURER = config.manufacturer;
 const APP_VERSION = String(config.version).trim() || false;
-const APPLICATION_SRC = path.join(__dirname, config.source);
+const APPLICATION_SRC = path.join(path.dirname(__dirname), config.source);
 
 
 

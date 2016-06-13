@@ -271,6 +271,7 @@ function startMainApplication() {
             updateLoadingStatus("Failed to load ...", true)
         });
 
+        //Application is no longer broadcasting these events
         // /**
         //  * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
         //  */

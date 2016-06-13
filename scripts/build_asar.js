@@ -55,7 +55,6 @@ module.exports = function (grunt) {
 
         const APP_VERSION = String(config.version).trim() || false;
         const APPLICATION_SRC = path.join(path.dirname(__dirname), config.source);
-        const DEVELOPMENT_SRC = path.join(path.dirname(__dirname), config.development);
 
         const RELEASE = utilities.parse_url(config["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(config["VERSION_SERVER"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
@@ -63,58 +62,26 @@ module.exports = function (grunt) {
          APPLICATION VARIABLES
          *******************************************************************/
         grunt.log.writeln("APP_VERSION =>", APP_VERSION);
-        grunt.log.writeln("APPLICATION_SRC =>", DEVELOPMENT_SRC);
-        grunt.log.writeln("DEVELOPMENT_SRC =>", DEVELOPMENT_SRC);
+        grunt.log.writeln("APPLICATION_SRC =>", APPLICATION_SRC);
 
 
-        /**
-         * This functionality is to check if the build.json file exist, if it exist it will check if the version is already created.
-         * So it will force the developer to upgrade their version for the new build
-         */
+        utilities.file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config), function () {
 
-        utilities.getVersion(RELEASE, function (err, obj) {
+            shell.exec((_c.join(" ")), function (code, stdout, stderr) {
+                fs.unlinkSync(path.join(APPLICATION_SRC, 'version.json'))
 
-            if (!err === 200) {
-                grunt.log.writeln(err);
-                done(false);
-            } else {
-                // create the versioning file
-                if (fs.existsSync(APPLICATION_SRC)) {
-                    utilities.file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config));
-                }
-
-                if (fs.existsSync(DEVELOPMENT_SRC)) {
-                    utilities.file_put_content(path.join(DEVELOPMENT_SRC, 'version.json'), JSON.stringify(config));
-                }
-
-                const BUILD_VERSION = String(obj.version).trim() || false;
-                var vrsCompare = utilities.versionCompare(APP_VERSION, BUILD_VERSION);
-                if (vrsCompare > 0) {
-
-                    shell.exec((_c.join(" ")), function (code, stdout, stderr) {
-                        if (stdout) {
-                            grunt.log.writeln('stdout:', stdout);
-                            done(false);
-                        } else if (fs.existsSync(path.join(DEVELOPMENT_SRC, 'version.json'))) {
-                            // test that the new electron app is created
-                            if (fs.existsSync(path.join(path.dirname(__dirname), config.distribution, appName))) {
-                                grunt.task.run(["msi-build:" + appName]);
-                                done(true);
-                            } else {
-                                grunt.log.writeln("electron path does not exist");
-                                done(false);
-                            }
-                        }
-                    });
-
+                if (fs.existsSync(path.join(path.dirname(__dirname), config.distribution, appName))) {
+                    // test that the new electron app is created
+                    if (!arg)grunt.task.run(["msi-build:" + appName]);
+                    done(true);
                 } else {
-
-                    grunt.log.writeln('\n\nUPDATE YOUR VERSION FILE, VERSION:' + APP_VERSION + ' ALREADY EXIST');
+                    grunt.log.writeln("electron path does not exist");
                     done(false);
                 }
-            }
+            });
 
         });
 
     });
+
 };

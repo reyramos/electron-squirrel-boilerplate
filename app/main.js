@@ -114,7 +114,7 @@ function displaySplashScreen() {
 
     splashScreen.webContents.on('did-finish-load', function () {
         console.log('validate => ', webUrl)
-        validateURL(webUrl).then(LOAD_APPLICATION)
+        // validateURL(webUrl).then(LOAD_APPLICATION)
     });
 
 }

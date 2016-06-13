@@ -80,8 +80,9 @@ module.exports = function (grunt) {
 
 
                 if (fs.existsSync(appPath)) {
+                    //TODO: bug in electron where the splash flicker if name is not default package.json productName or electron
+                    //productName cannot have a space which will break the msi build
                     fs.renameSync(path.join(appPath, appName + '.exe'), path.join(appPath, 'electron.exe'))
-                    if (!arg)grunt.task.run(["msi-build"]);
                     done(true);
                 } else {
                     grunt.log.writeln("electron path does not exist");

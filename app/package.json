@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "productName": "LabCorp Phoenix",
-  "execName": "phoenix.exe",
   "main": "main.js",
-  "author": "LabCorp",
+  "author": "ramor11",
   "dependencies": {
     "diskdb": "^0.1.14",
     "node.extend": "^1.1.3",

@@ -18,8 +18,8 @@ module.exports = function (grunt) {
     );
     var config = require("./electron.config.js");
     var appConfig = {
-        app: 'app',
-        dist: 'build',
+        app: config.source,
+        dist: config.distribution
     };
 
     require('./scripts/build_asar.js')(grunt);
@@ -31,19 +31,13 @@ module.exports = function (grunt) {
         yeoman: appConfig, // Watches files for changes and runs tasks based on the changed files
         electronConfig: config, // Watches files for changes and runs tasks based on the changed files
         clean: {
-            build: {
+            build: [appConfig.dist],
+            release: {
                 files: [{
                     expand: true,
-                    cwd: 'build',
+                    cwd: appConfig.dist,
                     extDot: 'last',
                     src: ['**.wixobj', '**.wixpdb']
-                }]
-            },
-            asar: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= electronConfig.electron_build %>',
-                    src: ['resources/app.asar']
                 }]
             }
         },
@@ -97,11 +91,13 @@ module.exports = function (grunt) {
     grunt.registerTask(
         'light', [
             'exec:light',
+            'clean:release'
         ]
     );
 
     grunt.registerTask(
         'build', [
+            'clean:build',
             'electron-build'
         ]
     );

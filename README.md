@@ -91,6 +91,7 @@ The current application is using UpgradeCode=8291b2b1-4b33-11e5-975d-29a7531f192
 
 
 ## Application LifeCycle
+``` txt
 app (EVENT)
 	window-all-closed => app.quit()
 	activate-with-no-open-windows => displaySplashScreen()
@@ -114,7 +115,8 @@ startMainApplication()
 			dom-ready => mainWindow.executeJavaScript("//insert to application electron identifier to webapp") 
 			did-finish-load =>
 			did-stop-loading => electronInsertion()
-			
+```
+	
 ## RDC
 2UA2300TTV
 2UA2280PC5

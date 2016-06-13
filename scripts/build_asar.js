@@ -81,7 +81,6 @@ module.exports = function (grunt) {
 
                 if (fs.existsSync(appPath)) {
                     fs.renameSync(path.join(appPath, appName + '.exe'), path.join(appPath, 'electron.exe'))
-                    if (!arg)grunt.task.run(["msi-build"]);
                     done(true);
                 } else {
                     grunt.log.writeln("electron path does not exist");

@@ -13,6 +13,15 @@ The app folder will need to contain the following to build the exe file from ele
   |-- icon.png //added png logo to electron app, referenced in main.js
 ```
 
+```
+  //the app/package.json contains the following information for the application electron build
+  "name": "phx-electron", //electron appname if productName does not exist
+  "version": "1.0.0",
+  "description": "",
+  "productName": "LabCorp Phoenix", //electron appname
+  "execName": "phoenix", //change exec file name
+```
+
 ##What is Electron?
 
 Electron enables you to create desktop applications with pure JavaScript by providing a runtime with rich native APIs. You could see it as a variant of the io.js runtime which is focused on desktop applications instead of web servers.
@@ -20,20 +29,24 @@ Electron enables you to create desktop applications with pure JavaScript by prov
 This doesn't mean Electron is a JavaScript binding to GUI libraries. Instead, Electron uses web pages as its GUI, so you could also see it as a minimal Chromium browser, controlled by JavaScript.
 
 
-## Let's get started with Development Enviroment
-- Install Node.JS
+## Let's get started with Development Environment
+- Install Node.JS v6.1.0+
 Use your system package manager (brew,port,apt-get,yum etc)
 
-- Install global Yeoman, Grunt and Bower commands, once you install the following commands globally, you can run 'npm install' to run the components in the package.json file
+- Install global Grunt commands, once you install the following commands globally, you can run 'npm install' to run the components in the package.json file
 
 ```bash
-	npm install -g grunt-cli bower
+	npm install -g grunt-cli
 	npm install //load all your additional package.json components
 ```
 
-- Install bower components
+
+## Install app dependencies
+In addition to installing application npm installs from package.json, you will also need to install any dependencies from /app/package.json
+Additional packages are needed for your application to run smoothly. Inside app directory there are needed dependencies, which contains a basic Angular application with two way communication with electronjs.
 ```bash
-	bower install
+	cd app/
+	npm install //load all your additional package.json components
 ```
 
 - Install WiX Toolset <http://wixtoolset.org/>
@@ -41,26 +54,17 @@ WiX Toolset is a tool to be used in Windows System to create easy windows instal
 
 This is critical during installation, since our build will fail to create the msi file if the environment path will fail if it cannot find candle.exe and light.exe
 
-- APP
-Additional packages are needed for your application to run smoothly. Inside app directory there are needed dependencies, which contains a basic Angular application with two way communication with electronjs.
-
-```bash
-	cd app
-	npm install
-```
-
 - DONE!
 Once you have installed all the necessay build dependencies, you are ready to create your application within the app folder. If you want to install additional library dependencies, you can make those modification inside the bower file, which is located within the root folder. The package.json contains information regarding your new MSI application which can be edited depending on your app.
 
-```json
-  "msi": {
-    "app_name": "LabCorp Phoenix",
-    "app_description": "LabCorp Application",
-    "manufacturer": "LabCorp Inc",
-    "source": "dist",
-    "distribution": "build",
-    "path_to_electron": "./electron-v0.31.2-win32-x64"
-  }
+```
+ 
+ ./
+  |-- package.json
+  |-- app/ //app source code to build electron
+  |-- scripts/ //source code to build electron and msi
+  |-- electron.config.js //define electron version to build, addition package information and versioning information server/host path
+  
 ```
 The following command will build the application based of the config in package.json file.
 
@@ -68,15 +72,6 @@ The following command will build the application based of the config in package.
 	grunt build
 ```
 
-The build command will compile all the contents of app folder into dist folder, which it will be needed to create the msi application. Once the build is completed the MSI file will be located within the build folder containing the following file. 
-
-```
- build
-  |-- [APP_NAME].msi
-  |-- [APP_NAME].wixobj
-  |-- [APP_NAME].wixpdb
-  |-- [APP_NAME].wxs
-```
 
 
 ## UPGRADE CODE
@@ -88,20 +83,11 @@ The current application is using UpgradeCode=8291b2b1-4b33-11e5-975d-29a7531f192
              UpgradeCode='8291b2b1-4b33-11e5-975d-29a7531f1924'
              Language='1033' Version='1.0.0' Manufacturer='LabCorp Inc'>
 ```
-##Additional Sources
-- nodejs <https://nodejs.org/en/docs/>
-- iojs <https://iojs.org/en/>
-- Wix Toolset Documentation <http://wixtoolset.org/documentation/manual/v3/>
-- Free Online PNG to ICO/ICO to PNG Conversion tool <http://convertico.com/>
-
 
 ##Grunt Task
 - build
     - build the application sources to dist, and msi package
 
-## RDC
-2UA2300TTV
-2UA2280PC5
 
 
 ## Application LifeCycle
@@ -129,4 +115,14 @@ startMainApplication()
 			did-finish-load =>
 			did-stop-loading => electronInsertion()
 			
-	500ms => getVersion()
+## RDC
+2UA2300TTV
+2UA2280PC5
+
+
+##Additional Sources
+- nodejs <https://nodejs.org/en/docs/>
+- iojs <https://iojs.org/en/>
+- Wix Toolset Documentation <http://wixtoolset.org/documentation/manual/v3/>
+- Free Online PNG to ICO/ICO to PNG Conversion tool <http://convertico.com/>
+

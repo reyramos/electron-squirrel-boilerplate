@@ -34,7 +34,7 @@ app.setAppUserModelId(app.getName());
  * Append an argument to Chromium’s command line. The argument will be quoted correctly.
  * http://peter.sh/experiments/chromium-command-line-switches/
  */
-app.commandLine.appendSwitch('remote-debugging-port', '8989');
+app.commandLine.appendSwitch('remote-debugging-port', '32400');
 app.commandLine.appendArgument('--disable-cache');
 
 //app.setUserTasks([]);
@@ -109,11 +109,14 @@ function displaySplashScreen() {
     splashScreen.loadURL('file://' + __dirname + '/dialogs/spash-screen.html?');
     splashScreen.on('closed', function () {
         splashScreen = null;
-    })
+    });
 
     splashScreen.webContents.on('did-finish-load', function () {
         console.log('validate => ', webUrl)
-        validateURL(webUrl).then(LOAD_APPLICATION)
+        validateURL(webUrl).then(LOAD_APPLICATION, function (e) {
+            updateLoadingStatus("Validating Error: " + e.errno, true);
+            setTimeout(app.quit, 5000);
+        })
     });
 
 }
@@ -170,40 +173,35 @@ function validateURL(url) {
      * in the background
      */
 
-    return new Promise(function (fulfill, reject) {
+    return new Promise(function (resolve, reject) {
         var parse = utilities.parse_url(url),
             options = {
                 host: parse.host,
-                port: parse.scheme === 'https' ? 443 : 80,
-                method: 'GET',
-                rejectUnauthorized: false,
-                requestCert: true,
-                agent: false
+                // port: parse.scheme === 'https' ? 443 : 80,
+                // method: 'GET',
+                // rejectUnauthorized: false,
+                // requestCert: true,
+                // agent: false
+                // headers: {
+                //     'Content-Type': 'application/x-www-form-urlencoded',
+                //     'Content-Length': ''
+                // }
             };
 
+        let scheme = require(parse.scheme);
 
-        var req = require(parse.scheme).request(options, function (res) {
+        var req = scheme.request(options, function (res) {
+
             console.log("statusCode: ", res.statusCode);
             console.log("headers: ", res.headers);
 
             updateLoadingStatus("Status: " + res.statusCode)
 
-            var invalids = [500];
-            webUrl = invalids.indexOf(res.statusCode) === -1 ? url : version[version["WORKING_ENVIRONMENT"]];
+            return [500].indexOf(res.statusCode) === -1 ? resolve(url) : reject(url);
 
-
-            console.log('webUrl', webUrl)
-
-            fulfill(webUrl);
-
-
-        });
-
-        req.on('error', function (e) {
+        }).on('error', function (e) {
             console.log('error:', e)
-            updateLoadingStatus("Validating Error:", true)
-
-            fulfill(version[version["WORKING_ENVIRONMENT"]]);
+            reject(e);
         });
 
         req.end();
@@ -273,39 +271,40 @@ function startMainApplication() {
             updateLoadingStatus("Failed to load ...", true)
         });
 
-        /**
-         * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
-         */
-        mainWindow.webContents.on('dom-ready', function (e) {
-            updateLoadingStatus("Ready...")
-            console.log('mainWindow => dom-ready')
-
-        });
-
-
-        //open the developer tools
-        mainWindow.webContents.on('did-finish-load', function (e) {
-            console.log('mainWindow => did-finish-load')
-
-
-        });
-
-
-        mainWindow.webContents.on('did-frame-finish-load', function (e) {
-            console.log('did-frame-finish-load');
-            // updateLoadingStatus("Ready...");
-            // electronInsertion();
-        });
+        // /**
+        //  * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
+        //  */
+        // mainWindow.webContents.on('dom-ready', function (e) {
+        //     // updateLoadingStatus("Ready...")
+        //     console.log('dom-ready')
+        //
+        // });
+        //
+        //
+        // //open the developer tools
+        // mainWindow.webContents.on('did-finish-load', function (e) {
+        //     console.log('mainWindow => did-finish-load')
+        //
+        // });
+        //
+        //
+        // mainWindow.webContents.on('did-frame-finish-load', function (e) {
+        //     console.log('did-frame-finish-load');
+        //     // updateLoadingStatus("Ready...");
+        //     // electronInsertion();
+        // });
 
 
         /**
          * Once the web Application finish loading, lets inject
          * the ngElectron component, to be used within the webApp
          */
-        mainWindow.webContents.on('did-stop-loading', onComplete);
+        mainWindow.webContents.on('did-stop-loading',onComplete);
 
 
         function onComplete(e) {
+            console.log('did-stop-loading');
+
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {
 

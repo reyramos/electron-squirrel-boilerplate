@@ -18,7 +18,7 @@ module.exports = {
     //<https://github.com/electron-userland/electron-packager/blob/master/usage.txt>
     "platform": "win32", // all, or one or more of: darwin, linux, mas, win32 (comma-delimited if multiple)
     "arch": "ia32", // all, or one or more of: ia32, x64 (comma-delimited if multiple)
-    // "electronVersion": "1.2.2", // the version of Electron that is being packaged, see https://github.com/electron/electron/releases
+    "electronVersion": "1.2.2", // the version of Electron that is being packaged, see https://github.com/electron/electron/releases
 
     //environment
     "STAGE": "https://stage-phoenix.labcorp.com/web-ui/",
@@ -26,8 +26,8 @@ module.exports = {
     "PROD": "https://phoenix.labcorp.com/web-ui/",
     "DEV": "https://dev-phoenix.labcorp.com/web-ui/",
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
-    "LOCAL": "https://www.vagrantup.com/",
     "BETA": "https://qa-phoenix.labcorp.com/web-ui/",
+    "LOCAL": "https://www.google.com/?gws_rd=ssl",
 
     //hosting server setting and working environment
     //Application will check for version updates host path
@@ -35,7 +35,7 @@ module.exports = {
     //environment where the build.json is going to be stored for the working environment
     "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
     //environment to build on start up
-    "WORKING_ENVIRONMENT": "LOCAL"
+    "WORKING_ENVIRONMENT": "DEV"
 
 };
 

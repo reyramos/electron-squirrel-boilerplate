@@ -24,7 +24,8 @@ module.exports = function (grunt) {
     grunt.registerTask('msi-build', 'Create MSI definition for wix', function (arg) {
 
         var self = this,
-            done = this.async();
+            done = this.async(),
+            appName = [(package['productName'] || package['name']), config.platform, config.arch].join("-");
 
 
         config['build_date'] = new Date().toJSON();
@@ -36,16 +37,12 @@ module.exports = function (grunt) {
         const APPLICATION_SRC = path.join(path.dirname(__dirname), config.source);
         const BUILD_DESTINATION = path.join(path.dirname(__dirname), config.distribution);
 
-
-//searches for icon.png file in the application src to set the Add/Remove icon
+        //searches for icon.png file in the application src to set the Add/Remove icon
         var APPLICATION_ICON_SOURCE = path.join(APPLICATION_SRC, 'icon.ico');
 
-//path to electron files
-        const ELECTRON_PATH = path.join(BUILD_DESTINATION, arg);
-        const ELECTRON_BUILD_DESTINATION = path.join(ELECTRON_PATH, '/resources/app.asar');
-
-        var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, package.execName);
-        fs.renameSync(path.join(ELECTRON_PATH, package.productName + '.exe'), ELECTRON_EXE_DESTINATION)
+        //path to electron files
+        const ELECTRON_PATH = path.join(BUILD_DESTINATION, appName);
+        var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, 'electron.exe');
 
 
         var buildFileName = config.versionFilePath.split('/');
@@ -53,7 +50,6 @@ module.exports = function (grunt) {
         buildFileName = buildFileName[buildFileName.length - 1];
 
         const RELEASE = utilities.parse_url(config["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(config["VERSION_SERVER"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
-
 
         if (fs.existsSync(ELECTRON_PATH)) {
             rcedit(ELECTRON_EXE_DESTINATION, rceditOpts, function (error) {
@@ -349,8 +345,6 @@ module.exports = function (grunt) {
             callback(referenceTable[0]);
 
         }
-
-        // this.data here contains your configuration
 
     });
 };

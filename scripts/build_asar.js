@@ -23,7 +23,14 @@ module.exports = function (grunt) {
          */
         let command = "\"./node_modules/.bin/electron-packager\" app/",
         //build the command script based on config files
-            _c = [command, "--platform=" + config.platform, "--arch=" + config.arch, "--asar", "--out=" + config.distribution, "--overwrite"];
+            _c = [
+                command
+                , "--platform=" + config.platform
+                , "--arch=" + config.arch
+                , "--asar"
+                , "--out=" + config.distribution
+                , "--overwrite"
+            ];
 
         /*
          * * win32 target platform only *
@@ -32,7 +39,7 @@ module.exports = function (grunt) {
          */
 
         let versionString = rceditOpts['version-string'],
-            appName = [package['productName'], config.platform, config.arch].join("-");
+            appName = (package['productName'] || package['name']);
 
         Object.keys(versionString).forEach(function (key) {
             _c.push("--version-string." + key + "=\"" + versionString[key] + "\"")
@@ -69,10 +76,12 @@ module.exports = function (grunt) {
 
             shell.exec((_c.join(" ")), function (code, stdout, stderr) {
                 fs.unlinkSync(path.join(APPLICATION_SRC, 'version.json'))
+                let appPath = path.join(path.dirname(__dirname), config.distribution, [appName, config.platform, config.arch].join("-"));
 
-                if (fs.existsSync(path.join(path.dirname(__dirname), config.distribution, appName))) {
-                    // test that the new electron app is created
-                    if (!arg)grunt.task.run(["msi-build:" + appName]);
+
+                if (fs.existsSync(appPath)) {
+                    fs.renameSync(path.join(appPath, appName + '.exe'), path.join(appPath, 'electron.exe'))
+                    if (!arg)grunt.task.run(["msi-build"]);
                     done(true);
                 } else {
                     grunt.log.writeln("electron path does not exist");

@@ -89,7 +89,7 @@ service.getVersion = function (url, callback) {
         });
 
     }).on('error', function (e) {
-        callback(e);
+        callback(500, e);
     });
 
 

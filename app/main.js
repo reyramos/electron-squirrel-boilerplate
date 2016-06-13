@@ -4,8 +4,8 @@
 let path = require('path'),
     fs = require('fs'),
     version = function () {
-        var versionJson = path.join(__dirname,'version.json'),
-            version = fs.existsSync(versionJson)?JSON.parse(fs.readFileSync(versionJson, 'utf8')): require('../electron.config.js');
+        var versionJson = path.join(__dirname, 'version.json'),
+            version = fs.existsSync(versionJson) ? JSON.parse(fs.readFileSync(versionJson, 'utf8')) : require('../electron.config.js');
         return version;
     }(),
     utilities = require('./libs/utilities'),
@@ -50,9 +50,8 @@ const releaseUrl = utilities.parse_url(version["VERSION_SERVER"]).scheme + '://'
 
 //If the local machine contains a config app, lets load the environment specified, used for developers
 let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
-    //Allows for local path config file
+//Allows for local path config file
     localConfig = fs.existsSync(localFilePath) ? require(localFilePath) : null;
-
 
 
 let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment);
@@ -114,15 +113,14 @@ function displaySplashScreen() {
 
     splashScreen.webContents.on('did-finish-load', function () {
         console.log('validate => ', webUrl)
-        // validateURL(webUrl).then(LOAD_APPLICATION)
+        validateURL(webUrl).then(LOAD_APPLICATION)
     });
 
 }
 
 
 function createMainWindow(size) {
-
-    let win = new BrowserWindow({
+    let params = {
         width: size.width,
         height: size.height,
         resizable: true,
@@ -133,7 +131,12 @@ function createMainWindow(size) {
         // webPreferences: {
         //     webSecurity: false
         // }
-    });
+    };
+
+    console.log('params => ', params);
+
+
+    let win = new BrowserWindow(params);
 
     var appName = utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');
 
@@ -150,14 +153,8 @@ function createMainWindow(size) {
 
 
     return new Promise(function (response, reject) {
-
         win.webContents.on('did-finish-load', function (e) {
-            if (refresh) {
-                refresh = false;
-                win.webContents.reloadIgnoringCache()
-                console.log('REFRESHING ULR => ', webUrl)
-                response(win)
-            }
+            response(win)
         })
     });
 }
@@ -282,7 +279,6 @@ function startMainApplication() {
         mainWindow.webContents.on('dom-ready', function (e) {
             updateLoadingStatus("Ready...")
             console.log('mainWindow => dom-ready')
-            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
         });
 
@@ -291,8 +287,34 @@ function startMainApplication() {
         mainWindow.webContents.on('did-finish-load', function (e) {
             console.log('mainWindow => did-finish-load')
 
+
+        });
+
+
+        mainWindow.webContents.on('did-frame-finish-load', function (e) {
+            console.log('did-frame-finish-load');
+            // updateLoadingStatus("Ready...");
+            // electronInsertion();
+        });
+
+
+        /**
+         * Once the web Application finish loading, lets inject
+         * the ngElectron component, to be used within the webApp
+         */
+        mainWindow.webContents.on('did-stop-loading', onComplete);
+
+
+        function onComplete(e) {
             //if it did not failed, lets hide the splashScreen and show the application
             if (loadingSuccess) {
+
+                mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
+
+                loadingSuccess = false;
+
+                electronInsertion();
+
 
                 updateLoadingStatus("Ready...")
 
@@ -327,18 +349,8 @@ function startMainApplication() {
 
                 }
             });
-        });
+        }
 
-
-        /**
-         * Once the web Application finish loading, lets inject
-         * the ngElectron component, to be used within the webApp
-         */
-        mainWindow.webContents.on('did-stop-loading', function (e) {
-            console.log('mainWindow => did-stop-loading');
-            updateLoadingStatus("Ready...");
-            electronInsertion();
-        });
 
     });
 
@@ -349,7 +361,10 @@ function versionCompare() {
     console.log('check release version => ', releaseUrl)
 
 
-    getVersion(releaseUrl, function (status, obj) {
+    utilities.getVersion(releaseUrl, function (status, obj) {
+
+
+        if (status !== 200)return;
 
 
         var vrsCompare = utilities.versionCompare(obj.version, version.version),
@@ -391,43 +406,3 @@ function electronInsertion() {
     mainWindow.webContents.executeJavaScript(insertScript);
 }
 
-
-/**
- * getJSON:  REST get request returning JSON object(s)
- * @param options: http options object
- * @param callback: callback to pass the results JSON object(s) back
- */
-function getVersion(url, callback) {
-
-
-    console.log('getVersion => ', url)
-
-
-    require(utilities.parse_url(url).scheme).get(url, function (res) {
-
-        var output = '';
-        res.setEncoding('utf8');
-
-        res.on('data', function (chunk) {
-            output += chunk;
-        });
-
-        res.on('end', function () {
-            try {
-                var obj = JSON.parse(output);
-
-
-                console.log('output => ', obj)
-
-                callback(res.statusCode, obj);
-            } catch (e) {
-            }
-
-        });
-
-    }).on('error', function (e) {
-        //callback(e);
-        console.log('error', e)
-
-    });
-}

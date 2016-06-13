@@ -97,8 +97,11 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'build', [
-            'clean:build',
-            'electron-build'
+            'clean:build', //clean directory
+            'electron-build', //build the electron package
+            'msi-build', //build wxs file for candle light build
+            'candle', //wix command
+            'light' //wix command
         ]
     );
     grunt.registerTask(

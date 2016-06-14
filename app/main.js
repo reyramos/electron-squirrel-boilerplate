@@ -131,6 +131,7 @@ function createMainWindow(size) {
         icon: path.join(__dirname, 'icon.ico'),
         title: app.getName(),
         autoHideMenuBar: true,
+        // frame: false,
         // webPreferences: {
         //     webSecurity: false
         // }

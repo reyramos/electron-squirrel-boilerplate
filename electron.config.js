@@ -26,8 +26,8 @@ module.exports = {
     "PROD": "https://phoenix.labcorp.com/web-ui/",
     "DEV": "https://dev-phoenix.labcorp.com/web-ui/",
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
-    "BETA": "https://qa-phoenix.labcorp.com/web-ui/",
-    "LOCAL": "https://www.google.com/?gws_rd=ssl",
+    "BETA": "https://dev-phoenix.labcorp.com/web-ui/",
+    "LOCAL": "http://seed.labcorp.com:8080/",
 
     //hosting server setting and working environment
     //Application will check for version updates host path
@@ -35,7 +35,7 @@ module.exports = {
     //environment where the build.json is going to be stored for the working environment
     "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
     //environment to build on start up
-    "WORKING_ENVIRONMENT": "DEV"
+    "WORKING_ENVIRONMENT": "BETA"
 
 };
 

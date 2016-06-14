@@ -18,18 +18,6 @@
 ## Bug Fix
 - Downgrade electron from 64bit to 32bit version
 
-<a name="1.3.3"></a>
-# 1.3.3 JEAN GREY (2015-12-07)
-
-## Enhancement
-- Update ICON image for product recognition
-
-<a name="1.3.2"></a>
-# 1.3.2 OBSIDIAN TRANSISTOR (2015-12-07)
-
-## Bug Fix
-- Downgrade electron from 64bit to 32bit version
-
 
 <a name="1.3.1"></a>
 # 1.3.1 Jaerelyx Artigar (2015-12-04)

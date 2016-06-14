@@ -9,29 +9,12 @@
     var ELECTRON_BRIDGE_HOST = 'ELECTRON_BRIDGE_HOST',
         ELECTRON_BRIDGE_CLIENT = 'ELECTRON_BRIDGE_CLIENT',
         ELECTRON_HOST_ID = 'electron-host',
-        db_silo = 'client/data',
+        electron = false,
         ipc = null,
-        diskdb = null,
         currentCallbackId = 0, // Create a unique callback ID to map requests to responses
         service = {
             onmessage: []
         };
-
-
-    try {
-        ipc = require('electron').ipcRenderer;
-
-    } catch (e) {
-        console.error('modules not loaded:ipc => ', e)
-    }
-    //
-    //try {
-    //    diskdb = require('diskdb');
-    //
-    //} catch (e) {
-    //    console.error('modules not loaded:diskdb => ', e)
-    //}
-
 
     /**
      * This creates a new callback ID for a request
@@ -44,7 +27,6 @@
         }
         return currentCallbackId;
     }
-
     /**
      * Will check if promise has been sent to return back to
      * defer.promise() message
@@ -68,6 +50,11 @@
     var Electron = function () {
         var o = new Object(), $rootScope = window.angular || angular ? angular.injector(["ng"]).get("$rootScope") : null;
 
+        try {
+            electron = require('electron')
+        } catch (e) {
+            console.error('modules not loaded:ipc => ', e)
+        }
 
         //ipc -> host (main process)
         o.send = function (eventType, data) {
@@ -109,28 +96,11 @@
             return defer;
         };
 
-
-        ////diskdb
-        //o.db = function (collection) {
-        //    if (diskdb) {
-        //        var collection_arr = [];
-        //        if (typeof collection == 'object') {
-        //            collection_arr = collection;
-        //        } else if (typeof collection == 'string') {
-        //            collection_arr.push(collection);
-        //        }
-        //
-        //        return diskdb.connect(db_silo, collection_arr);
-        //    }
-        //
-        //    return 'diskdb is not installed and/or configured.'
-        //};
-
-
         try {
+            ipc = electron.ipcRenderer;
 
             //remote require
-            o.remote = require('electron').remote;
+            o.remote = electron.remote;
 
             //Node 11 (abridged) api
             o.buffer = require('buffer');
@@ -147,10 +117,6 @@
             o.querystring = require('querystring');
             o.url = require('url');
             o.zlib = require('zlib');
-            // o.lokijs = require('../node_modules/lokijs/src/lokijs.js');
-            // o.phpjs = require('phpjs');
-            // o.uuid = require('uuid');
-            // o.uglify = require('uglify-js');
 
             o = extend({}, o, electron);
 

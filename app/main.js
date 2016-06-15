@@ -7,9 +7,10 @@ let path = require('path'),
         //If the local machine contains a config app, lets load the environment specified, used for developers
         let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
         //Allows for local path config file
-            localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'version.json');
+            localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'version.json'),
+            version = fs.existsSync(localConfig) ? JSON.parse(fs.readFileSync(localConfig, 'utf8')) : require('../electron.config.js');
 
-        var version = fs.existsSync(localConfig) ? JSON.parse(fs.readFileSync(localConfig, 'utf8')) : require('../electron.config.js');
+
         return version;
     }(),
     utilities = require('./libs/utilities'),

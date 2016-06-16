@@ -9,29 +9,12 @@
     var ELECTRON_BRIDGE_HOST = 'ELECTRON_BRIDGE_HOST',
         ELECTRON_BRIDGE_CLIENT = 'ELECTRON_BRIDGE_CLIENT',
         ELECTRON_HOST_ID = 'electron-host',
-        db_silo = 'client/data',
+        electron = false,
         ipc = null,
-        diskdb = null,
         currentCallbackId = 0, // Create a unique callback ID to map requests to responses
         service = {
             onmessage: []
         };
-
-
-    try {
-        ipc = require('electron').ipcRenderer;
-
-    } catch (e) {
-        console.error('modules not loaded:ipc => ', e)
-    }
-    //
-    //try {
-    //    diskdb = require('diskdb');
-    //
-    //} catch (e) {
-    //    console.error('modules not loaded:diskdb => ', e)
-    //}
-
 
     /**
      * This creates a new callback ID for a request
@@ -44,7 +27,6 @@
         }
         return currentCallbackId;
     }
-
     /**
      * Will check if promise has been sent to return back to
      * defer.promise() message
@@ -68,6 +50,11 @@
     var Electron = function () {
         var o = new Object(), $rootScope = window.angular || angular ? angular.injector(["ng"]).get("$rootScope") : null;
 
+        try {
+            electron = require('electron')
+        } catch (e) {
+            console.error('modules not loaded:ipc => ', e)
+        }
 
         //ipc -> host (main process)
         o.send = function (eventType, data) {
@@ -109,65 +96,27 @@
             return defer;
         };
 
-
-        ////diskdb
-        //o.db = function (collection) {
-        //    if (diskdb) {
-        //        var collection_arr = [];
-        //        if (typeof collection == 'object') {
-        //            collection_arr = collection;
-        //        } else if (typeof collection == 'string') {
-        //            collection_arr.push(collection);
-        //        }
-        //
-        //        return diskdb.connect(db_silo, collection_arr);
-        //    }
-        //
-        //    return 'diskdb is not installed and/or configured.'
-        //};
-
-
         try {
-
-            var electron = require('electron');
+            ipc = electron.ipcRenderer;
 
             //remote require
             o.remote = electron.remote;
-            o.require = o.remote.require;
-
-            //Electron api
-            o.app = o.require('app');
-            o.browserWindow = o.require('browser-window');
-            o.clipboard = o.require('clipboard');
-            o.dialog = o.require('dialog');
-            o.menu = o.remote.Menu;
-            o.menuItem = o.remote.MenuItem;
-            o.nativeImage = o.require('native-image');
-            o.powerMonitor = o.require('power-monitor');
-            o.protocol = o.require('protocol');
-            o.screen = o.require('screen');
-            o.shell = o.require('shell');
-            o.tray = o.require('tray');
 
             //Node 11 (abridged) api
-            o.buffer = o.require('buffer');
-            o.childProcess = o.require('child_process');
-            o.crypto = o.require('crypto');
-            o.dns = o.require('dns');
-            o.emitter = o.require('events').EventEmitter;
-            o.fs = o.require('fs');
-            o.http = o.require('http');
-            o.https = o.require('https');
-            o.net = o.require('net');
-            o.os = o.require('os');
-            o.path = o.require('path');
-            o.querystring = o.require('querystring');
-            o.url = o.require('url');
-            o.zlib = o.require('zlib');
-            o.lokijs = o.require('lokijs');
-            o.phpjs = o.require('phpjs');
-            o.uuid = o.require('uuid');
-            o.uglify = o.require('uglify-js');
+            o.buffer = require('buffer');
+            o.childProcess = require('child_process');
+            o.crypto = require('crypto');
+            o.dns = require('dns');
+            o.emitter = require('events').EventEmitter;
+            o.fs = require('fs');
+            o.http = require('http');
+            o.https = require('https');
+            o.net = require('net');
+            o.os = require('os');
+            o.path = require('path');
+            o.querystring = require('querystring');
+            o.url = require('url');
+            o.zlib = require('zlib');
 
             o = extend({}, o, electron);
 

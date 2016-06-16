@@ -7,7 +7,7 @@
 </head>
 
 <script>
-    var remote = require('remote'),
+    var remote = require('electron').remote,
             utilities = require('../libs/utilities.js'),
             currentWindow = remote.getCurrentWindow(),
             versionUrl = _GET('url'),
@@ -26,7 +26,6 @@
         return search;
     }
 
-
     !function () {
         var parts = versionUrl.split('/');
         utilities.getVersion(versionUrl, function (status, obj) {
@@ -38,7 +37,7 @@
 
 
     function download() {
-        require('shell').openExternal(releasePath);
+        require('electron').shell.openExternal(releasePath);
         currentWindow.close();
     }
 

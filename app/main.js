@@ -4,8 +4,13 @@
 let path = require('path'),
     fs = require('fs'),
     version = function () {
-        var versionJson = path.join(__dirname, 'version.json'),
-            version = fs.existsSync(versionJson) ? JSON.parse(fs.readFileSync(versionJson, 'utf8')) : require('../electron.config.js');
+        //If the local machine contains a config app, lets load the environment specified, used for developers
+        let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
+        //Allows for local path config file
+            localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'version.json'),
+            version = fs.existsSync(localConfig) ? JSON.parse(fs.readFileSync(localConfig, 'utf8')) : require('../electron.config.js');
+
+
         return version;
     }(),
     utilities = require('./libs/utilities'),
@@ -48,13 +53,8 @@ let refresh = true;
 //This url contains the version that is hosted on the remote server for package control
 const releaseUrl = utilities.parse_url(version["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(version["VERSION_SERVER"]).host + path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
-//If the local machine contains a config app, lets load the environment specified, used for developers
-let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
-//Allows for local path config file
-    localConfig = fs.existsSync(localFilePath) ? require(localFilePath) : null;
 
-
-let webUrl = (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment);
+let webUrl = version[version["WORKING_ENVIRONMENT"]];// (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment);
 
 // prevent window being GC'd
 let mainWindow = null,
@@ -131,6 +131,7 @@ function createMainWindow(size) {
         icon: path.join(__dirname, 'icon.ico'),
         title: app.getName(),
         autoHideMenuBar: true,
+        // frame: false,
         // webPreferences: {
         //     webSecurity: false
         // }
@@ -300,7 +301,7 @@ function startMainApplication() {
          * Once the web Application finish loading, lets inject
          * the ngElectron component, to be used within the webApp
          */
-        mainWindow.webContents.on('did-stop-loading',onComplete);
+        mainWindow.webContents.on('did-stop-loading', onComplete);
 
 
         function onComplete(e) {

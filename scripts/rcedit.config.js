@@ -13,7 +13,7 @@ const APPLICATION_SRC = path.join(path.dirname(__dirname), config.source);
 
 
 module.exports = {
-    'version-string': {
+    'versionString': {
         'CompanyName': APP_NAME,
         'LegalCopyright': 'Copyright 2016 '+APP_NAME,
         'FileDescription' : APP_DESCRIPTION,
@@ -21,8 +21,10 @@ module.exports = {
         'FileVersion' : APP_VERSION,
         'ProductVersion' : APP_VERSION,
         'ProductName' : APP_NAME,
-        'InternalName' : APP_NAME
+        'InternalName' : APP_NAME,
     },
+    'productVersion' : APP_VERSION,
+    'fileVersion' : APP_VERSION,
     'icon': path.join(APPLICATION_SRC, 'icon.ico')
 };
 

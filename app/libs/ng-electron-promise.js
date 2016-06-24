@@ -100,10 +100,7 @@
         try {
             ipc = electron.ipcRenderer;
 
-            o.require = require;
-
             //remote require
-
             o.remote = electron.remote;
 
             //Node 11 (abridged) api

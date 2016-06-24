@@ -91,8 +91,6 @@ module.exports = function (grunt) {
         /*******************************************************************
          APPLICATION VARIABLES
          *******************************************************************/
-        grunt.log.writeln("APP_VERSION =>", APP_VERSION);
-        grunt.log.writeln("APPLICATION_SRC =>", APPLICATION_SRC);
 
 
         // utilities.file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config), function () {

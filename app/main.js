@@ -132,9 +132,9 @@ function createMainWindow(size) {
         title: app.getName(),
         autoHideMenuBar: true,
         // frame: false,
-        // webPreferences: {
-        //     webSecurity: false
-        // }
+        webPreferences: {
+            webSecurity: false
+        }
     };
 
     console.log('params => ', params);

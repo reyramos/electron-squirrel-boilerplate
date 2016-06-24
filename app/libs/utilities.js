@@ -1010,4 +1010,71 @@ service.decode = function (input) {
 
 }
 
+
+service.grep = function (elems, callback, invert) {
+        var callbackInverse,
+            matches = [],
+            i = 0,
+            length = elems.length,
+            callbackExpect = !invert;
+
+        // Go through the array, only saving the items
+        // that pass the validator function
+        for (; i < length; i++) {
+            callbackInverse = !callback(elems[i], i);
+            if (callbackInverse !== callbackExpect) {
+                matches.push(elems[i]);
+            }
+        }
+
+        return matches;
+    }
+
+/**
+ * Simple function to walk into a directory and return the file path
+ * @param currentDirPath
+ * @param callback
+ */
+service.walk = function (currentDirPath, callback) {
+    var handler = [],
+        referenceTable = [];
+    fs.readdirSync(currentDirPath).forEach(function (name) {
+        var filePath = path.join(currentDirPath, name),
+            filename = filePath.substr((~-filePath.lastIndexOf("\\") >>> 0) + 2),
+            dirname = currentDirPath.substr((~-currentDirPath.lastIndexOf("\\") >>> 0) + 2) || currentDirPath.substr((~-currentDirPath.lastIndexOf("/") >>> 0) + 2);
+
+        var stat = fs.statSync(filePath);
+        if (stat.isFile()) {
+            this.push({
+                filename: filename,
+                dirname: dirname,
+                filePath: filePath.replace(filename, ""),
+                files: [filename]
+            })
+            //callback(filePath, stat);
+        } else if (stat.isDirectory()) {
+            walk(filePath, callback);
+        }
+    }, handler);
+
+    for (var i in handler) {
+        if (handler.hasOwnProperty(i)) {
+            var dirname = handler[i].dirname,
+                refTable = service.grep(referenceTable, function (val) {
+                    return val['dirname'] === dirname;
+                })[0],
+                obj = handler[i];
+            if (refTable) {
+                refTable.files.push(obj.filename);
+            } else {
+                referenceTable.push(obj);
+            }
+        }
+    }
+
+    callback(referenceTable[0]);
+
+}
+
+
 module.exports = service;

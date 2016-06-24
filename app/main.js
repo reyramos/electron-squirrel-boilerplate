@@ -18,7 +18,7 @@ let path = require('path'),
     http = require('http');
 
 // Module to control application life.
-const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut} = require('electron');
+const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut } = require('electron');
 
 
 //read the file as string and minify for code injection
@@ -254,6 +254,9 @@ function startMainApplication() {
 
         mainWindow = browserWindow;
 
+
+
+
         mainWindow.webContents.on('did-start-loading', function (e) {
             updateLoadingStatus("Loading Application...")
         });
@@ -341,23 +344,64 @@ function startMainApplication() {
                 }, 2000);
             }
 
-            bridge.listen(function (data) {
-                console.log('listen', data)
-                switch (data.eventType) {
-                    case 'getVersion':
-                        data.msg.version = version;
-                        console.log('getVersion:', version)
-                        bridge.send(data);
-                        break;
-                    default :
-                        bridge.send(data);
-                        break;
 
+            utilities.walk(path.join(__dirname, 'api'), function(arr){
+                var services = [];
+
+                for (var i in arr.files) {
+                    services[i] = require(path.join(__dirname, 'api', arr.files[i]));
                 }
-            });
+
+
+                bridge.listen(function (data) {
+                    var results = false
+                    var searching = true;
+
+                    services.forEach(function(service){
+                        if(searching)
+                        Object.keys(service).forEach(function (key, value) {
+                            if(searching && data.eventType === key){
+                                searching = false;
+                                results = service[key](process);
+                            }
+                        })
+                    });
+
+
+
+                    if(results) {
+                        data.msg = results;
+                        bridge.send(data);
+                    }
+
+
+                    // switch (data.eventType) {
+                    //
+                    //
+                    //
+                    //
+                    //     case 'getVersion':
+                    //
+                    //         // console.log('electron',process.versions.electron)
+                    //         // console.log('chrome',process.versions.chrome)
+                    //         // console.log('versions',process.versions)
+                    //         // console.log('resourcesPath',process.resourcesPath)
+                    //
+                    //
+                    //         version.electron_version = app.getVersion();
+                    //
+                    //         data.msg.version = version;
+                    //
+                    //         bridge.send(data);
+                    //         break;
+                    //     default :
+                    //         bridge.send(data);
+                    //         break;
+                    //
+                    // }
+                });
+            })
         }
-
-
     });
 
 }

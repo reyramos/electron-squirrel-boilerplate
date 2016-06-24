@@ -33,7 +33,7 @@
      */
     function listening() {
         if (service.onmessage.hasOwnProperty(this.promise)) {
-            service.onmessage[this.promise].cb.resolve(this)
+            service.onmessage[this.promise].cb.resolve(this.msg)
             delete service.onmessage[this.promise];
             delete this.promise;
         }

@@ -32,6 +32,7 @@ function parseStrinObject(obj) {
 
 
 rceditOpts = parseStrinObject(rceditOpts);
+config.execName = typeof config.execName === 'undefined' ? 'electron.exe' : config.execName;
 
 
 /*******************************************************************
@@ -65,7 +66,7 @@ module.exports = function (grunt) {
 
         //path to electron files
         const ELECTRON_PATH = path.join(BUILD_DESTINATION, appName);
-        var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, 'electron.exe');
+        var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, "_" + (config.execName).trim());
 
 
         var buildFileName = config.versionFilePath.split('/');
@@ -215,7 +216,6 @@ module.exports = function (grunt) {
 
                 switch (ext) {
                     case 'exe':
-
 
                         idComponent = file.replace(/[\s{0,}\\\-_\.]/g, '_').toUpperCase();
 

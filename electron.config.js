@@ -20,6 +20,10 @@ module.exports = {
     "arch": "ia32", // all, or one or more of: ia32, x64 (comma-delimited if multiple)
     "electronVersion": "1.2.4", // the version of Electron that is being packaged, see https://github.com/electron/electron/releases
 
+    //WixToolset: Identifiers may contain ASCII characters A-Z, a-z, digits, underscores (_), or periods (.).  Every identifier must begin with either a letter or an underscore.
+    "execName": "phoenix.exe",
+
+
     //environment
     "STAGE": "https://stage-phoenix.labcorp.com/web-ui/",
     "UAT": "https://uat-phoenix.labcorp.com/web-ui/",

@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "productName": "LabCorp Phoenix",
-  "execName": "phoenix",
   "main": "main.js",
   "author": "ramor11",
   "dependencies": {

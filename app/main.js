@@ -218,10 +218,11 @@ function updateLoadingStatus(msg, stop) {
     if (stop)
         insertScript += "stop();";
 
-    if (splashScreen)
+    if (splashScreen){
+        console.log('=========updateLoadingStatus============\n', msg)
         splashScreen.webContents.executeJavaScript(insertScript);
+    }
 
-    console.log('=========updateLoadingStatus============\n', msg)
 
 }
 
@@ -272,8 +273,8 @@ function startMainApplication() {
             updateLoadingStatus("Failed to load ...", true)
         });
 
-        //Application is no longer broadcasting these events
-        // /**
+        //
+        // /** Application is no longer broadcasting these events
         //  * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
         //  */
         // mainWindow.webContents.on('dom-ready', function (e) {
@@ -288,13 +289,17 @@ function startMainApplication() {
         //     console.log('mainWindow => did-finish-load')
         //
         // });
-        //
-        //
-        // mainWindow.webContents.on('did-frame-finish-load', function (e) {
-        //     console.log('did-frame-finish-load');
-        //     // updateLoadingStatus("Ready...");
-        //     // electronInsertion();
-        // });
+
+
+        /**
+         * This is broadcast if the frame is refresh within the application
+         * without electron interaction, we will re-inject the electronCode
+         */
+        mainWindow.webContents.on('did-frame-finish-load', function (e) {
+            console.log('did-frame-finish-load');
+            loadingSuccess = true;
+            electronInsertion();
+        });
 
 
         /**

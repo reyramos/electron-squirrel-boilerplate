@@ -27,6 +27,7 @@
         }
         return currentCallbackId;
     }
+
     /**
      * Will check if promise has been sent to return back to
      * defer.promise() message
@@ -99,7 +100,10 @@
         try {
             ipc = electron.ipcRenderer;
 
+            o.require = require;
+
             //remote require
+
             o.remote = electron.remote;
 
             //Node 11 (abridged) api

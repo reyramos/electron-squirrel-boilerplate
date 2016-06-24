@@ -298,8 +298,8 @@ function startMainApplication() {
          */
         mainWindow.webContents.on('did-frame-finish-load', function (e) {
             console.log('did-frame-finish-load');
+            //next event => did-stop-loading will reload the necessary injections
             loadingSuccess = true;
-            electronInsertion();
         });
 
 

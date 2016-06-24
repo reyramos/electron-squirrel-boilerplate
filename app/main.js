@@ -368,37 +368,11 @@ function startMainApplication() {
                     });
 
 
-
                     if(results) {
                         data.msg = results;
                         bridge.send(data);
                     }
 
-
-                    // switch (data.eventType) {
-                    //
-                    //
-                    //
-                    //
-                    //     case 'getVersion':
-                    //
-                    //         // console.log('electron',process.versions.electron)
-                    //         // console.log('chrome',process.versions.chrome)
-                    //         // console.log('versions',process.versions)
-                    //         // console.log('resourcesPath',process.resourcesPath)
-                    //
-                    //
-                    //         version.electron_version = app.getVersion();
-                    //
-                    //         data.msg.version = version;
-                    //
-                    //         bridge.send(data);
-                    //         break;
-                    //     default :
-                    //         bridge.send(data);
-                    //         break;
-                    //
-                    // }
                 });
             })
         }

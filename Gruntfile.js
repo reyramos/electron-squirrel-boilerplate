@@ -84,6 +84,20 @@ module.exports = function (grunt) {
     }
 
 
+    grunt.registerTask("help", "Usage Text for Grunt.", function () {
+        grunt.log.write('Usage\n');
+        grunt.log.write('\tgrunt [task][:option]\n');
+        grunt.log.write('\n');
+        grunt.log.write('tasks\n');
+        grunt.log.write('\t' + 'build' + '\t\t' + 'Builds the Electron package and msi installation \n');
+        grunt.log.write('\t' + 'candle' + '\t\t' + 'Builds *.wixobj file\n');
+        grunt.log.write('\t' + 'light' + '\t\t' + 'Builds *.msi script, removes *.wixobj file\n');
+        grunt.log.write('\n');
+        grunt.log.write('options\n');
+        grunt.log.write('\t' + 'electron' + '\t' + 'Builds the Electron package\n');
+        grunt.log.write('\t' + 'msi' + '\t\t' + 'Builds the Electron && *.wxs file\n');
+    });
+
     grunt.registerTask(
         'candle', ['exec:candle']
     );
@@ -95,15 +109,35 @@ module.exports = function (grunt) {
         ]
     );
 
-    grunt.registerTask(
-        'build', [
-            'clean:build', //clean directory
-            'electron-build', //build the electron package
-            'msi-build', //build wxs file for candle light build
-            'candle', //wix command
-            'light' //wix command
-        ]
-    );
+    grunt.registerTask('build', function (target) {
+        var tasks = [
+            'clean:build' //clean directory
+        ];
+
+        switch (target) {
+            case "electron":
+                return grunt.task.run(tasks.concat([
+                    'electron-build'
+                ]));
+                break;
+            case "msi":
+                return grunt.task.run(tasks.concat([
+                    'electron-build',
+                    'msi-build'
+                ]));
+                break;
+            default:
+                return grunt.task.run(tasks.concat([
+                    'electron-build', //build the electron package
+                    'msi-build', //build wxs file for candle light build
+                    'candle', //wix command
+                    'light' //wix command
+                ]));
+                break;
+        }
+    });
+
+
     grunt.registerTask(
         'default', ['build']
     );

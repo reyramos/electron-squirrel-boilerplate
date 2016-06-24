@@ -8,13 +8,33 @@ let path = require('path'),
 var package = require('../' + config.source + '/package.json');
 var utilities = require('../' + config.source + '/libs/utilities.js');
 
+
+function parseStringCamelCase(string) {
+    return String(string).replace(/([a-z](?=[A-Z]))/g, '$1-').replace(/([_])/g, ' ').trim().toLowerCase();
+}
+
+function parseStrinObject(obj) {
+    Object.keys(obj).forEach(function (key) {
+        if (typeof obj[key] === 'object') {
+            obj[parseStringCamelCase(key)] = parseStrinObject(obj[key]);
+        } else {
+            obj[parseStringCamelCase(key)] = obj[key];
+        }
+    });
+
+    return obj;
+}
+
+
+rceditOpts = parseStrinObject(rceditOpts);
+
 module.exports = function (grunt) {
 
     grunt.registerTask('electron-build', 'Create Electron Package', function (arg) {
 
         var self = this,
             done = this.async();
-
+        
         config['build_date'] = new Date().toJSON();
 
         /*
@@ -51,6 +71,7 @@ module.exports = function (grunt) {
         //ELECTRON VERSION <https://github.com/electron/electron/releases>
         if (config.electronVersion)
             _c.push("--version=\"" + config.electronVersion + "\"")
+
 
         /*
          * * All platforms *

@@ -46,8 +46,8 @@ module.exports = function (grunt) {
                 cmd: function () {
                     var files = getFilesPath('wxs', 'wixobj'),
                         command = ['"' + path.join(__dirname, 'wix_toolset', 'candle.exe') + '"',
-                            '-ext "C:\\Program Files (x86)\\WiX Toolset v3.9\\bin\\WixUtilExtension.dll"',
-                            files[0] + ' -o ' + files[1]
+                            '-ext "C:\\Program Files (x86)\\WiX Toolset v3.9\\bin\\WixUtilExtension.dll" "',
+                            files[0] + '" -o "' + files[1] +'"'
                         ].join(" ");
 
                     return command;
@@ -57,8 +57,8 @@ module.exports = function (grunt) {
                 cmd: function () {
                     var files = getFilesPath('wixobj', 'msi'),
                         command = ['"' + path.join(__dirname, 'wix_toolset', 'light.exe') + '"',
-                            '-ext "C:\\Program Files (x86)\\WiX Toolset v3.9\\bin\\WixUtilExtension.dll"',
-                            files[0] + ' -o ' + files[1]
+                            '-ext "C:\\Program Files (x86)\\WiX Toolset v3.9\\bin\\WixUtilExtension.dll" "',
+                            files[0] + '" -o "' + files[1] +'"'
                         ].join(" ");
 
                     return command;
@@ -72,8 +72,9 @@ module.exports = function (grunt) {
         var config = require("./electron.config.js"),
             APP_VERSION = config.version,
             BUILD_DESTINATION = path.join(__dirname, config.distribution),
-            READ_FILE = 'v' + APP_VERSION + '.' + input,
-            FILE_DESTINATION = 'v' + APP_VERSION + '.' + output;
+            PREFIX = config.app_name + '_' + 'v' + APP_VERSION,
+            READ_FILE = PREFIX + '.' + input,
+            FILE_DESTINATION = PREFIX + '.' + output;
 
         if (fs.existsSync(BUILD_DESTINATION)) {
             READ_FILE = path.join(BUILD_DESTINATION, READ_FILE);

@@ -85,10 +85,17 @@ The current application is using UpgradeCode=8291b2b1-4b33-11e5-975d-29a7531f192
 ```
 
 ##Grunt Task
-- build
-    - build the application sources to dist, and msi package
+- Usage
+ - grunt [task][:option]
 
+- tasks
+    - build:           Builds the Electron package and msi installation
+    - candle:          Builds *.wixobj file
+    - light:           Builds *.msi script, removes *.wixobj file
 
+- options
+    - electron:        Builds the Electron package
+    - msi:             Builds the Electron && *.wxs file
 
 ## Application LifeCycle
 ``` txt

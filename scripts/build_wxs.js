@@ -14,6 +14,27 @@ String.prototype.capitalize = function () {
     });
 };
 
+function parseStringCamelCase(string) {
+    return String(string).replace(/([a-z](?=[A-Z]))/g, '$1-').replace(/([_])/g, ' ').trim().toLowerCase();
+}
+
+function parseStrinObject(obj) {
+    Object.keys(obj).forEach(function (key) {
+        if (typeof obj[key] === 'object') {
+            obj[parseStringCamelCase(key)] = parseStrinObject(obj[key]);
+        } else {
+            obj[parseStringCamelCase(key)] = obj[key];
+        }
+    });
+
+    return obj;
+}
+
+
+rceditOpts = parseStrinObject(rceditOpts);
+config.execName = typeof config.execName === 'undefined' ? 'electron.exe' : config.execName;
+
+
 /*******************************************************************
  APPLICATION VARIABLES
  *******************************************************************/
@@ -22,6 +43,9 @@ var package = require('../' + config.source + '/package.json');
 module.exports = function (grunt) {
 
     grunt.registerTask('msi-build', 'Create MSI definition for wix', function (arg) {
+
+        grunt.log.write('config:', config);
+
 
         var self = this,
             done = this.async(),
@@ -42,7 +66,7 @@ module.exports = function (grunt) {
 
         //path to electron files
         const ELECTRON_PATH = path.join(BUILD_DESTINATION, appName);
-        var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, 'electron.exe');
+        var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, "_" + (config.execName).trim());
 
 
         var buildFileName = config.versionFilePath.split('/');
@@ -152,7 +176,7 @@ module.exports = function (grunt) {
                     });
                 };
 
-            gruntWrite(path.join(filePath, 'v' + APP_VERSION + '.wxs'), FILE_WXS);
+            gruntWrite(path.join(filePath, config.app_name + '_' + 'v' + APP_VERSION + '.wxs'), FILE_WXS);
             gruntWrite(path.join(filePath, buildFileName), JSON.stringify(config));
 
             grunt.log.writeln('=============================================================\r\n');
@@ -192,7 +216,6 @@ module.exports = function (grunt) {
 
                 switch (ext) {
                     case 'exe':
-
 
                         idComponent = file.replace(/[\s{0,}\\\-_\.]/g, '_').toUpperCase();
 
@@ -244,6 +267,9 @@ module.exports = function (grunt) {
 
 
                         //registry Information
+                        //http://wixtoolset.org/documentation/manual/v3/xsd/wix/removeregistrykey.html
+                        //http://wixtoolset.org/documentation/manual/v3/xsd/wix/simple_type_registryroottype.html
+                        //http://mintywhite.com/vista/hkcr-hkcu-hklm-hku-hkcc-registry-root-keys/
                         COMPONENTS += ['<RegistryKey Root="HKLM"',
                             //'Id=""',
                             'Key="Software\\Microsoft\\' + appName + '"',

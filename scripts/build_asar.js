@@ -8,6 +8,28 @@ let path = require('path'),
 var package = require('../' + config.source + '/package.json');
 var utilities = require('../' + config.source + '/libs/utilities.js');
 
+
+function parseStringCamelCase(string) {
+    return String(string).replace(/([a-z](?=[A-Z]))/g, '$1-').replace(/([_])/g, ' ').trim().toLowerCase();
+}
+
+function parseStrinObject(obj) {
+    Object.keys(obj).forEach(function (key) {
+        if (typeof obj[key] === 'object') {
+            obj[parseStringCamelCase(key)] = parseStrinObject(obj[key]);
+        } else {
+            obj[parseStringCamelCase(key)] = obj[key];
+        }
+    });
+
+    return obj;
+}
+
+
+rceditOpts = parseStrinObject(rceditOpts);
+config.execName = typeof config.execName === 'undefined' ? 'electron.exe' : config.execName;
+
+
 module.exports = function (grunt) {
 
     grunt.registerTask('electron-build', 'Create Electron Package', function (arg) {
@@ -52,6 +74,7 @@ module.exports = function (grunt) {
         if (config.electronVersion)
             _c.push("--version=\"" + config.electronVersion + "\"")
 
+
         /*
          * * All platforms *
          */
@@ -82,7 +105,7 @@ module.exports = function (grunt) {
                 if (fs.existsSync(appPath)) {
                     //TODO: bug in electron where the splash flicker if name is not default package.json productName or electron
                     //productName cannot have a space which will break the msi build
-                    fs.renameSync(path.join(appPath, appName + '.exe'), path.join(appPath, 'electron.exe'))
+                    fs.renameSync(path.join(appPath, appName + '.exe'), path.join(appPath, "_" + (config.execName).trim()))
                     done(true);
                 } else {
                     grunt.log.writeln("electron path does not exist");

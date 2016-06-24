@@ -18,7 +18,7 @@ let path = require('path'),
     http = require('http');
 
 // Module to control application life.
-const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut } = require('electron');
+const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut} = require('electron');
 
 
 //read the file as string and minify for code injection
@@ -218,7 +218,7 @@ function updateLoadingStatus(msg, stop) {
     if (stop)
         insertScript += "stop();";
 
-    if (splashScreen){
+    if (splashScreen) {
         console.log('=========updateLoadingStatus============\n', msg)
         splashScreen.webContents.executeJavaScript(insertScript);
     }
@@ -253,8 +253,6 @@ function startMainApplication() {
         setTimeout(versionCompare, 500);
 
         mainWindow = browserWindow;
-
-
 
 
         mainWindow.webContents.on('did-start-loading', function (e) {
@@ -313,39 +311,38 @@ function startMainApplication() {
 
 
         function onComplete(e) {
-            console.log('did-stop-loading');
 
             //if it did not failed, lets hide the splashScreen and show the application
-            if (loadingSuccess) {
+            if (!loadingSuccess)return;
+            console.log('did-stop-loading');
 
-                mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
+            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
-                loadingSuccess = false;
+            loadingSuccess = false;
 
-                electronInsertion();
-
-
-                updateLoadingStatus("Ready...")
+            electronInsertion();
 
 
-                if (splashScreen)
-                    splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
+            updateLoadingStatus("Ready...")
 
-                setTimeout(function () {
+
+            if (splashScreen)
+                splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
+
+            setTimeout(function () {
+                if (splashScreen) {
+                    splashScreen.close();//no longer needed
                     if (splashScreen) {
-                        splashScreen.close();//no longer needed
-                        if (splashScreen) {
-                            splashScreen.destroy();
-                        }
+                        splashScreen.destroy();
                     }
+                }
 
 
-                    mainWindow.show();
-                }, 2000);
-            }
+                mainWindow.show();
+            }, 2000);
 
 
-            utilities.walk(path.join(__dirname, 'api'), function(arr){
+            utilities.walk(path.join(__dirname, 'api'), function (arr) {
                 var services = [];
 
                 for (var i in arr.files) {
@@ -357,18 +354,18 @@ function startMainApplication() {
                     var results = false
                     var searching = true;
 
-                    services.forEach(function(service){
-                        if(searching)
-                        Object.keys(service).forEach(function (key, value) {
-                            if(searching && data.eventType === key){
-                                searching = false;
-                                results = service[key](process);
-                            }
-                        })
+                    services.forEach(function (service) {
+                        if (searching)
+                            Object.keys(service).forEach(function (key, value) {
+                                if (searching && data.eventType === key) {
+                                    searching = false;
+                                    results = service[key](process);
+                                }
+                            })
                     });
 
 
-                    if(results) {
+                    if (results) {
                         data.msg = results;
                         bridge.send(data);
                     }

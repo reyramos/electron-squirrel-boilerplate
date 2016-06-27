@@ -7,7 +7,7 @@ let path = require('path'),
         //If the local machine contains a config app, lets load the environment specified, used for developers
         let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
         //Allows for local path config file
-            localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'version.json'),
+            localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'config.json'),
             version = fs.existsSync(localConfig) ? JSON.parse(fs.readFileSync(localConfig, 'utf8')) : require('../electron.config.js');
 
 
@@ -314,20 +314,20 @@ function startMainApplication() {
 
             //if it did not failed, lets hide the splashScreen and show the application
             if (!loadingSuccess)return;
-            console.log('did-stop-loading');
-
-            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
             loadingSuccess = false;
+            console.log('did-stop-loading');
 
+            //insert the electron id indicator
+            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
+
+            //insert the electron bridge script
             electronInsertion();
 
-
-            updateLoadingStatus("Ready...")
-
-
-            if (splashScreen)
+            if (splashScreen) {
+                updateLoadingStatus("Ready...")
                 splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
+            }
 
             setTimeout(function () {
                 if (splashScreen) {
@@ -336,20 +336,39 @@ function startMainApplication() {
                         splashScreen.destroy();
                     }
                 }
-
-
                 mainWindow.show();
             }, 2000);
 
 
-            utilities.walk(path.join(__dirname, 'api'), function (arr) {
+            /**
+             * Set the Local Storage
+             */
+            require('./libs/loki').init().then(function (db) {
+                // console.log('database ====> ', db)
+                bridge.listen(function (data) {
+                    console.log('BRIDGE LISTEN AGAIN')
+                })
+            });
+
+
+
+
+            /**
+             * Set any IPC communication messages
+             */
+            utilities.walk(path.join(__dirname, 'ipc'), function (arr) {
                 var services = [];
 
                 for (var i in arr.files) {
-                    services[i] = require(path.join(__dirname, 'api', arr.files[i]));
+                    services[i] = require(path.join(__dirname, 'ipc', arr.files[i]));
                 }
 
 
+                /**
+                 * This builds the API structure for the IPC communication with
+                 * electron and webview application
+                 *
+                 */
                 bridge.listen(function (data) {
                     var results = false
                     var searching = true;
@@ -371,10 +390,14 @@ function startMainApplication() {
                     }
 
                 });
-            })
+
+
+            });
+
+
+            //end of entry
         }
     });
-
 }
 
 

@@ -340,29 +340,30 @@ function startMainApplication() {
             }, 2000);
 
 
-            /**
-             * Set the Local Storage
-             */
-            require('./libs/loki').init().then(function (db) {
-                // console.log('database ====> ', db)
-                bridge.listen(function (data) {
-                    console.log('BRIDGE LISTEN AGAIN')
-                })
-            });
-
-
+            // /**
+            //  * Set the Local Storage
+            //  */
+            // require('./libs/loki').init().then(function (db) {
+            //     // console.log('database ====> ', db)
+            //     bridge.listen(function (data) {
+            //         // console.log('BRIDGE LISTEN AGAIN', db)
+            //     })
+            // });
+            //
+            //
 
 
             /**
              * Set any IPC communication messages
              */
             utilities.walk(path.join(__dirname, 'ipc'), function (arr) {
-                var services = [];
+                var services = {};
 
                 for (var i in arr.files) {
-                    services[i] = require(path.join(__dirname, 'ipc', arr.files[i]));
+                    utilities.extend(services, require(path.join(__dirname, 'ipc', arr.files[i])))
                 }
 
+                console.log('services', services)
 
                 /**
                  * This builds the API structure for the IPC communication with
@@ -370,30 +371,14 @@ function startMainApplication() {
                  *
                  */
                 bridge.listen(function (data) {
-                    var results = false
-                    var searching = true;
 
-                    services.forEach(function (service) {
-                        if (searching)
-                            Object.keys(service).forEach(function (key, value) {
-                                if (searching && data.eventType === key) {
-                                    searching = false;
-                                    results = service[key](process);
-                                }
-                            })
-                    });
-
-
-                    if (results) {
-                        data.msg = results;
-                        bridge.send(data);
-                    }
+                    data.msg = services[data.eventType](process);
+                    bridge.send(data);
 
                 });
 
 
             });
-
 
             //end of entry
         }

@@ -134,8 +134,7 @@
 
             ipc.on(ELECTRON_BRIDGE_CLIENT, function (evnt, data) {
 
-                if ($rootScope)
-                    $rootScope.$broadcast(ELECTRON_HOST_ID, data);
+                if ($rootScope)$rootScope.$broadcast(ELECTRON_HOST_ID, data);
 
                 onMessage(data)
             });
@@ -146,8 +145,7 @@
              and we are in a more closed enviroment
              as it is.
              */
-            if ($rootScope)
-                $rootScope.$electron = o;
+            if ($rootScope)$rootScope.$electron = o;
 
         }
 

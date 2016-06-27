@@ -118,6 +118,13 @@ Storage.prototype.isLoaded = function () {
 //     return (this.getCollection()) ? this.getCollection().data : null;
 // };
 
-module.exports = function () {
-    return new Storage();
-}();
+module.exports = {
+    LokiJs: function () {
+
+        return new Promise(function (resolve, reject) {
+            var myLoki = new Storage();
+            myLoki.init(function(db){resolve(db)});
+        });
+
+    }
+};

@@ -10,7 +10,6 @@ let path = require('path'),
             localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'config.json'),
             version = fs.existsSync(localConfig) ? JSON.parse(fs.readFileSync(localConfig, 'utf8')) : require('../electron.config.js');
 
-
         return version;
     }(),
     utilities = require('./libs/utilities'),
@@ -23,7 +22,6 @@ const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut} = requi
 
 //read the file as string and minify for code injection
 const code = uglify.minify([path.join(__dirname, 'libs', 'ng-electron-promise.js')]).code;
-
 /*
  * bridge to send command from webview to electron application
  * this will allow the webapplication to define electron controlls without the need
@@ -54,7 +52,14 @@ let refresh = true;
 const releaseUrl = utilities.parse_url(version["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(version["VERSION_SERVER"]).host + path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
 
-let webUrl = version[version["WORKING_ENVIRONMENT"]];// (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment);
+let webUrl = version[version["WORKING_ENVIRONMENT"]];
+
+
+console.log('releaseUrl', releaseUrl);
+console.log('webUrl', webUrl);
+
+
+
 
 // prevent window being GC'd
 let mainWindow = null,
@@ -177,35 +182,34 @@ function validateURL(url) {
     return new Promise(function (resolve, reject) {
         var parse = utilities.parse_url(url),
             options = {
-                host: parse.host,
-                // port: parse.scheme === 'https' ? 443 : 80,
-                // method: 'GET',
-                // rejectUnauthorized: false,
-                // requestCert: true,
-                // agent: false
-                // headers: {
-                //     'Content-Type': 'application/x-www-form-urlencoded',
-                //     'Content-Length': ''
-                // }
+                host: parse.host?parse.host:false
             };
 
-        let scheme = require(parse.scheme);
+        if(parse.scheme === 'file'){
+            resolve(url)
+        }else{
 
-        var req = scheme.request(options, function (res) {
+            let scheme = require(parse.scheme);
 
-            console.log("statusCode: ", res.statusCode);
-            console.log("headers: ", res.headers);
+            var req = scheme.request(options, function (res) {
+                console.log("statusCode: ", res.statusCode);
+                console.log("headers: ", res.headers);
 
-            updateLoadingStatus("Status: " + res.statusCode)
+                updateLoadingStatus("Status: " + res.statusCode)
 
-            return [500].indexOf(res.statusCode) === -1 ? resolve(url) : reject(url);
+                return [500].indexOf(res.statusCode) === -1 ? resolve(url) : reject(url);
 
-        }).on('error', function (e) {
-            console.log('error:', e)
-            reject(e);
-        });
+            }).on('error', function (e) {
+                console.log('error:', e)
+                reject(e);
+            });
 
-        req.end();
+            req.end();
+
+        }
+
+
+
 
 
     });

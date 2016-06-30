@@ -52,13 +52,19 @@ let refresh = true;
 const releaseUrl = utilities.parse_url(version["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(version["VERSION_SERVER"]).host + path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
 
-let webUrl = version[version["WORKING_ENVIRONMENT"]];
+let webUrl = function () {
+    var string = version[version["WORKING_ENVIRONMENT"]];
+
+    var re = new RegExp("__dirname", "g"),
+        result = String(string).replace(re, __dirname);
+
+
+    return result;
+}();
 
 
 console.log('releaseUrl', releaseUrl);
 console.log('webUrl', webUrl);
-
-
 
 
 // prevent window being GC'd
@@ -182,12 +188,14 @@ function validateURL(url) {
     return new Promise(function (resolve, reject) {
         var parse = utilities.parse_url(url),
             options = {
-                host: parse.host?parse.host:false
+                host: parse.host ? parse.host : false
             };
 
-        if(parse.scheme === 'file'){
+        if (parse.scheme === 'file') {
+            updateLoadingStatus("Status: 200");
             resolve(url)
-        }else{
+        } else {
+
 
             let scheme = require(parse.scheme);
 
@@ -207,9 +215,6 @@ function validateURL(url) {
             req.end();
 
         }
-
-
-
 
 
     });
@@ -278,24 +283,6 @@ function startMainApplication() {
             updateLoadingStatus("Failed to load ...", true)
         });
 
-        //
-        // /** Application is no longer broadcasting these events
-        //  * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
-        //  */
-        // mainWindow.webContents.on('dom-ready', function (e) {
-        //     // updateLoadingStatus("Ready...")
-        //     console.log('dom-ready')
-        //
-        // });
-        //
-        //
-        // //open the developer tools
-        // mainWindow.webContents.on('did-finish-load', function (e) {
-        //     console.log('mainWindow => did-finish-load')
-        //
-        // });
-
-
         /**
          * This is broadcast if the frame is refresh within the application
          * without electron interaction, we will re-inject the electronCode
@@ -344,19 +331,6 @@ function startMainApplication() {
             }, 2000);
 
 
-            // /**
-            //  * Set the Local Storage
-            //  */
-            // require('./libs/loki').init().then(function (db) {
-            //     // console.log('database ====> ', db)
-            //     bridge.listen(function (data) {
-            //         // console.log('BRIDGE LISTEN AGAIN', db)
-            //     })
-            // });
-            //
-            //
-
-
             /**
              * Set any IPC communication messages
              */
@@ -376,7 +350,7 @@ function startMainApplication() {
                  */
                 bridge.listen(function (data) {
 
-                    data.msg = services[data.eventType](process);
+                    data.msg = services[data.eventType](process, data.msg);
                     bridge.send(data);
 
                 });
@@ -429,11 +403,10 @@ function versionCompare() {
  */
 function electronInsertion() {
 
-    var appName = utilities.parse_url(mainWindow.webContents.getURL()).host.replace(/.labcorp.com/g, ''),
+    var appName = (utilities.parse_url(mainWindow.webContents.getURL()).host || '').replace(/.labcorp.com/g, '') || null,
         appName = appName ? ' - ' + appName.toUpperCase() : '';
 
     mainWindow.setTitle(app.getName() + appName);
-    //mainWindow.setSkipTaskbar(true)
 
     let insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
     mainWindow.webContents.executeJavaScript(insertScript);

@@ -57,7 +57,7 @@
         var self = this;
         self.print = function () {
 
-            var printer = require("printer"),
+            var printer = require("./electron-printer/lib/index"),
                     util = require('util');
 
             console.log("installed printers:\n" + util.inspect(printer.getPrinters(), {colors: true, depth: 10}));

@@ -1,14 +1,14 @@
 {
   "name": "phx-electron",
-  "version": "2.4.0",
-  "description": "Desktop Application Build",
+  "version": "1.0.0",
+  "description": "",
   "productName": "LabCorp Phoenix",
   "main": "main.js",
-  "author": "ramor11@labcorp.com",
+  "author": "ramor11",
   "dependencies": {
     "lokijs": "^1.3.19",
-    "printer": "^0.2.1",
-    "uglify-js": "^2.6.0"
+    "uglify-js": "^2.6.0",
+    "uuid": "^2.0.2"
   },
   "devDependencies": {
     "node.extend": "^1.1.3"

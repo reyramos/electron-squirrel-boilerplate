@@ -1,10 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Phoenix Application</title>
+    <script>
+        document.write('<base href="' + document.location + '" />');
+    </script>
+    <script src="demo/scripts/angular.1.2.0.min.js"></script>
+    <link href="demo/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="demo/css/cover.css" rel="stylesheet">
+
 </head>
-<body>
-TESTING LOCAL INSERTION
+
+<body ng-app="app" ng-controller="appController as ctrl">
+
+<div class="site-wrapper">
+
+    <div class="site-wrapper-inner">
+        <!--<iframe id="foo" style="height: 0px;width: 0px;visibility: hidden;border: none;"></iframe>-->
+
+        <div class="cover-container">
+
+            <div class="masthead clearfix">
+                <div class="inner">
+                    <!--<h3 class="masthead-brand">Cover</h3>-->
+                </div>
+            </div>
+
+            <div class="inner cover">
+                <h1 class="cover-heading">PRESS ME</h1>
+
+                <p class="lead">
+                    <button ng-click="ctrl.print()" class="btn btn-primary btn-lg">print</button>
+                </p>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+    angular.module('app', []).controller('appController', [function () {
+
+        var remote = require('electron').remote,
+                webContents = remote.getCurrentWindow().webContents;
+
+        var self = this;
+        self.print = function () {
+
+            var printer = require("printer"),
+                    util = require('util');
+
+            console.log("installed printers:\n" + util.inspect(printer.getPrinters(), {colors: true, depth: 10}));
+
+//            console.log('print')
+//            webContents.print({
+//                silent: true
+//            })
+        }
+    }]);
+
+</script>
 </body>
 </html>

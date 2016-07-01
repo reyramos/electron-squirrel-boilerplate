@@ -153,8 +153,8 @@ function createMainWindow(size) {
 
     let win = new BrowserWindow(params);
 
-    var appName = utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');
-
+    var appName = (utilities.parse_url(webUrl).host || "").replace(/.labcorp.com/g, '');
+    
     updateLoadingStatus(appName)
 
     console.log('createMainWindow => ', webUrl);
@@ -340,9 +340,7 @@ function startMainApplication() {
                 for (var i in arr.files) {
                     utilities.extend(services, require(path.join(__dirname, 'ipc', arr.files[i])))
                 }
-
-                console.log('services', services)
-
+                
                 /**
                  * This builds the API structure for the IPC communication with
                  * electron and webview application

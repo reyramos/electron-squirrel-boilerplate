@@ -65,6 +65,9 @@ Supported Formats: {{ctrl.format}}
         self.print = function () {
             console.log('self.selected', self.selected)
 
+            if(!self.selected.name)return;
+
+
             printer.printDirect({
                 data: fileData,
                 printer: self.selected.name, // printer name, if missing then will print to default printer

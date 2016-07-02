@@ -40,10 +40,6 @@ HOME=~/.electron-gyp node-gyp rebuild --target=1.2.5 --module_name=node_printer 
 node-pre-gyp rebuild --target_arch=ia32 --target_platform=win32 --runtime=electron --target=1.2.5 --build-from-source && node-pre-gyp package --target_arch=ia32 --target_platform=win32 --runtime=electron --target=1.2.5 --dist-url=https://atom.io/download/atom-shell 
 
 
-
-
-
-
 //OK
 
 HOME=~/.electron-gyp node-pre-gyp clean configure build --verbose --arch=ia32  --target=1.2.5 --module_name=node_printer --module_path="C:\\Development\\electron-web-ui\\app\\electron-printer"

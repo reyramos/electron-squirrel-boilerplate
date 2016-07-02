@@ -85,18 +85,6 @@ $ npm install //load all your additional package.json components
 ```
 
 
-## Install /app dependencies
-
-In addition to installing application npm installs from package.json, you will also need to install any dependencies from /app/package.json
-Additional packages are needed for your application to run smoothly. Inside app directory there are needed dependencies, which contains a basic Angular application with two way communication with electronjs.
-
-
-```bash
-$ cd app/
-$ npm install //load all your additional package.json components
-```
-
-
 - DONE!
 Once you have installed all the necessary build dependencies, you are ready to create your application within the app folder. If you want to install additional library dependencies, you can make those modification inside the bower file, which is located within the root folder. The package.json contains information regarding your new MSI application which can be edited depending on your app.
 

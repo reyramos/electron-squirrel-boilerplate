@@ -22,7 +22,9 @@
 List Printers : <select ng-options="printer as printer.name for printer in ctrl.printers"
                         ng-model="ctrl.selected"></select>
 <br>
-
+<br>
+Supported Formats: {{ctrl.format}}
+<br><br><br><br>
 
 <button ng-click="ctrl.print()">Print Me</button>
 
@@ -33,32 +35,40 @@ List Printers : <select ng-options="printer as printer.name for printer in ctrl.
 
         var remote = require('electron').remote,
                 webContents = remote.getCurrentWindow().webContents,
+                filename = process.argv[2] || __filename,
                 printer = require("electron-printer"),
                 fs = require('fs'),
-                path = require('path');
-//                fileData = function () {
-//                    //If the local machine contains a config app, lets load the environment specified, used for developers
-//                    let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'printme.txt'),
-//                    //Allows for local path config file
-//                            localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'printme.txt'),
-//                            data = fs.existsSync(localConfig) ? fs.readFileSync(localConfig) : fs.readFileSync(path.resolve(__dirname, '..', 'printme.txt'));
-//
-//                    return data;
-//                }();
+                path = require('path'),
+                fileData = function () {
+                    //If the local machine contains a config app, lets load the environment specified, used for developers
+                    let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'printme.txt'),
+                    //Allows for local path config file
+                            localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'printme.txt'),
+                            data = fs.existsSync(localConfig) ? fs.readFileSync(localConfig) : fs.readFileSync(path.resolve(__dirname, '..', 'printme.txt'));
+
+                    return data;
+                }();
 
         var self = this;
         //get the array of printers
+
+        console.log('platform:', process.platform);
+        console.log('try to print file: ' + filename);
+        console.log('env:',process.env);
+
+
         self.printers = printer.getPrinters();
+
+        self.format = printer.getSupportedPrintFormats();
 
 
         self.print = function () {
             console.log('self.selected', self.selected)
 
             printer.printDirect({
-                data: "HELLO WORLD",
-                type: 'RAW', // type: RAW, TEXT, PDF, JPEG, .. depends on platform
-
+                data: fileData,
                 printer: self.selected.name, // printer name, if missing then will print to default printer
+//                printer: process.env[3], // printer name, if missing then will print to default printer
                 success: function (jobID) {
                     console.log("sent to printer with ID: " + jobID);
                 },

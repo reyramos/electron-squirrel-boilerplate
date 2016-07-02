@@ -11,12 +11,8 @@ export npm_config_build_from_source=true
 # Install all dependencies, and store cache to ~/.electron-gyp.
 HOME=~/.electron-gyp npm install
 HOME=~/.electron-gyp node-gyp rebuild --target=1.2.5 --arch=ia32 --dist-url=https://atom.io/download/atom-shell
-
-
 npm install --msvs_version=2013
 npm config set python C:\Python27\python.exe
-
-
 npm config set msvs_version 2015
 node-gyp --python C:\Python27
 npm config set python C:\Python27\python.exe
@@ -27,11 +23,28 @@ export NODE_PRE_GYP_GITHUB_TOKEN=55d7ad3a9c521143a645bc9d386b5f76ceb8f729
 
 node-gyp rebuild --target=1.2.5 --arch=ia32 --dist-url=https://atom.io/download/atom-shell
 
+npm config set msvs_version 2015 --global
+
+node-pre-gyp rebuild --target_arch=ia32 --target_platform=win32 --runtime=electron --target=1.2.5 --build-from-source && node-pre-gyp package --target_arch=ia32 --target_platform=win32 --runtime=electron --target=1.2.5 --dist-url=https://atom.io/download/atom-shell 
+
+&& node-pre-gyp-github publish --release
 
 
-npm install git+https://github.com/marcopiraccini/electron-printer.git
+
+HOME=~/.electron-gyp node-gyp rebuild --target=1.2.5 --arch=ia32 --module-name=node_printer --dist-url=https://atom.io/download/atom-shell 
+HOME=~/.electron-gyp node-gyp rebuild --target=1.2.5 --arch=ia32 --dist-url=https://atom.io/download/atom-shell 
+
+HOME=~/.electron-gyp node-gyp rebuild --target=1.2.5 --module_name=node_printer --module_path="C:\\Development\\electron-web-ui\\app\\electron-printer" --arch=ia32 --dist-url=https://atom.io/download/atom-shell 
 
 
-npm config set proxy http://corpgate.labcorp.com:8080
-npm config set https-proxy http://corpgate.labcorp.com:8080
+node-pre-gyp rebuild --target_arch=ia32 --target_platform=win32 --runtime=electron --target=1.2.5 --build-from-source && node-pre-gyp package --target_arch=ia32 --target_platform=win32 --runtime=electron --target=1.2.5 --dist-url=https://atom.io/download/atom-shell 
+
+
+
+
+
+
+//OK
+
+HOME=~/.electron-gyp node-pre-gyp clean configure build --verbose --arch=ia32  --target=1.2.5 --module_name=node_printer --module_path="C:\\Development\\electron-web-ui\\app\\electron-printer"
 

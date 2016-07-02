@@ -1,0 +1,48 @@
+
+{
+  "name": "electron-printer",
+  "description": "Node.js printer bindings -  electron builds",
+  "version": "0.0.5",
+  "homepage": "https://github.com/reyramos/electron-printer",
+  "author": {
+    "name": "Marco Piraccini",
+    "email": "marco.piraccini@gmail.com"
+  },
+  "contributors": [
+    "Name Lastname <email@server.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/reyramos/electron-printer.git"
+  },
+  "engines": {
+    "electron": ">=1.2.5"
+  },
+  "scripts": {
+    "release-win-ia32":"HOME=~/.electron-gyp node-pre-gyp clean configure build --target_arch=ia32 --target_platform=win32 --runtime=electron --target=1.2.5 --build-from-source && node-pre-gyp package --target_arch=ia32 --target_platform=win32 --runtime=electron --target=1.2.5 --dist-url=https://atom.io/download/atom-shell",
+    "install":"HOME=~/.electron-gyp node-pre-gyp clean configure build --target_arch=x64 --target_platform=win32 --runtime=electron --target=1.2.5 --build-from-source && node-pre-gyp package --target_arch=x64 --target_platform=win32 --runtime=electron --target=1.2.5 --dist-url=https://atom.io/download/atom-shell"
+  },
+  "binary": {
+    "module_name": "node_printer",
+    "module_path": "./build/{configuration}/electron-v1.2.5-{platform}-{arch}/",
+    "package_name": "electron-v1.2.5-{platform}-{arch}.tar.gz",
+    "host": "https://github.com/reyramos/electron-printer/releases/download/0.0.5"
+  },
+  "dependencies": {
+    "nan": "^2.1.0",
+    "node-pre-gyp": "^0.6.13",
+    "node-pre-gyp-github": "^1.1.2"
+  },
+  "bundledDependencies": [
+    "node-pre-gyp"
+  ],
+  "devDependencies": {
+    "nodeunit": "*"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "main": "./index"
+}

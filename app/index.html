@@ -14,58 +14,50 @@
     <script src="demo/scripts/angular.1.2.0.min.js"></script>
     <link href="demo/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link href="demo/css/cover.css" rel="stylesheet">
 
 </head>
 
 <body ng-app="app" ng-controller="appController as ctrl">
 
-<div class="site-wrapper">
-
-    <div class="site-wrapper-inner">
-        <!--<iframe id="foo" style="height: 0px;width: 0px;visibility: hidden;border: none;"></iframe>-->
-
-        <div class="cover-container">
-
-            <div class="masthead clearfix">
-                <div class="inner">
-                    <!--<h3 class="masthead-brand">Cover</h3>-->
-                </div>
-            </div>
-
-            <div class="inner cover">
-                <h1 class="cover-heading">PRESS ME</h1>
-
-                <p class="lead">
-                    <button ng-click="ctrl.print()" class="btn btn-primary btn-lg">print</button>
-                </p>
-            </div>
+List Printers : <select ng-options="printer as printer.name for printer in ctrl.printers"
+                        ng-model="ctrl.selected"></select>
+<br>
 
 
-        </div>
+<button ng-click="ctrl.print()">Print Me</button>
 
-    </div>
 
-</div>
 <script>
 
     angular.module('app', []).controller('appController', [function () {
 
         var remote = require('electron').remote,
-                webContents = remote.getCurrentWindow().webContents;
+                webContents = remote.getCurrentWindow().webContents,
+                printer = require("electron-printer"),
+                util = require('util'),
+                filename = process.argv[2] || __filename;
+
+        var fs = require('fs');
 
         var self = this;
+        //get the array of printers
+        self.printers = printer.getPrinters();
+
+
         self.print = function () {
 
-            var printer = require("./electron-printer/lib/index"),
-                    util = require('util');
+            printer.printDirect({
+                data:fs.readFileSync(filename),
+                printer: self.selected.name, // printer name, if missing then will print to default printer
+                success:function(jobID){
+                    console.log("sent to printer with ID: "+jobID);
+                },
+                error:function(err){
+                    console.log(err);
+                }
+            });
 
-            console.log("installed printers:\n" + util.inspect(printer.getPrinters(), {colors: true, depth: 10}));
 
-//            console.log('print')
-//            webContents.print({
-//                silent: true
-//            })
         }
     }]);
 

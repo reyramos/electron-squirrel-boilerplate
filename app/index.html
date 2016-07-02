@@ -34,10 +34,17 @@ List Printers : <select ng-options="printer as printer.name for printer in ctrl.
         var remote = require('electron').remote,
                 webContents = remote.getCurrentWindow().webContents,
                 printer = require("electron-printer"),
-                util = require('util'),
-                filename = process.argv[2] || __filename;
-
-        var fs = require('fs');
+                fs = require('fs'),
+                path = require('path');
+//                fileData = function () {
+//                    //If the local machine contains a config app, lets load the environment specified, used for developers
+//                    let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'printme.txt'),
+//                    //Allows for local path config file
+//                            localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'printme.txt'),
+//                            data = fs.existsSync(localConfig) ? fs.readFileSync(localConfig) : fs.readFileSync(path.resolve(__dirname, '..', 'printme.txt'));
+//
+//                    return data;
+//                }();
 
         var self = this;
         //get the array of printers
@@ -45,14 +52,17 @@ List Printers : <select ng-options="printer as printer.name for printer in ctrl.
 
 
         self.print = function () {
+            console.log('self.selected', self.selected)
 
             printer.printDirect({
-                data:fs.readFileSync(filename),
+                data: "HELLO WORLD",
+                type: 'RAW', // type: RAW, TEXT, PDF, JPEG, .. depends on platform
+
                 printer: self.selected.name, // printer name, if missing then will print to default printer
-                success:function(jobID){
-                    console.log("sent to printer with ID: "+jobID);
+                success: function (jobID) {
+                    console.log("sent to printer with ID: " + jobID);
                 },
-                error:function(err){
+                error: function (err) {
                     console.log(err);
                 }
             });

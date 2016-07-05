@@ -49,7 +49,7 @@ module.exports = function (grunt) {
                 command
                 , "--platform=" + config.platform
                 , "--arch=" + config.arch
-                // , "--asar"
+                , "--asar"
                 , "--out=" + config.distribution
                 , "--overwrite"
             ];

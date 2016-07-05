@@ -22,8 +22,6 @@
 List Printers : <select ng-options="printer as printer.name for printer in ctrl.printers"
                         ng-model="ctrl.selected"></select>
 <br>
-<br>
-Supported Formats: {{ctrl.format}}
 <br><br><br><br>
 
 <button ng-click="ctrl.print()">Print Me</button>
@@ -39,12 +37,12 @@ Supported Formats: {{ctrl.format}}
                 printer = require("electron-printer"),
                 fs = require('fs'),
                 path = require('path'),
-                fileData = function () {
+                filePath = function () {
                     //If the local machine contains a config app, lets load the environment specified, used for developers
                     let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'printme.txt'),
                     //Allows for local path config file
                             localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'printme.txt'),
-                            data = fs.existsSync(localConfig) ? fs.readFileSync(localConfig) : fs.readFileSync(path.resolve(__dirname, '..', 'printme.txt'));
+                            data = fs.existsSync(localConfig) ? localConfig : path.resolve(__dirname, '..', 'printme.txt');
 
                     return data;
                 }();
@@ -53,27 +51,39 @@ Supported Formats: {{ctrl.format}}
         //get the array of printers
 
         console.log('platform:', process.platform);
-        console.log('try to print file: ' + filename);
-        console.log('env:',process.env);
+        console.log('env:', process.env);
 
 
         self.printers = printer.getPrinters();
 
-        self.format = printer.getSupportedPrintFormats();
 
+        console.log('getPrinters',printer.getPrinters())
+        console.log('getSupportedJobCommands',printer.getSupportedJobCommands())
+        console.log('getSupportedPrintFormats',printer.getSupportedPrintFormats())
+
+        console.log('filePath', filePath)
 
         self.print = function () {
             console.log('self.selected', self.selected)
 
-            if(!self.selected.name)return;
+            if (!self.selected.name)return;
 
 
             printer.printDirect({
-                data: fileData,
+//                data: 'Hello World from TEXT' ,
+                data: fs.readFileSync(filePath),
+//                type: 'TEXT', // type: RAW, TEXT, PDF, JPEG, .. depends on platform
                 printer: self.selected.name, // printer name, if missing then will print to default printer
-//                printer: process.env[3], // printer name, if missing then will print to default printer
+                options: // supported page sizes may be retrieved using getPrinterDriverOptions, supports CUPS printing options
+                {
+                    media: 'Letter',
+                    'fit-to-page': true
+                },
                 success: function (jobID) {
                     console.log("sent to printer with ID: " + jobID);
+                    var jobInfo = printer.getJob(self.selected.name, jobID);
+                    console.log('jobInfo', jobInfo)
+
                 },
                 error: function (err) {
                     console.log(err);

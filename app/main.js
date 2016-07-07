@@ -10,7 +10,6 @@ let path = require('path'),
             localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'config.json'),
             version = fs.existsSync(localConfig) ? JSON.parse(fs.readFileSync(localConfig, 'utf8')) : require('../electron.config.js');
 
-
         return version;
     }(),
     utilities = require('./libs/utilities'),
@@ -23,7 +22,6 @@ const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut} = requi
 
 //read the file as string and minify for code injection
 const code = uglify.minify([path.join(__dirname, 'libs', 'ng-electron-promise.js')]).code;
-
 /*
  * bridge to send command from webview to electron application
  * this will allow the webapplication to define electron controlls without the need
@@ -54,7 +52,20 @@ let refresh = true;
 const releaseUrl = utilities.parse_url(version["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(version["VERSION_SERVER"]).host + path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
 
 
-let webUrl = version[version["WORKING_ENVIRONMENT"]];// (!localConfig ? version[version["WORKING_ENVIRONMENT"]] : localConfig.environment);
+let webUrl = function () {
+    var string = version[version["WORKING_ENVIRONMENT"]];
+
+    var re = new RegExp("__dirname", "g"),
+        result = String(string).replace(re, __dirname);
+
+
+    return result;
+}();
+
+
+console.log('releaseUrl', releaseUrl);
+console.log('webUrl', webUrl);
+
 
 // prevent window being GC'd
 let mainWindow = null,
@@ -140,9 +151,12 @@ function createMainWindow(size) {
     console.log('params => ', params);
 
 
-    let win = new BrowserWindow(params);
+    let win = new BrowserWindow(params),
+        parse = utilities.parse_url(webUrl);
 
-    var appName = utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');
+    var appName = parse.scheme === 'file' ? webUrl : utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');
+
+    console.log('appName', appName)
 
     updateLoadingStatus(appName)
 
@@ -177,35 +191,33 @@ function validateURL(url) {
     return new Promise(function (resolve, reject) {
         var parse = utilities.parse_url(url),
             options = {
-                host: parse.host,
-                // port: parse.scheme === 'https' ? 443 : 80,
-                // method: 'GET',
-                // rejectUnauthorized: false,
-                // requestCert: true,
-                // agent: false
-                // headers: {
-                //     'Content-Type': 'application/x-www-form-urlencoded',
-                //     'Content-Length': ''
-                // }
+                host: parse.host ? parse.host : false
             };
 
-        let scheme = require(parse.scheme);
+        if (parse.scheme === 'file') {
+            updateLoadingStatus("Status: 200");
+            resolve(url)
+        } else {
 
-        var req = scheme.request(options, function (res) {
 
-            console.log("statusCode: ", res.statusCode);
-            console.log("headers: ", res.headers);
+            let scheme = require(parse.scheme);
 
-            updateLoadingStatus("Status: " + res.statusCode)
+            var req = scheme.request(options, function (res) {
+                console.log("statusCode: ", res.statusCode);
+                console.log("headers: ", res.headers);
 
-            return [500].indexOf(res.statusCode) === -1 ? resolve(url) : reject(url);
+                updateLoadingStatus("Status: " + res.statusCode)
 
-        }).on('error', function (e) {
-            console.log('error:', e)
-            reject(e);
-        });
+                return [500].indexOf(res.statusCode) === -1 ? resolve(url) : reject(url);
 
-        req.end();
+            }).on('error', function (e) {
+                console.log('error:', e)
+                reject(e);
+            });
+
+            req.end();
+
+        }
 
 
     });
@@ -274,24 +286,6 @@ function startMainApplication() {
             updateLoadingStatus("Failed to load ...", true)
         });
 
-        //
-        // /** Application is no longer broadcasting these events
-        //  * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
-        //  */
-        // mainWindow.webContents.on('dom-ready', function (e) {
-        //     // updateLoadingStatus("Ready...")
-        //     console.log('dom-ready')
-        //
-        // });
-        //
-        //
-        // //open the developer tools
-        // mainWindow.webContents.on('did-finish-load', function (e) {
-        //     console.log('mainWindow => did-finish-load')
-        //
-        // });
-
-
         /**
          * This is broadcast if the frame is refresh within the application
          * without electron interaction, we will re-inject the electronCode
@@ -340,19 +334,6 @@ function startMainApplication() {
             }, 2000);
 
 
-            // /**
-            //  * Set the Local Storage
-            //  */
-            // require('./libs/loki').init().then(function (db) {
-            //     // console.log('database ====> ', db)
-            //     bridge.listen(function (data) {
-            //         // console.log('BRIDGE LISTEN AGAIN', db)
-            //     })
-            // });
-            //
-            //
-
-
             /**
              * Set any IPC communication messages
              */
@@ -363,8 +344,6 @@ function startMainApplication() {
                     utilities.extend(services, require(path.join(__dirname, 'ipc', arr.files[i])))
                 }
 
-                console.log('services', services)
-
                 /**
                  * This builds the API structure for the IPC communication with
                  * electron and webview application
@@ -372,7 +351,7 @@ function startMainApplication() {
                  */
                 bridge.listen(function (data) {
 
-                    data.msg = services[data.eventType](process);
+                    data.msg = services[data.eventType](process, data.msg);
                     bridge.send(data);
 
                 });
@@ -425,11 +404,10 @@ function versionCompare() {
  */
 function electronInsertion() {
 
-    var appName = utilities.parse_url(mainWindow.webContents.getURL()).host.replace(/.labcorp.com/g, ''),
+    var appName = (utilities.parse_url(mainWindow.webContents.getURL()).host || '').replace(/.labcorp.com/g, '') || null,
         appName = appName ? ' - ' + appName.toUpperCase() : '';
 
     mainWindow.setTitle(app.getName() + appName);
-    //mainWindow.setSkipTaskbar(true)
 
     let insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
     mainWindow.webContents.executeJavaScript(insertScript);

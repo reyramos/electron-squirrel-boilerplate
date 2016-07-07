@@ -44,9 +44,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('msi-build', 'Create MSI definition for wix', function (arg) {
 
-        grunt.log.write('config:', config);
-
-
         var self = this,
             done = this.async(),
             appName = [(package['productName'] || package['name']), config.platform, config.arch].join("-");

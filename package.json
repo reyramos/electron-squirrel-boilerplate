@@ -10,7 +10,7 @@
     "url": "git+https://git.labcorp.com/scm/phx/phx-electron.git"
   },
   "scripts": {
-    "start": "electron app/main.js",
+    "start": "(rm app/config.json || echo) && electron app/main.js",
     "build": "electron-packager app/ --platform=win32 --arch=ia32 --asar --out=build --overwrite"
   },
   "devDependencies": {

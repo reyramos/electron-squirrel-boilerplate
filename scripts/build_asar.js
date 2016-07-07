@@ -91,29 +91,30 @@ module.exports = function (grunt) {
         /*******************************************************************
          APPLICATION VARIABLES
          *******************************************************************/
-        grunt.log.writeln("APP_VERSION =>", APP_VERSION);
-        grunt.log.writeln("APPLICATION_SRC =>", APPLICATION_SRC);
 
 
-        utilities.file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config), function () {
+        // utilities.file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config), function () {
+        grunt.file.write(path.join(APPLICATION_SRC, 'config.json'), JSON.stringify(config), {encoding: 'utf8'});
 
-            shell.exec((_c.join(" ")), function (code, stdout, stderr) {
-                fs.unlinkSync(path.join(APPLICATION_SRC, 'version.json'))
-                let appPath = path.join(path.dirname(__dirname), config.distribution, [appName, config.platform, config.arch].join("-"));
+        shell.exec((_c.join(" ")), function (code, stdout, stderr) {
+            fs.unlinkSync(path.join(APPLICATION_SRC, 'config.json'));
+            let appPath = path.join(path.dirname(__dirname), config.distribution, [appName, config.platform, config.arch].join("-"));
 
 
-                if (fs.existsSync(appPath)) {
-                    //TODO: bug in electron where the splash flicker if name is not default package.json productName or electron
-                    //productName cannot have a space which will break the msi build
-                    fs.renameSync(path.join(appPath, appName + '.exe'), path.join(appPath, "_" + (config.execName).trim()))
-                    done(true);
-                } else {
-                    grunt.log.writeln("electron path does not exist");
-                    done(false);
-                }
-            });
+            if (fs.existsSync(appPath)) {
+                //productName cannot have a space which will break the msi build
+                fs.renameSync(path.join(appPath, appName + '.exe'), path.join(appPath, "_" + (config.execName).trim()))
 
+
+
+                done(true);
+            } else {
+                grunt.log.writeln("electron path does not exist");
+                done(false);
+            }
         });
+
+        // });
 
     });
 

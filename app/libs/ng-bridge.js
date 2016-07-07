@@ -22,7 +22,6 @@ angularBridge.listen = function (_listener) {
     var i = require('electron').ipcMain;
 
     i.on('ELECTRON_BRIDGE_HOST', function (evt, msg) {
-        console.log('ELECTRON_BRIDGE_HOST', msg);
         _listener(msg);
     });
 }

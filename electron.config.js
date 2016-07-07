@@ -20,7 +20,7 @@ module.exports = {
     "arch": "ia32", // all, or one or more of: ia32, x64 (comma-delimited if multiple)
     "electronVersion": "1.2.4", // the version of Electron that is being packaged, see https://github.com/electron/electron/releases
 
-    //WixToolset: Identifiers may contain ASCII characters A-Z, a-z, digits, underscores (_), or periods (.).  Every identifier must begin with either a letter or an underscore.
+    //WixToolSet: Identifiers may contain ASCII characters A-Z, a-z, digits, underscores (_), or periods (.).  Every identifier must begin with either a letter or an underscore.
     "execName": "phoenix.exe",
 
 
@@ -39,7 +39,7 @@ module.exports = {
     //environment where the build.json is going to be stored for the working environment
     "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
     //environment to build on start up
-    "WORKING_ENVIRONMENT": "PROD"
+    "WORKING_ENVIRONMENT": "LOCAL"
 
 };
 

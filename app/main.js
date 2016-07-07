@@ -7,7 +7,7 @@ let path = require('path'),
         //If the local machine contains a config app, lets load the environment specified, used for developers
         let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
         //Allows for local path config file
-            localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'version.json'),
+            localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'config.json'),
             version = fs.existsSync(localConfig) ? JSON.parse(fs.readFileSync(localConfig, 'utf8')) : require('../electron.config.js');
 
 
@@ -132,9 +132,9 @@ function createMainWindow(size) {
         title: app.getName(),
         autoHideMenuBar: true,
         // frame: false,
-        // webPreferences: {
-        //     webSecurity: false
-        // }
+        webPreferences: {
+            webSecurity: false
+        }
     };
 
     console.log('params => ', params);
@@ -218,10 +218,11 @@ function updateLoadingStatus(msg, stop) {
     if (stop)
         insertScript += "stop();";
 
-    if (splashScreen)
+    if (splashScreen) {
+        console.log('=========updateLoadingStatus============\n', msg)
         splashScreen.webContents.executeJavaScript(insertScript);
+    }
 
-    console.log('=========updateLoadingStatus============\n', msg)
 
 }
 
@@ -253,6 +254,7 @@ function startMainApplication() {
 
         mainWindow = browserWindow;
 
+
         mainWindow.webContents.on('did-start-loading', function (e) {
             updateLoadingStatus("Loading Application...")
         });
@@ -272,8 +274,8 @@ function startMainApplication() {
             updateLoadingStatus("Failed to load ...", true)
         });
 
-        //Application is no longer broadcasting these events
-        // /**
+        //
+        // /** Application is no longer broadcasting these events
         //  * When the DOM is ready, lets add the ID to identify ELECTRON_PARENT_CONTAINER
         //  */
         // mainWindow.webContents.on('dom-ready', function (e) {
@@ -288,13 +290,17 @@ function startMainApplication() {
         //     console.log('mainWindow => did-finish-load')
         //
         // });
-        //
-        //
-        // mainWindow.webContents.on('did-frame-finish-load', function (e) {
-        //     console.log('did-frame-finish-load');
-        //     // updateLoadingStatus("Ready...");
-        //     // electronInsertion();
-        // });
+
+
+        /**
+         * This is broadcast if the frame is refresh within the application
+         * without electron interaction, we will re-inject the electronCode
+         */
+        mainWindow.webContents.on('did-frame-finish-load', function (e) {
+            console.log('did-frame-finish-load');
+            //next event => did-stop-loading will reload the necessary injections
+            loadingSuccess = true;
+        });
 
 
         /**
@@ -305,56 +311,78 @@ function startMainApplication() {
 
 
         function onComplete(e) {
-            console.log('did-stop-loading');
 
             //if it did not failed, lets hide the splashScreen and show the application
-            if (loadingSuccess) {
+            if (!loadingSuccess)return;
 
-                mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
+            loadingSuccess = false;
+            console.log('did-stop-loading');
 
-                loadingSuccess = false;
+            //insert the electron id indicator
+            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
 
-                electronInsertion();
+            //insert the electron bridge script
+            electronInsertion();
 
-
+            if (splashScreen) {
                 updateLoadingStatus("Ready...")
-
-
-                if (splashScreen)
-                    splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
-
-                setTimeout(function () {
-                    if (splashScreen) {
-                        splashScreen.close();//no longer needed
-                        if (splashScreen) {
-                            splashScreen.destroy();
-                        }
-                    }
-
-
-                    mainWindow.show();
-                }, 2000);
+                splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
             }
 
-            bridge.listen(function (data) {
-                console.log('listen', data)
-                switch (data.eventType) {
-                    case 'getVersion':
-                        data.msg.version = version;
-                        console.log('getVersion:', version)
-                        bridge.send(data);
-                        break;
-                    default :
-                        bridge.send(data);
-                        break;
-
+            setTimeout(function () {
+                if (splashScreen) {
+                    splashScreen.close();//no longer needed
+                    if (splashScreen) {
+                        splashScreen.destroy();
+                    }
                 }
+                mainWindow.show();
+            }, 2000);
+
+
+            // /**
+            //  * Set the Local Storage
+            //  */
+            // require('./libs/loki').init().then(function (db) {
+            //     // console.log('database ====> ', db)
+            //     bridge.listen(function (data) {
+            //         // console.log('BRIDGE LISTEN AGAIN', db)
+            //     })
+            // });
+            //
+            //
+
+
+            /**
+             * Set any IPC communication messages
+             */
+            utilities.walk(path.join(__dirname, 'ipc'), function (arr) {
+                var services = {};
+
+                for (var i in arr.files) {
+                    utilities.extend(services, require(path.join(__dirname, 'ipc', arr.files[i])))
+                }
+
+                console.log('services', services)
+
+                /**
+                 * This builds the API structure for the IPC communication with
+                 * electron and webview application
+                 *
+                 */
+                bridge.listen(function (data) {
+
+                    data.msg = services[data.eventType](process);
+                    bridge.send(data);
+
+                });
+
+
             });
+
+            //end of entry
         }
-
-
     });
-
 }
 
 

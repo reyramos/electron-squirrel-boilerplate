@@ -27,13 +27,14 @@
         }
         return currentCallbackId;
     }
+
     /**
      * Will check if promise has been sent to return back to
      * defer.promise() message
      */
     function listening() {
         if (service.onmessage.hasOwnProperty(this.promise)) {
-            service.onmessage[this.promise].cb.resolve(this)
+            service.onmessage[this.promise].cb.resolve(this.msg)
             delete service.onmessage[this.promise];
             delete this.promise;
         }
@@ -133,8 +134,7 @@
 
             ipc.on(ELECTRON_BRIDGE_CLIENT, function (evnt, data) {
 
-                if ($rootScope)
-                    $rootScope.$broadcast(ELECTRON_HOST_ID, data);
+                if ($rootScope)$rootScope.$broadcast(ELECTRON_HOST_ID, data);
 
                 onMessage(data)
             });
@@ -145,8 +145,7 @@
              and we are in a more closed enviroment
              as it is.
              */
-            if ($rootScope)
-                $rootScope.$electron = o;
+            if ($rootScope)$rootScope.$electron = o;
 
         }
 

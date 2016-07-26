@@ -4,7 +4,6 @@ npm-debug.log
 build/
 rcedit/
 electron-v*/
-*.wxs
 *.msi
 *.wixobj
 *.wixpdb

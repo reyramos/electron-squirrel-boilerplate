@@ -21,6 +21,9 @@ let command = "\"./node_modules/.bin/electron\"",
 
     ];
 
+let electronVersion = shell.exec([command, '--version'].join(' '), {silent:true}).stdout.replace(/v/g, '');
+
+
 
 if (fs.existsSync(electron_printer)) {
     shell.rm('-rf', path.join(APPLICATION_SRC, 'config.json'));
@@ -32,12 +35,12 @@ if (fs.existsSync(electron_printer)) {
         "--target_arch=" + process.arch, //x64
         "--target_platform=" + process.platform,
         "--runtime=electron",
-        "--target=" + config.electronVersion,
+        "--target=" + electronVersion,
         "--build-from-source && node-pre-gyp package",
         "--target_arch=" + process.arch, //x64
         "--target_platform=" + process.platform,
         "--runtime=electron",
-        "--target=" + config.electronVersion,
+        "--target=" + electronVersion,
         "--dist-url=https://atom.io/download/atom-shell"
     ].join(" ");
 

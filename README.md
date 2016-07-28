@@ -165,4 +165,3 @@ startMainApplication()
 - iojs <https://iojs.org/en/>
 - Wix Toolset Documentation <http://wixtoolset.org/documentation/manual/v3/>
 - Free Online PNG to ICO/ICO to PNG Conversion tool <http://convertico.com/>
-

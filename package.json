@@ -15,6 +15,7 @@
     "build": "node \"./scripts/prod_printer.js\""
   },
   "devDependencies": {
+    "asar": "^0.7.2",
     "electron-packager": "^7.0.3",
     "electron-prebuilt": "^1.2.0",
     "grunt": "^0.4.5",

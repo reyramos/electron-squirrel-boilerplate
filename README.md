@@ -73,7 +73,9 @@ $ node-gyp --python /path/to/python2.7
 Install [WiX Toolset](http://wixtoolset.org/)
 ---------------------------------------------
 
-WiX Toolset is a tool to be used in Windows System to create easy windows installation files. Once you have WiX install through their easy installtion process, you will need to make sure that is in set within the Environments Path of your Window System.
+WiX Toolset is a tool to be used in Windows System to create easy windows installation files. Once you have WiX installed through their easy installation process, you will need to:
+* Make sure that is in set within the Environments Path of your Window System.
+* Update the WiX Toolset paths in the Gruntfile.
 
 This is critical during installation, since our build will fail to create the msi file if the environment path will fail if it cannot find candle.exe and light.exe
 
@@ -83,6 +85,21 @@ This is critical during installation, since our build will fail to create the ms
 ``` bash
 $ npm install //load all your additional package.json components
 ```
+
+
+## Set proxies:
+If you receive an error when running `npm install`, you may need to set the proxies by running the following commands:
+``` bash
+$ npm config set proxy http://corpgate01.labcorp.com:8080
+$ npm config set https-proxy http://corpgate01.labcorp.com:8080
+```
+
+Additionally, you may need to instruct npm to ignore `strict-ssl` by running the following command:
+``` bash
+$ npm config set strict-ssl false
+```
+
+Then, try running `npm install` again.
 
 
 - DONE!

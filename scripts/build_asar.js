@@ -93,11 +93,11 @@ module.exports = function (grunt) {
          *******************************************************************/
 
 
-        // utilities.file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config), function () {
         grunt.file.write(path.join(APPLICATION_SRC, 'config.json'), JSON.stringify(config), {encoding: 'utf8'});
 
+
         //build the prod printer
-        shell.exec("node \"./prod_printer.js\"", {silent: true}, function(){
+        shell.exec("node \"./" + path.join('scripts', 'prod_printer.js') + "\" build_asar", function () {
 
             //do this regardless, I dont want it to be async
             shell.exec((_c.join(" ")), function (code, stdout, stderr) {
@@ -118,10 +118,6 @@ module.exports = function (grunt) {
             });
 
         });
-
-
-
-        // });
 
     });
 

@@ -19,6 +19,7 @@ let command = "\"./node_modules/.bin/electron-packager\" app/",
         , "--asar"
         , "--out=" + config.distribution
         , "--overwrite"
+        , "--version=\"" + config.electronVersion + "\""
     ];
 
 
@@ -40,8 +41,10 @@ if (fs.existsSync(electron_printer)) {
     shell.rm('-rf', path.join(APPLICATION_SRC, 'config.json'));
     shell.cd(electron_printer);
 
-    if (shell.exec(printer_bin, {silent: true}).code !== 0) {
+    if (shell.exec(printer_bin).code !== 0) {
         console.log('Error: Failed to build electron-printer');
+    } else {
+        console.log('Build electron-printer');
     }
 
 }

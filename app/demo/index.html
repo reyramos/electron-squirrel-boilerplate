@@ -31,6 +31,11 @@ List Printers : <select ng-options="printer as printer.name for printer in ctrl.
 
     angular.module('app', []).controller('appController', [function () {
 
+
+        console.log('platform:', process.platform);
+        console.log('env:', process.env);
+        console.log('versions:', process.versions);
+
         var remote = require('electron').remote,
                 webContents = remote.getCurrentWindow().webContents,
                 filename = process.argv[2] || __filename,
@@ -50,8 +55,6 @@ List Printers : <select ng-options="printer as printer.name for printer in ctrl.
         var self = this;
         //get the array of printers
 
-        console.log('platform:', process.platform);
-        console.log('env:', process.env);
 
 
         self.printers = printer.getPrinters();

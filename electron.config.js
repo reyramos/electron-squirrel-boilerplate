@@ -18,7 +18,7 @@ module.exports = {
     //<https://github.com/electron-userland/electron-packager/blob/master/usage.txt>
     "platform": "win32", // all, or one or more of: darwin, linux, mas, win32 (comma-delimited if multiple)
     "arch": "ia32", // all, or one or more of: ia32, x64 (comma-delimited if multiple)
-    "electronVersion": "1.3.1", // the version of Electron that is being packaged, see https://github.com/electron/electron/releases
+    "electronVersion": "1.2.5", // the version of Electron that is being packaged, see https://github.com/electron/electron/releases
     //currently version 1.2.5 is the only one compatible with electron-printer
 
     //WixToolSet: Identifiers may contain ASCII characters A-Z, a-z, digits, underscores (_), or periods (.).  Every identifier must begin with either a letter or an underscore.

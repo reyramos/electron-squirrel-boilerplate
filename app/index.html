@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Phoenix Application</title>
+    <script>
+        document.write('<base href="' + document.location + '" />');
+    </script>
+    <script src="demo/scripts/angular.1.2.0.min.js"></script>
+    <link href="demo/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+
+</head>
+
+<body ng-app="app" ng-controller="appController as ctrl">
+
+List Printers : <select ng-options="printer as printer.name for printer in ctrl.printers"
+                        ng-model="ctrl.selected"></select>
+<br>
+<br><br><br><br>
+
+<button ng-click="ctrl.print()">Print Me</button>
+
+
+<script>
+
+    angular.module('app', []).controller('appController', [function () {
+
+        var remote = require('electron').remote,
+                webContents = remote.getCurrentWindow().webContents,
+                filename = process.argv[2] || __filename,
+                printer = require("electron-printer"),
+                fs = require('fs'),
+                path = require('path'),
+                filePath = function () {
+                    //If the local machine contains a config app, lets load the environment specified, used for developers
+                    let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'printme.txt'),
+                    //Allows for local path config file
+                            localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'printme.txt'),
+                            data = fs.existsSync(localConfig) ? localConfig : path.resolve(__dirname, '..', 'printme.txt');
+
+                    return data;
+                }();
+
+        var self = this;
+        //get the array of printers
+
+        console.log('platform:', process.platform);
+        console.log('env:', process.env);
+
+
+        self.printers = printer.getPrinters();
+
+
+        console.log('getPrinters',printer.getPrinters())
+        console.log('getSupportedJobCommands',printer.getSupportedJobCommands())
+        console.log('getSupportedPrintFormats',printer.getSupportedPrintFormats())
+
+        console.log('filePath', filePath)
+
+        self.print = function () {
+            console.log('self.selected', self.selected)
+
+            if (!self.selected.name)return;
+
+
+            printer.printDirect({
+//                data: 'Hello World from TEXT' ,
+                data: fs.readFileSync(filePath),
+//                type: 'TEXT', // type: RAW, TEXT, PDF, JPEG, .. depends on platform
+                printer: self.selected.name, // printer name, if missing then will print to default printer
+                options: // supported page sizes may be retrieved using getPrinterDriverOptions, supports CUPS printing options
+                {
+                    media: 'Letter',
+                    'fit-to-page': true
+                },
+                success: function (jobID) {
+                    console.log("sent to printer with ID: " + jobID);
+                    var jobInfo = printer.getJob(self.selected.name, jobID);
+                    console.log('jobInfo', jobInfo)
+
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+
+
+        }
+    }]);
+
+</script>
+</body>
+</html>

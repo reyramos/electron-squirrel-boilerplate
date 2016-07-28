@@ -6,10 +6,10 @@
   "main": "main.js",
   "author": "ramor11",
   "dependencies": {
+    "lokijs": "^1.3.19",
     "uglify-js": "^2.6.0",
     "uuid": "^2.0.2",
-    "lokijs": "^1.3.19",
-    "phpjs": "1.3.2"
+    "electron-printer": "git+https://github.com/reyramos/electron-printer.git"
   },
   "devDependencies": {
     "node.extend": "^1.1.3"

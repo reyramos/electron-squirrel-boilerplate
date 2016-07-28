@@ -1,0 +1,35 @@
+# Electron's version.
+export npm_config_target=1.2.5
+# The architecture of Electron, can be ia32 or x64.
+export npm_config_arch=ia32
+# Download headers for Electron.
+export npm_config_disturl=https://atom.io/download/atom-shell
+# Tell node-pre-gyp that we are building for Electron.
+export npm_config_runtime=electron
+# Tell node-pre-gyp to build module from source code.
+export npm_config_build_from_source=true
+# Install all dependencies, and store cache to ~/.electron-gyp.
+
+npm install --msvs_version=2013
+npm config set python C:\Python27\python.exe
+npm config set msvs_version 2015
+node-gyp --python C:\Python27
+npm config set python C:\Python27\python.exe
+
+
+<https://www.npmjs.com/package/node-pre-gyp-github>
+
+export NODE_PRE_GYP_GITHUB_TOKEN=55d7ad3a9c521143a645bc9d386b5f76ceb8f729
+
+npm config set msvs_version 2015 --global
+
+//OK
+HOME=~/.electron-gyp node-pre-gyp rebuild --target_arch=ia32 --target_platform=win32 --runtime=electron --target=1.2.5 --build-from-source && node-pre-gyp package --target_arch=ia32 --target_platform=win32 --runtime=electron --target=1.2.5 --dist-url=https://atom.io/download/atom-shell 
+
+
+//WORKS
+//ia32
+HOME=~/.electron-gyp node-pre-gyp rebuild --target_arch=ia32 --target_platform=win32 --runtime=electron --target=1.2.5 --build-from-source && node-pre-gyp package --target_arch=ia32 --target_platform=win32 --runtime=electron --target=1.2.5 --dist-url=https://atom.io/download/atom-shell
+
+//x64
+HOME=~/.electron-gyp node-pre-gyp rebuild --target_arch=x64 --target_platform=win32 --runtime=electron --target=1.2.5 --build-from-source && node-pre-gyp package --target_arch=x64 --target_platform=win32 --runtime=electron --target=1.2.5 --dist-url=https://atom.io/download/atom-shell

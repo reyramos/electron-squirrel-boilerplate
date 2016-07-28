@@ -96,23 +96,30 @@ module.exports = function (grunt) {
         // utilities.file_put_content(path.join(APPLICATION_SRC, 'version.json'), JSON.stringify(config), function () {
         grunt.file.write(path.join(APPLICATION_SRC, 'config.json'), JSON.stringify(config), {encoding: 'utf8'});
 
-        shell.exec((_c.join(" ")), function (code, stdout, stderr) {
-            fs.unlinkSync(path.join(APPLICATION_SRC, 'config.json'));
-            let appPath = path.join(path.dirname(__dirname), config.distribution, [appName, config.platform, config.arch].join("-"));
+        //build the prod printer
+        shell.exec("node \"./prod_printer.js\"", {silent: true}, function(){
+
+            //do this regardless, I dont want it to be async
+            shell.exec((_c.join(" ")), function (code, stdout, stderr) {
+                fs.unlinkSync(path.join(APPLICATION_SRC, 'config.json'));
+                let appPath = path.join(path.dirname(__dirname), config.distribution, [appName, config.platform, config.arch].join("-"));
 
 
-            if (fs.existsSync(appPath)) {
-                //productName cannot have a space which will break the msi build
-                fs.renameSync(path.join(appPath, appName + '.exe'), path.join(appPath, "_" + (config.execName).trim()))
+                if (fs.existsSync(appPath)) {
+                    //productName cannot have a space which will break the msi build
+                    fs.renameSync(path.join(appPath, appName + '.exe'), path.join(appPath, "_" + (config.execName).trim()))
 
 
+                    done(true);
+                } else {
+                    grunt.log.writeln("electron path does not exist");
+                    done(false);
+                }
+            });
 
-                done(true);
-            } else {
-                grunt.log.writeln("electron path does not exist");
-                done(false);
-            }
         });
+
+
 
         // });
 

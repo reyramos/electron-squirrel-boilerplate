@@ -32,7 +32,7 @@ module.exports = {
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
     "BETA": "https://dev-phoenix.labcorp.com/web-ui/",
     "RELEASE2": "http://dev2-phoenix.labcorp.com/web-ui/#/",
-    "LOCAL": "http://local.labcorp.com:8080/",
+    "LOCAL": "file://__dirname/demo/index.html",
 
     //hosting server setting and working environment
     //Application will check for version updates host path

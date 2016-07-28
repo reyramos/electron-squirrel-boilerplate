@@ -8,8 +8,7 @@
   "dependencies": {
     "lokijs": "^1.3.19",
     "uglify-js": "^2.6.0",
-    "uuid": "^2.0.2",
-    "electron-printer": "git+https://github.com/reyramos/electron-printer.git"
+    "uuid": "^2.0.2"
   },
   "devDependencies": {
     "node.extend": "^1.1.3"

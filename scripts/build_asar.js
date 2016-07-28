@@ -97,7 +97,7 @@ module.exports = function (grunt) {
 
 
         //build the prod printer
-        shell.exec("node \"./" + path.join('scripts', 'prod_printer.js') + "\" build_asar", function () {
+        shell.exec("node \"./" + path.join('scripts', 'production.js') + "\" build_asar", function () {
 
             //do this regardless, I dont want it to be async
             shell.exec((_c.join(" ")), function (code, stdout, stderr) {

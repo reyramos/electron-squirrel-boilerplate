@@ -11,8 +11,8 @@
   },
   "scripts": {
     "preinstall":"cd app/ && npm install --force",
-    "start": "node \"./scripts/dev_printer.js\"",
-    "build": "node \"./scripts/prod_printer.js\""
+    "start": "node \"./scripts/development.js\"",
+    "build": "node \"./scripts/production.js\""
   },
   "devDependencies": {
     "asar": "^0.7.2",

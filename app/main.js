@@ -191,8 +191,21 @@ function validateURL(url) {
     return new Promise(function (resolve, reject) {
         var parse = utilities.parse_url(url),
             options = {
-                host: parse.host ? parse.host : false
+                host: parse.host,
+                port: parse.scheme === 'https' ? 443 : 80,
+                method: 'GET',
+                rejectUnauthorized: false,
+                requestCert: true,
+                agent: false,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Length': ''
+                }
             };
+
+
+        console.log('parse', parse)
+        console.log('options', options)
 
         if (parse.scheme === 'file') {
             updateLoadingStatus("Status: 200");

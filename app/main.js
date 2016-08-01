@@ -192,7 +192,7 @@ function validateURL(url) {
         var parse = utilities.parse_url(url),
             options = {
                 host: parse.host,
-                port: parse.scheme === 'https' ? 443 : 80,
+                port:  parse.port,
                 method: 'GET',
                 rejectUnauthorized: false,
                 requestCert: true,

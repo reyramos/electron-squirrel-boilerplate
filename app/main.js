@@ -76,6 +76,7 @@ let mainWindow = null,
  */
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
+        clearTempFiles();
         app.quit();
     }
 }).on('activate-with-no-open-windows', function () {
@@ -89,6 +90,7 @@ app.on('window-all-closed', function () {
 }).on('will-quit', function () {
     console.log('<====================================>');
     console.log('Goodbye');
+    clearTempFiles();
 }).on('ready', displaySplashScreen);
 
 
@@ -426,3 +428,13 @@ function electronInsertion() {
     mainWindow.webContents.executeJavaScript(insertScript);
 }
 
+
+
+/**
+clears up the temp files
+*/
+function clearTempFiles(){
+    var _os = require('os'),
+    tempFileRef = _os.tmpDir()+"/invoice.pdf";
+    fs.unlink(tempFileRef);
+}

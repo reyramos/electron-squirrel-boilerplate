@@ -17,7 +17,8 @@ let path = require('path'),
     http = require('http');
 
 // Module to control application life.
-const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut} = require('electron');
+const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut, ipcMain} = require('electron');
+
 
 
 //read the file as string and minify for code injection
@@ -49,7 +50,13 @@ let refresh = true;
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE,
 //This url contains the version that is hosted on the remote server for package control
-const releaseUrl = utilities.parse_url(version["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(version["VERSION_SERVER"]).host + path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
+let parseVersionServer = utilities.parse_url(version["VERSION_SERVER"]);
+
+const releaseUrl = [parseVersionServer.scheme
+    , '://'
+    , parseVersionServer.host
+    , ":" + parseVersionServer.port
+    , path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/')].join("");
 
 
 let webUrl = function () {
@@ -194,7 +201,7 @@ function validateURL(url) {
         var parse = utilities.parse_url(url),
             options = {
                 host: parse.host,
-                port:  parse.port,
+                port: parse.port,
                 method: 'GET',
                 rejectUnauthorized: false,
                 requestCert: true,
@@ -365,6 +372,7 @@ function startMainApplication() {
                  *
                  */
                 bridge.listen(function (data) {
+                    console.log(data)
 
                     data.msg = services[data.eventType](process, data.msg);
                     bridge.send(data);
@@ -391,13 +399,14 @@ function versionCompare() {
 
 
         var vrsCompare = utilities.versionCompare(obj.version, version.version),
-            filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl; //+ '&id=' + (mainWindow.id ? String(mainWindow.id) : "");
+            filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl + '&id=' + (mainWindow.id ? String(mainWindow.id) : "");
 
         if (vrsCompare > 0) {
             var download = new BrowserWindow({
                 width: 402,
                 height: 152,
                 resizable: false,
+                alwaysOnTop: true,
                 frame: false,
                 title: app.getName(),
                 'always-on-top': true,
@@ -419,22 +428,55 @@ function versionCompare() {
  */
 function electronInsertion() {
 
-    var appName = (utilities.parse_url(mainWindow.webContents.getURL()).host || '').replace(/.labcorp.com/g, '') || null,
+
+    var host = utilities.parse_url(mainWindow.webContents.getURL()).host || '',
+        appName = (host).replace(/.labcorp.com/g, '') || null,
         appName = appName ? ' - ' + appName.toUpperCase() : '';
+
 
     mainWindow.setTitle(app.getName() + appName);
 
     let insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
     mainWindow.webContents.executeJavaScript(insertScript);
+
+
+    //this will inject the bootstrap if the URL does not have the bootstrap file indicator
+    checkBootstrap(mainWindow.webContents.getURL());
+
+}
+
+function checkBootstrap(url) {
+    var parse = utilities.parse_url(url),
+        url = [parse.scheme, "://", parse.host, ":", parse.port, "/", "bootstrap.txt"].join("");
+
+    require(parse.scheme).get(url, function (res) {
+        if (res.statusCode !== 200) {
+            /***************************************************************
+             * THIS HOTFIX IS TO BE REMOVE IN FUTURE RELEASES
+             ***************************************************************/
+            let hotFix = uglify.minify([__dirname + '/hotFixInjection.js']);
+
+            let insertScript = '!function(){if(document.querySelector(\'#electron-object\'))return;var s = document.createElement( \'script\' );s.id = \'electron-object\';var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
+            mainWindow.webContents.executeJavaScript(insertScript);
+            mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
+            /***************************************************************
+             * THE CODE ABOVE IS TO BE REMOVE IN FUTURE RELEASE OF QA ENVIRONMENT,
+             * IT IS FOR THE INJECTION OF ELECTRON WITHIN THE ENVIRONMENT
+             ***************************************************************/
+        }
+
+    });
+
 }
 
 
-
 /**
-clears up the temp files
-*/
-function clearTempFiles(){
+ clears up the temp files
+ */
+function clearTempFiles() {
     var _os = require('os'),
-    tempFileRef = _os.tmpDir()+"/invoice.pdf";
-    fs.unlink(tempFileRef);
+        tempFileRef = _os.tmpDir() + "/invoice.pdf";
+
+    if (fs.existsSync(tempFileRef)) //only delete if file exist
+        fs.unlink(tempFileRef);
 }

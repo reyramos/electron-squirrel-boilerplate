@@ -194,7 +194,7 @@ function validateURL(url) {
         var parse = utilities.parse_url(url),
             options = {
                 host: parse.host,
-                port:  parse.port,
+                port: parse.port,
                 method: 'GET',
                 rejectUnauthorized: false,
                 requestCert: true,
@@ -419,22 +419,55 @@ function versionCompare() {
  */
 function electronInsertion() {
 
-    var appName = (utilities.parse_url(mainWindow.webContents.getURL()).host || '').replace(/.labcorp.com/g, '') || null,
+
+    var host = utilities.parse_url(mainWindow.webContents.getURL()).host || '',
+        appName = (host).replace(/.labcorp.com/g, '') || null,
         appName = appName ? ' - ' + appName.toUpperCase() : '';
+
 
     mainWindow.setTitle(app.getName() + appName);
 
     let insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
     mainWindow.webContents.executeJavaScript(insertScript);
+
+
+    //this will inject the bootstrap if the URL does not have the bootstrap file indicator
+    checkBootstrap(mainWindow.webContents.getURL());
+
+}
+
+function checkBootstrap(url) {
+    var parse = utilities.parse_url(url),
+        url = [parse.scheme, "://", parse.host, ":", parse.port, "/", "bootstrap.txt"].join("");
+
+    require(parse.scheme).get(url, function (res) {
+        if (res.statusCode !== 200) {
+            /***************************************************************
+             * THIS HOTFIX IS TO BE REMOVE IN FUTURE RELEASES
+             ***************************************************************/
+            let hotFix = uglify.minify([__dirname + '/hotFixInjection.js']);
+
+            let insertScript = '!function(){if(document.querySelector(\'#electron-object\'))return;var s = document.createElement( \'script\' );s.id = \'electron-object\';var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
+            mainWindow.webContents.executeJavaScript(insertScript);
+            mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
+            /***************************************************************
+             * THE CODE ABOVE IS TO BE REMOVE IN FUTURE RELEASE OF QA ENVIRONMENT,
+             * IT IS FOR THE INJECTION OF ELECTRON WITHIN THE ENVIRONMENT
+             ***************************************************************/
+        }
+
+    });
+
 }
 
 
-
 /**
-clears up the temp files
-*/
-function clearTempFiles(){
+ clears up the temp files
+ */
+function clearTempFiles() {
     var _os = require('os'),
-    tempFileRef = _os.tmpDir()+"/invoice.pdf";
-    fs.unlink(tempFileRef);
+        tempFileRef = _os.tmpDir() + "/invoice.pdf";
+
+    if (fs.existsSync(tempFileRef)) //only delete if file exist
+        fs.unlink(tempFileRef);
 }

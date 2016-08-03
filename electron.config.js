@@ -38,11 +38,13 @@ module.exports = {
 
     //hosting server setting and working environment
     //Application will check for version updates host path
-    "VERSION_SERVER": "https://dev-phoenix.labcorp.com/", //hosting server for all the build packages
+    // "VERSION_SERVER": "https://dev-phoenix.labcorp.com/", //hosting server for all the build packages
+    "VERSION_SERVER": "http://seed.labcorp.com:8080/", //hosting server for all the build packages
     //environment where the build.json is going to be stored for the working environment
-    "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
+    "versionFilePath": "/[WORKING_ENVIRONMENT]/build.json",
+    // "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
     //environment to build on start up
-    "WORKING_ENVIRONMENT": "RELEASE2"
+    "WORKING_ENVIRONMENT": "LOCAL"
 
 };
 

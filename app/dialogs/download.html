@@ -11,6 +11,7 @@
             utilities = require('../libs/utilities.js'),
             currentWindow = remote.getCurrentWindow(),
             versionUrl = _GET('url'),
+            mainWindowId = Number(_GET('id')),
             releasePath = null,
             anHttpRequest = new XMLHttpRequest();
 
@@ -37,8 +38,14 @@
 
 
     function download() {
+
+//        const {ipcRenderer} = require('electron')
+//        console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
+//
+
         require('electron').shell.openExternal(releasePath);
         currentWindow.close();
+
     }
 
 </script>

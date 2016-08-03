@@ -17,7 +17,8 @@ let path = require('path'),
     http = require('http');
 
 // Module to control application life.
-const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut} = require('electron');
+const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut, ipcMain} = require('electron');
+
 
 
 //read the file as string and minify for code injection
@@ -49,7 +50,13 @@ let refresh = true;
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE,
 //This url contains the version that is hosted on the remote server for package control
-const releaseUrl = utilities.parse_url(version["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(version["VERSION_SERVER"]).host + path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
+let parseVersionServer = utilities.parse_url(version["VERSION_SERVER"]);
+
+const releaseUrl = [parseVersionServer.scheme
+    , '://'
+    , parseVersionServer.host
+    , ":" + parseVersionServer.port
+    , path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/')].join("");
 
 
 let webUrl = function () {
@@ -365,6 +372,7 @@ function startMainApplication() {
                  *
                  */
                 bridge.listen(function (data) {
+                    console.log(data)
 
                     data.msg = services[data.eventType](process, data.msg);
                     bridge.send(data);
@@ -391,13 +399,14 @@ function versionCompare() {
 
 
         var vrsCompare = utilities.versionCompare(obj.version, version.version),
-            filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl; //+ '&id=' + (mainWindow.id ? String(mainWindow.id) : "");
+            filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl + '&id=' + (mainWindow.id ? String(mainWindow.id) : "");
 
         if (vrsCompare > 0) {
             var download = new BrowserWindow({
                 width: 402,
                 height: 152,
                 resizable: false,
+                alwaysOnTop: true,
                 frame: false,
                 title: app.getName(),
                 'always-on-top': true,

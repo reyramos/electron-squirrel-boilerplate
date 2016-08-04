@@ -63,7 +63,10 @@ module.exports = function (grunt) {
 
         //path to electron files
         const ELECTRON_PATH = path.join(BUILD_DESTINATION, appName);
-        var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, "_" + (config.execName).trim());
+
+        var APP_EXE_NAME = "_" + (config.execName).trim();
+
+        var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, APP_EXE_NAME);
 
 
         var buildFileName = config.versionFilePath.split('/');
@@ -117,6 +120,8 @@ module.exports = function (grunt) {
                 array[index] = ele.capitalize();
             });
 
+            //set the exec name
+            FILE_WXS = FILE_WXS.replace(/{{APP_EXE_NAME}}/g, APP_EXE_NAME);
             //replace the APP_CAB
             FILE_WXS = FILE_WXS.replace(/{{APP_CAB}}/g, (APP_CAB).join("") + ".cab");
             //replace the MANUFACTURER

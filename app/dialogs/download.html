@@ -39,13 +39,15 @@
 
     function download() {
 
-//        const {ipcRenderer} = require('electron')
-//        console.log(ipcRenderer.sendSync('synchronous-message', 'ping')) // prints "pong"
-//
+        const {ipcRenderer, shell} = require('electron');
 
-        require('electron').shell.openExternal(releasePath);
-        currentWindow.close();
+        //open the new installation route
+        shell.openExternal(releasePath);
+        ipcRenderer.send('application-close-message', 'ping')
 
+        //dont need to close since the rendering process is being close
+//        currentWindow.close();
+        
     }
 
 </script>

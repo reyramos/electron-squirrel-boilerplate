@@ -20,7 +20,7 @@ let path = require('path'),
 var service = {};
 
 service.getVersion = function (process) {
-    return utilities.extend({}, version, process.versions, {resourcesPath: process.resourcesPath});
+    return utilities.extend({}, version, process.versions, {resourcesPath: process.resourcesPath}, {msg: version} );
 };
 
 

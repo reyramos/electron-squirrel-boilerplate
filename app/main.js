@@ -103,6 +103,17 @@ app.on('window-all-closed', function () {
 
 function displaySplashScreen() {
 
+    /**
+     * This is used to close the application and rendering process,
+     * It will also terminate the process to allow
+     * for user install
+     */
+    ipcMain.on('application-close-message', function(event, arg) {
+        clearTempFiles();
+        app.quit();
+    });
+
+
     /*
      * Remove this globalShortcut, use port debugger to
      * debug electron application
@@ -399,7 +410,7 @@ function versionCompare() {
 
 
         var vrsCompare = utilities.versionCompare(obj.version, version.version),
-            filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl + '&id=' + (mainWindow.id ? String(mainWindow.id) : "");
+            filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl;// + '&id=' + (mainWindow.id ? String(mainWindow.id) : "");
 
         if (vrsCompare > 0) {
             var download = new BrowserWindow({

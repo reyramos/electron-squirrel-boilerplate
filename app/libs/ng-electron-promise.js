@@ -102,6 +102,10 @@
 
             //remote require
             o.remote = electron.remote;
+            o.require = o.remote.require;
+
+            o.menu = o.remote.Menu;
+            o.menuItem = o.remote.MenuItem;
 
             //Node 11 (abridged) api
             o.buffer = require('buffer');

@@ -32,7 +32,7 @@ module.exports = {
     "DEV": "https://dev-phoenix.labcorp.com/web-ui/",
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
     "BETA": "https://dev-phoenix.labcorp.com/web-ui/",
-    "RELEASE2": "http://dev2-phoenix.labcorp.com/web-ui/#/",
+    "RELEASE2": "http://dev2-phoenix.labcorp.com/web-ui/?debug=true",
     // "LOCAL": "file://__dirname/demo/index.html",
     "LOCAL": "http://seed.labcorp.com:8080/",
 

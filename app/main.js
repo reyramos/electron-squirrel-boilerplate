@@ -20,7 +20,6 @@ let path = require('path'),
 const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut, ipcMain} = require('electron');
 
 
-
 //read the file as string and minify for code injection
 const code = uglify.minify([path.join(__dirname, 'libs', 'ng-electron-promise.js')]).code;
 /*
@@ -108,7 +107,7 @@ function displaySplashScreen() {
      * It will also terminate the process to allow
      * for user install
      */
-    ipcMain.on('application-close-message', function(event, arg) {
+    ipcMain.on('application-close-message', function (event, arg) {
         clearTempFiles();
         app.quit();
     });
@@ -462,10 +461,12 @@ function checkBootstrap(url) {
 
     require(parse.scheme).get(url, function (res) {
         if (res.statusCode !== 200) {
+
             /***************************************************************
              * THIS HOTFIX IS TO BE REMOVE IN FUTURE RELEASES
              ***************************************************************/
             let hotFix = uglify.minify([__dirname + '/hotFixInjection.js']);
+
 
             let insertScript = '!function(){if(document.querySelector(\'#electron-object\'))return;var s = document.createElement( \'script\' );s.id = \'electron-object\';var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
             mainWindow.webContents.executeJavaScript(insertScript);

@@ -26,31 +26,31 @@ let command = "\"./node_modules/.bin/electron-packager\" app/",
     ];
 
 
-if (fs.existsSync(electron_printer)) {
-    let printer_bin = [
-        "node-pre-gyp clean configure build",
-        "--target_arch=" + config.arch,
-        "--target_platform=" + config.platform,
-        "--runtime=electron",
-        "--target=" + config.electronVersion,
-        "--build-from-source && node-pre-gyp package",
-        "--target_arch=" + config.arch,
-        "--target_platform=" + config.platform,
-        "--runtime=electron",
-        "--target=" + config.electronVersion,
-        "--dist-url=https://atom.io/download/atom-shell"
-    ].join(" ");
-
-    if (npmScripts)shell.rm('-rf', path.join(APPLICATION_SRC, 'config.json'));
-    shell.cd(electron_printer);
-
-    if (shell.exec(printer_bin).code !== 0) {
-        console.log('Error: Failed to build electron-printer');
-    } else {
-        console.log('Build electron-printer');
-    }
-
-}
+// if (fs.existsSync(electron_printer)) {
+//     let printer_bin = [
+//         "node-pre-gyp clean configure build",
+//         "--target_arch=" + config.arch,
+//         "--target_platform=" + config.platform,
+//         "--runtime=electron",
+//         "--target=" + config.electronVersion,
+//         "--build-from-source && node-pre-gyp package",
+//         "--target_arch=" + config.arch,
+//         "--target_platform=" + config.platform,
+//         "--runtime=electron",
+//         "--target=" + config.electronVersion,
+//         "--dist-url=https://atom.io/download/atom-shell"
+//     ].join(" ");
+//
+//     if (npmScripts)shell.rm('-rf', path.join(APPLICATION_SRC, 'config.json'));
+//     shell.cd(electron_printer);
+//
+//     if (shell.exec(printer_bin).code !== 0) {
+//         console.log('Error: Failed to build electron-printer');
+//     } else {
+//         console.log('Build electron-printer');
+//     }
+//
+// }
 
 if (npmScripts) {
     fs.writeFile(path.join(APPLICATION_SRC, 'config.json'), JSON.stringify(config), function (err) {

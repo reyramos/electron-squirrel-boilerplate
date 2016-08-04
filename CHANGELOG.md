@@ -1,3 +1,15 @@
+<a name="1.5.3"></a>
+# 1.5.3 Insane Moose(2016-08-04)
+- Upgrade electron to version 1.2.5
+- Node 6.3.0
+- Chromium 52.0.2743.82
+- V8 5.2.361.43
+- Update wxs to force close application and reboot if open
+- Update downloader to close application on user interaction to close
+- Added old code to support desktop application v1.3.3
+- Provided API changes to bridge communication
+
+
 <a name="1.3.4"></a>
 # 1.3.4 Ruby Device(2016-06-09)
 - Upgrade electron to version 1.2.2

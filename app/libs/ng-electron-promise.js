@@ -123,6 +123,10 @@
             o.url = require('url');
             o.zlib = require('zlib');
 
+
+            o.__dirname = o.path.dirname(__dirname);
+
+
             o = extend({}, o, electron);
 
         } catch (e) {

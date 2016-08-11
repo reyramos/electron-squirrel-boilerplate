@@ -2,7 +2,7 @@
 # 1.5.3 Self Five(2016-08-11)
 - Update user config to define application settings.
 - Added __dirname reference to be used within web-ui
-- Support for future release of save data to file system
+- Added /install/resources/ permission to all users, support for future release of save data to file system
 
 
 <a name="1.5.2"></a>

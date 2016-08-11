@@ -206,7 +206,7 @@ module.exports = function (grunt) {
             var directories = ['resources'];
 
             if (directories.indexOf(Directory) > -1) {
-                var CompId = Id + 'ComponentCreateFolderPermission'
+                var CompId = Id + 'Permission';
                 return [
                     ['<Directory Id="' + Id + '" Name="' + Directory + '">',
                         '<Component Id="' + CompId + '" Guid=\'' + uuid.v1() + '\'>',

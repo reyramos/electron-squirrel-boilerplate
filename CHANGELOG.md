@@ -1,5 +1,12 @@
 <a name="1.5.3"></a>
-# 1.5.3 Insane Moose(2016-08-04)
+# 1.5.3 Self Five(2016-08-11)
+- Update user config to define application settings.
+- Added __dirname reference to be used within web-ui
+- Added /install/resources/ permission to all users, support for future release of save data to file system
+
+
+<a name="1.5.2"></a>
+# 1.5.2 Insane Moose(2016-08-04)
 - Upgrade electron to version 1.2.5
 - Node 6.3.0
 - Chromium 52.0.2743.82

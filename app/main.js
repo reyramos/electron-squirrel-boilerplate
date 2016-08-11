@@ -3,18 +3,22 @@
 //node js dependencies
 let path = require('path'),
     fs = require('fs'),
+    utilities = require('./libs/utilities'),
     version = function () {
+        let readJson = function (path) {
+            return JSON.parse(fs.readFileSync(path, 'utf8'))
+        };
         //If the local machine contains a config app, lets load the environment specified, used for developers
-        let localFilePath = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
-        //Allows for local path config file
-            localConfig = fs.existsSync(localFilePath) ? localFilePath : path.join(__dirname, 'config.json'),
-            version = fs.existsSync(localConfig) ? JSON.parse(fs.readFileSync(localConfig, 'utf8')) : require('../electron.config.js');
+        let userConfig = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
+            buildConfig = path.join(__dirname, 'config.json'),
+            devConfig = fs.existsSync(buildConfig) ? readJson(buildConfig) : require('../electron.config.js');
 
+        let version = fs.existsSync(userConfig) ? utilities.extend(true, readJson(buildConfig), readJson(userConfig)) : (fs.existsSync(buildConfig) ? readJson(buildConfig) : devConfig);
         return version;
     }(),
-    utilities = require('./libs/utilities'),
     uglify = require("uglify-js"),
     http = require('http');
+
 
 // Module to control application life.
 const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut, ipcMain} = require('electron');
@@ -47,6 +51,7 @@ app.clearRecentDocuments();
 //This is to refesh the application while loading, to reloadIgnoringCache
 let refresh = true;
 
+
 //GET THE ENVIRONMENT VARIABLES TO CREATE,
 //This url contains the version that is hosted on the remote server for package control
 let parseVersionServer = utilities.parse_url(version["VERSION_SERVER"]);
@@ -54,17 +59,14 @@ let parseVersionServer = utilities.parse_url(version["VERSION_SERVER"]);
 const releaseUrl = [parseVersionServer.scheme
     , '://'
     , parseVersionServer.host
-    , ":" + parseVersionServer.port
+    , parseVersionServer.port?":" + parseVersionServer.port:""
     , path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/')].join("");
 
 
 let webUrl = function () {
-    var string = version[version["WORKING_ENVIRONMENT"]];
-
-    var re = new RegExp("__dirname", "g"),
+    var string = version[version["WORKING_ENVIRONMENT"]],
+        re = new RegExp("__dirname", "g"),
         result = String(string).replace(re, __dirname);
-
-
     return result;
 }();
 
@@ -163,7 +165,9 @@ function createMainWindow(size) {
         autoHideMenuBar: true,
         // frame: false,
         webPreferences: {
-            webSecurity: false
+            webSecurity: false,
+            allowDisplayingInsecureContent: true,
+            allowRunningInsecureContent: true,
         }
     };
 

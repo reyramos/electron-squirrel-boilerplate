@@ -9,19 +9,16 @@ let path = require('path'),
             return JSON.parse(fs.readFileSync(path, 'utf8'))
         };
         //If the local machine contains a config app, lets load the environment specified, used for developers
-        let userConfig = path.join(__dirname.replace(/app\.asar/g, ''), 'SAMPLE_CONFIG.json'),
+        let userConfig = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
             buildConfig = path.join(__dirname, 'config.json'),
             devConfig = fs.existsSync(buildConfig) ? readJson(buildConfig) : require('../electron.config.js');
 
-        var version = fs.existsSync(userConfig) ? utilities.extend(true, readJson(buildConfig), readJson(userConfig)) : (fs.existsSync(buildConfig) ? readJson(buildConfig) : devConfig);
-
+        let version = fs.existsSync(userConfig) ? utilities.extend(true, readJson(buildConfig), readJson(userConfig)) : (fs.existsSync(buildConfig) ? readJson(buildConfig) : devConfig);
         return version;
     }(),
     uglify = require("uglify-js"),
     http = require('http');
 
-
-console.log('version', version)
 
 // Module to control application life.
 const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut, ipcMain} = require('electron');

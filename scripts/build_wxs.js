@@ -147,8 +147,18 @@ module.exports = function (grunt) {
                     id = id.join("");
 
                     if (obj.filePath !== path.join(ELECTRON_PATH, '/')) {
-                        DIRECTORY += '<Directory Id="' + id + '" Name="' + obj.dirname + '" />';
+
+                        var permissions = setDirectoriesPermission(id, obj.dirname);
+
+                        DIRECTORY += permissions[0];
+
+                        //if a permission is added, add the references
+                        if (permissions[1])COMPONENTS_REFS += permissions[1];
+
+
                         DIRECTORY_REF += '<DirectoryRef Id="' + id + '">' + components[0] + '</DirectoryRef>';
+
+
                     } else {
                         ROOT_DIRECTORY_REFERENCE = '<DirectoryRef Id="APPLICATIONROOTDIRECTORY">' + components[0] + '</DirectoryRef>';
                     }
@@ -187,6 +197,32 @@ module.exports = function (grunt) {
             grunt.log.writeln('=============================================================\r\n');
 
             callback()
+
+        }
+
+
+        function setDirectoriesPermission(Id, Directory) {
+
+            var directories = ['resources'];
+
+            if (directories.indexOf(Directory) > -1) {
+                var CompId = Id + 'ComponentCreateFolderPermission'
+                return [
+                    ['<Directory Id="' + Id + '" Name="' + Directory + '">',
+                        '<Component Id="' + CompId + '" Guid=\'' + uuid.v1() + '\'>',
+                        '<CreateFolder>',
+                        '<Permission GenericAll="yes" User="Authenticated Users" />',
+                        '</CreateFolder>',
+                        '<RemoveFile Id="RemoveFileAll" Name="*.*" On="uninstall" />',
+                        '</Component>',
+                        '</Directory>'
+                    ].join(""),
+                    '<ComponentRef Id="' + CompId + '" />'
+                ];
+            } else {
+                return ['<Directory Id="' + Id + '" Name="' + Directory + '" />', null];
+            }
+
 
         }
 

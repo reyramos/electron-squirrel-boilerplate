@@ -167,7 +167,9 @@ function createMainWindow(size) {
         autoHideMenuBar: true,
         // frame: false,
         webPreferences: {
-            webSecurity: false
+            webSecurity: false,
+            allowDisplayingInsecureContent : true,
+            allowRunningInsecureContent : true,
         }
     };
 

@@ -51,6 +51,7 @@ app.clearRecentDocuments();
 //This is to refesh the application while loading, to reloadIgnoringCache
 let refresh = true;
 
+
 //GET THE ENVIRONMENT VARIABLES TO CREATE,
 //This url contains the version that is hosted on the remote server for package control
 let parseVersionServer = utilities.parse_url(version["VERSION_SERVER"]);
@@ -58,17 +59,14 @@ let parseVersionServer = utilities.parse_url(version["VERSION_SERVER"]);
 const releaseUrl = [parseVersionServer.scheme
     , '://'
     , parseVersionServer.host
-    , ":" + parseVersionServer.port
+    , parseVersionServer.port?":" + parseVersionServer.port:""
     , path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/')].join("");
 
 
 let webUrl = function () {
-    var string = version[version["WORKING_ENVIRONMENT"]];
-
-    var re = new RegExp("__dirname", "g"),
+    var string = version[version["WORKING_ENVIRONMENT"]],
+        re = new RegExp("__dirname", "g"),
         result = String(string).replace(re, __dirname);
-
-
     return result;
 }();
 
@@ -168,8 +166,8 @@ function createMainWindow(size) {
         // frame: false,
         webPreferences: {
             webSecurity: false,
-            allowDisplayingInsecureContent : true,
-            allowRunningInsecureContent : true,
+            allowDisplayingInsecureContent: true,
+            allowRunningInsecureContent: true,
         }
     };
 

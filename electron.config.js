@@ -2,7 +2,7 @@ module.exports = {
 
     //for every build on msi the numbers will need to increment to update the
     //msi application stored on windows machine
-    "version": "1.5.1",
+    "version": "1.5.3",
 
     "app_name": "LabCorp Phoenix",
     "app_description": "LabCorp Application",
@@ -33,7 +33,6 @@ module.exports = {
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
     "BETA": "https://dev-phoenix.labcorp.com/web-ui/",
     "RELEASE2": "http://dev2-phoenix.labcorp.com/web-ui/?debug=true",
-    // "LOCAL": "file://__dirname/demo/index.html",
     "LOCAL": "http://seed.labcorp.com:8080/",
 
     //hosting server setting and working environment
@@ -42,7 +41,7 @@ module.exports = {
     //environment where the build.json is going to be stored for the working environment
     "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
     //environment to build on start up
-    "WORKING_ENVIRONMENT": "LOCAL"
+    "WORKING_ENVIRONMENT": "RELEASE2"
 
 };
 

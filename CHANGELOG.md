@@ -1,5 +1,6 @@
 <a name="1.5.3"></a>
-# 1.5.3 Self Five(2016-08-11)
+# 1.5.3 Self Five(2016-08-16)
+- Revert previous refresh code on load to reloadIgnoringCache
 - Update user config to define application settings.
 - Added __dirname reference to be used within web-ui
 - Added /install/resources/ permission to all users, support for future release of save data to file system

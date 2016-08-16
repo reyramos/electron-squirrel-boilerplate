@@ -59,7 +59,7 @@ let parseVersionServer = utilities.parse_url(version["VERSION_SERVER"]);
 const releaseUrl = [parseVersionServer.scheme
     , '://'
     , parseVersionServer.host
-    , parseVersionServer.port?":" + parseVersionServer.port:""
+    , parseVersionServer.port ? ":" + parseVersionServer.port : ""
     , path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/')].join("");
 
 
@@ -192,12 +192,18 @@ function createMainWindow(size) {
         mainWindow = null;
     });
 
-
     return new Promise(function (response, reject) {
         win.webContents.on('did-finish-load', function (e) {
-            response(win)
+            console.log('did-finish-load', refresh);
+            if (refresh) {
+                refresh = false;
+                win.webContents.reloadIgnoringCache()
+                console.log('REFRESHING ULR => ', webUrl)
+                response(win)
+            }
         })
     });
+
 }
 
 

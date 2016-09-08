@@ -6,7 +6,7 @@ module.exports = {
      */
     //for every build on msi the numbers will need to increment to update the
     //msi application stored on windows machine
-    "version": "1.5.4",
+    "version": "1.5.3",
 
     "app_name": "LabCorp Phoenix",
     "app_description": "LabCorp Application",
@@ -43,7 +43,7 @@ module.exports = {
 
     //hosting server setting and working environment
     //Application will check for version updates host path
-    "versionServer": "https://dev-phoenix.labcorp.com/release/prod/build.json", //hosting server for all the build packages
+    "versionServer": "https://git.labcorp.com/projects/PHX/repos/phx-electron/browse/build.json?at=6b18de09396271ce745109b7c9b97fafe5c7afb1&raw", //hosting server for all the build packages
     //environment where the build.json is going to be stored for the working environment
     // "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json", removed no longer in used
     //environment to build on start up

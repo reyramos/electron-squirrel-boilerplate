@@ -74,6 +74,7 @@ service.getVersion = function (url, callback) {
 
     if(url && service.parse_url(url).scheme){
         try{
+            process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
             require(service.parse_url(url).scheme).get(url, function (res) {
                 var output = '';
                 res.setEncoding('utf8');

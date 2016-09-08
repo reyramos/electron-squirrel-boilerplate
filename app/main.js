@@ -47,6 +47,7 @@ app.commandLine.appendSwitch('remote-debugging-port', '32400');
 app.commandLine.appendArgument('--disable-cache');
 //<https://github.com/scramjs/scram-engine/issues/5>
 app.commandLine.appendSwitch('--disable-http-cache');
+app.commandLine.appendSwitch('--disable-https-cache');
 
 //app.setUserTasks([]);
 app.clearRecentDocuments();
@@ -408,6 +409,9 @@ function versionCompare() {
     utilities.getVersion(releaseUrl, function (status, obj) {
 
 
+
+        console.log(obj)
+
         if (status !== 200)return;
 
 
@@ -461,6 +465,8 @@ function electronInsertion() {
 function checkBootstrap(url) {
     var parse = utilities.parse_url(url),
         url = [parse.scheme, "://", parse.host, ":", parse.port, "/", "bootstrap.txt"].join("");
+
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
     require(parse.scheme).get(url, function (res) {
         if (res.statusCode !== 200) {

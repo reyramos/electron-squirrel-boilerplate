@@ -26,6 +26,10 @@ module.exports = {
     //WixToolSet: Identifiers may contain ASCII characters A-Z, a-z, digits, underscores (_), or periods (.).  Every identifier must begin with either a letter or an underscore.
     "execName": "phoenix.exe",
 
+
+    //repository storage for builds
+    "repository": "https://git.labcorp.com/scm/phx/phx-electron.git#builds",
+
     /*************************************************************
      * The following will affect the way the application start
      */

@@ -14,7 +14,9 @@ let path = require('path'),
             devConfig = fs.existsSync(buildConfig) ? readJson(buildConfig) : require('../electron.config.js');
 
         let version = fs.existsSync(userConfig) ? utilities.extend(true, readJson(buildConfig), readJson(userConfig)) : (fs.existsSync(buildConfig) ? readJson(buildConfig) : devConfig);
-        return version;
+
+        return Object.assign({}, require('./libs/config'), version);
+
     }(),
     uglify = require("uglify-js"),
     http = require('http');
@@ -56,17 +58,10 @@ let refresh = true;
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE,
 //This url contains the version that is hosted on the remote server for package control
-let parseVersionServer = utilities.parse_url(version["VERSION_SERVER"]);
-
-const releaseUrl = [parseVersionServer.scheme
-    , '://'
-    , parseVersionServer.host
-    , parseVersionServer.port ? ":" + parseVersionServer.port : ""
-    , path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/')].join("");
-
+const releaseUrl = version["versionServer"];
 
 let webUrl = function () {
-    var string = version[version["WORKING_ENVIRONMENT"]],
+    var string = version[version["startingEnvironment"]],
         re = new RegExp("__dirname", "g"),
         result = String(string).replace(re, __dirname);
     return result;

@@ -1,8 +1,12 @@
 module.exports = {
-
+    /*************************************************************
+     * These are also defined in the app/util/config page, where it will
+     * set the default values of they dont exist on this file.
+     *
+     */
     //for every build on msi the numbers will need to increment to update the
     //msi application stored on windows machine
-    "version": "1.5.3",
+    "version": "1.5.4",
 
     "app_name": "LabCorp Phoenix",
     "app_description": "LabCorp Application",
@@ -24,6 +28,10 @@ module.exports = {
     //WixToolSet: Identifiers may contain ASCII characters A-Z, a-z, digits, underscores (_), or periods (.).  Every identifier must begin with either a letter or an underscore.
     "execName": "phoenix.exe",
 
+    /*************************************************************
+     * The following will affect the way the application start
+     */
+
     //environment
     "STAGE": "https://stage-phoenix.labcorp.com/web-ui/",
     "UAT": "https://uat-phoenix.labcorp.com/web-ui/",
@@ -32,15 +40,14 @@ module.exports = {
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
     "BETA": "http://dev2-phoenix.labcorp.com/web-ui/?debug=true",
     "RELEASE2": "http://dev2-phoenix.labcorp.com/web-ui/?debug=true",
-    "LOCAL": "http://seed.labcorp.com:8080/",
 
     //hosting server setting and working environment
     //Application will check for version updates host path
-    "VERSION_SERVER": "https://dev-phoenix.labcorp.com/", //hosting server for all the build packages
+    "versionService": "https://dev-phoenix.labcorp.com/release/prod/build.json", //hosting server for all the build packages
     //environment where the build.json is going to be stored for the working environment
-    "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json",
+    // "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json", removed no longer in used
     //environment to build on start up
-    "WORKING_ENVIRONMENT": "PROD"
+    "startingEnvironment": "PROD"
 
 };
 

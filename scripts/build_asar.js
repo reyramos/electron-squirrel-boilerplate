@@ -86,7 +86,7 @@ module.exports = function (grunt) {
         const APP_VERSION = String(config.version).trim() || false;
         const APPLICATION_SRC = path.join(path.dirname(__dirname), config.source);
 
-        const RELEASE = utilities.parse_url(config["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(config["VERSION_SERVER"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
+        // const RELEASE = config["versionServer"];
 
         /*******************************************************************
          APPLICATION VARIABLES

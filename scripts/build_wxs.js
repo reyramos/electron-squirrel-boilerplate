@@ -68,12 +68,7 @@ module.exports = function (grunt) {
 
         var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, APP_EXE_NAME);
 
-
-        var buildFileName = config.versionFilePath.split('/');
-
-        buildFileName = buildFileName[buildFileName.length - 1];
-
-        const RELEASE = utilities.parse_url(config["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(config["VERSION_SERVER"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
+        // const RELEASE = config["versionServer"];
 
         if (fs.existsSync(ELECTRON_PATH)) {
             rcedit(ELECTRON_EXE_DESTINATION, rceditOpts, function (error) {
@@ -189,7 +184,7 @@ module.exports = function (grunt) {
                 };
 
             gruntWrite(path.join(filePath, config.app_name + '_' + 'v' + APP_VERSION + '.wxs'), FILE_WXS);
-            gruntWrite(path.join(filePath, buildFileName), JSON.stringify(config));
+            gruntWrite(path.join(filePath, 'build.json'), JSON.stringify(config));
 
             grunt.log.writeln('=============================================================\r\n');
             grunt.log.writeln('Execute the following command to build the msi file\r\n');

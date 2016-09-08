@@ -43,7 +43,7 @@ module.exports = {
 
     //hosting server setting and working environment
     //Application will check for version updates host path
-    "versionService": "https://dev-phoenix.labcorp.com/release/prod/build.json", //hosting server for all the build packages
+    // "versionServer": "https://dev-phoenix.labcorp.com/release/prod/build.json", //hosting server for all the build packages
     //environment where the build.json is going to be stored for the working environment
     // "versionFilePath": "/release/[WORKING_ENVIRONMENT]/build.json", removed no longer in used
     //environment to build on start up

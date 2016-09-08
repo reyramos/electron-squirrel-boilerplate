@@ -32,7 +32,7 @@ module.exports = {
 
     //hosting server setting and working environment
     //Application will check for version updates host path
-    "versionService": "", //hosting server for all the build packages
+    "versionServer": "", //hosting server for all the build packages
 
     //environment to build on start up
     "startingEnvironment": ""

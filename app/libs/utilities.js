@@ -71,27 +71,32 @@ service.versionCompare = function (v1, v2, options) {
 
 service.getVersion = function (url, callback) {
 
-    require(service.parse_url(url).scheme).get(url, function (res) {
-        var output = '';
-        res.setEncoding('utf8');
 
-        res.on('data', function (chunk) {
-            output += chunk;
-        });
+    if(url && service.parse_url(url).scheme){
+        try{
+            require(service.parse_url(url).scheme).get(url, function (res) {
+                var output = '';
+                res.setEncoding('utf8');
 
-        res.on('end', function () {
-            try {
-                var obj = JSON.parse(output);
-                callback(res.statusCode, obj);
-            } catch (e) {
-            }
+                res.on('data', function (chunk) {
+                    output += chunk;
+                });
 
-        });
+                res.on('end', function () {
+                    try {
+                        var obj = JSON.parse(output);
+                        callback(res.statusCode, obj);
+                    } catch (e) {
+                    }
 
-    }).on('error', function (e) {
-        callback(500, e);
-    });
+                });
 
+            }).on('error', function (e) {
+                callback(500, e);
+            });
+        }catch(e){}
+
+    }
 
 }
 

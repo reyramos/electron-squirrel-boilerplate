@@ -13,7 +13,7 @@ let path = require('path'),
             buildConfig = path.join(__dirname, 'config.json'),
             devConfig = fs.existsSync(buildConfig) ? readJson(buildConfig) : require('../electron.config.js');
 
-        let version = fs.existsSync(userConfig) ? utilities.extend(true, readJson(buildConfig), readJson(userConfig)) : (fs.existsSync(buildConfig) ? readJson(buildConfig) : devConfig);
+        let version = fs.existsSync(userConfig) ? Object.assign({}, readJson(buildConfig), readJson(userConfig)) : (fs.existsSync(buildConfig) ? readJson(buildConfig) : devConfig);
 
         return Object.assign({}, require('./libs/config'), version);
 
@@ -66,10 +66,6 @@ let webUrl = function () {
         result = String(string).replace(re, __dirname);
     return result;
 }();
-
-
-console.log('releaseUrl', releaseUrl);
-console.log('webUrl', webUrl);
 
 
 // prevent window being GC'd

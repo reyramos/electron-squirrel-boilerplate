@@ -1,3 +1,11 @@
+<a name="1.5.4"></a>
+# 1.5.4 supercalifragilisticexpialidocious(2016-09-16)
+- Added addition ignore-cache options per thread
+- Added process node enviroment to ignore secure certs url
+- Change config files name and reference to make it easier to test and update references
+
+
+
 <a name="1.5.3"></a>
 # 1.5.3 Self Five(2016-08-16)
 - Revert previous refresh code on load to reloadIgnoringCache

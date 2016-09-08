@@ -3,6 +3,7 @@
 - Added addition ignore-cache options per thread
 - Added process node enviroment to ignore secure certs url
 - Change config files name and reference to make it easier to test and update references
+- Added util/config.js to provide default setting and params types.
 
 
 

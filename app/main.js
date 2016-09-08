@@ -1,5 +1,6 @@
 'use strict';
 
+
 //node js dependencies
 let path = require('path'),
     fs = require('fs'),
@@ -21,7 +22,7 @@ let path = require('path'),
 
 
 // Module to control application life.
-const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut, ipcMain} = require('electron');
+const {app, remote, BrowserWindow, ipcMain} = require('electron');
 
 
 //read the file as string and minify for code injection
@@ -43,6 +44,8 @@ app.setAppUserModelId(app.getName());
  */
 app.commandLine.appendSwitch('remote-debugging-port', '32400');
 app.commandLine.appendArgument('--disable-cache');
+//<https://github.com/scramjs/scram-engine/issues/5>
+app.commandLine.appendSwitch('--disable-http-cache');
 
 //app.setUserTasks([]);
 app.clearRecentDocuments();

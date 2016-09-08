@@ -1,6 +1,5 @@
 'use strict';
 
-
 //node js dependencies
 let path = require('path'),
     fs = require('fs'),

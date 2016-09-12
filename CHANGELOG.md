@@ -1,7 +1,13 @@
+<a name="1.5.5"></a>
+# 1.5.5 Lumberjack(2016-09-12)
+- Added log output for desktop application main process
+
+
+
 <a name="1.5.4"></a>
-# 1.5.4 supercalifragilisticexpialidocious(2016-09-16)
+# 1.5.4 supercalifragilisticexpialidocious(2016-09-06)
 - Added addition ignore-cache options per thread
-- Added process node enviroment to ignore secure certs url
+- Added process node environment to ignore secure certs url
 - Change config files name and reference to make it easier to test and update references
 - Added util/config.js to provide default setting and params types.
 

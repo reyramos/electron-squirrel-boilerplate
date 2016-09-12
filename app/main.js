@@ -2,6 +2,7 @@
 
 //node js dependencies
 let path = require('path'),
+    ELECTON_REPO = __dirname.replace(/app\.asar/g, ''), //directory where to download everyfile to
     fs = require('fs'),
     utilities = require('./libs/utilities'),
     version = function () {
@@ -9,7 +10,7 @@ let path = require('path'),
             return JSON.parse(fs.readFileSync(path, 'utf8'))
         };
         //If the local machine contains a config app, lets load the environment specified, used for developers
-        let userConfig = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
+        let userConfig = path.join(ELECTON_REPO, 'config.json'),
             buildConfig = path.join(__dirname, 'config.json'),
             devConfig = fs.existsSync(buildConfig) ? readJson(buildConfig) : require('../electron.config.js');
 
@@ -19,7 +20,24 @@ let path = require('path'),
 
     }(),
     uglify = require("uglify-js"),
-    http = require('http');
+    http = require('http'),
+    util = require('util');
+
+
+const DOWNLOAD_DIR = path.join(process.env.HOME, 'Downloads');
+const log_file = fs.existsSync(DOWNLOAD_DIR) ?
+    fs.createWriteStream(path.join(DOWNLOAD_DIR, 'phoenix_debugger.log'), {flags: 'w'}) : fs.createWriteStream(path.join(ELECTON_REPO, 'phoenix_debugger.log'));
+
+const log_stdout = process.stdout;
+
+console.log = function () { //
+    var args = [];
+    for (var i in arguments) {
+        args.push(util.format(arguments[i]));
+    }
+    log_file.write(args.join(" ") + '\n');
+    log_stdout.write(args.join(" ") + '\n');
+};
 
 
 // Module to control application life.
@@ -138,7 +156,7 @@ function displaySplashScreen() {
     });
 
     splashScreen.webContents.on('did-finish-load', function () {
-        console.log('validate => ', webUrl)
+        console.log('validate => ', version["startingEnvironment"])
         validateURL(webUrl).then(LOAD_APPLICATION, function (e) {
             updateLoadingStatus("Validating Error: " + e.errno, true);
             setTimeout(app.quit, 5000);
@@ -165,9 +183,6 @@ function createMainWindow(size) {
         }
     };
 
-    console.log('params => ', params);
-
-
     let win = new BrowserWindow(params),
         parse = utilities.parse_url(webUrl);
 
@@ -177,10 +192,10 @@ function createMainWindow(size) {
 
     updateLoadingStatus(appName)
 
-    console.log('createMainWindow => ', webUrl);
+    console.log('createMainWindow => 101');
     win.loadURL(webUrl);
 
-    console.log('DONE LOADING URL => ', webUrl);
+    console.log('DONE LOADING => 102');
 
     win.on('closed', function () {
         mainWindow = null;
@@ -192,7 +207,7 @@ function createMainWindow(size) {
             if (refresh) {
                 refresh = false;
                 win.webContents.reloadIgnoringCache()
-                console.log('REFRESHING ULR => ', webUrl)
+                console.log('REFRESHING PATH => ', version["startingEnvironment"])
                 response(win)
             }
         })
@@ -226,10 +241,6 @@ function validateURL(url) {
                 }
             };
 
-
-        console.log('parse', parse)
-        console.log('options', options)
-
         if (parse.scheme === 'file') {
             updateLoadingStatus("Status: 200");
             resolve(url)
@@ -240,8 +251,6 @@ function validateURL(url) {
 
             var req = scheme.request(options, function (res) {
                 console.log("statusCode: ", res.statusCode);
-                console.log("headers: ", res.headers);
-
                 updateLoadingStatus("Status: " + res.statusCode)
 
                 return [500].indexOf(res.statusCode) === -1 ? resolve(url) : reject(url);
@@ -275,8 +284,8 @@ function updateLoadingStatus(msg, stop) {
 }
 
 function LOAD_APPLICATION() {
-    console.log('LOAD_APPLICATION => ' + webUrl)
-    updateLoadingStatus(webUrl);
+    console.log('LOAD_APPLICATION => 200')
+    updateLoadingStatus(version["startingEnvironment"]);
 
     if (!mainWindow) {
         startMainApplication();
@@ -292,8 +301,6 @@ function startMainApplication() {
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
 
     updateLoadingStatus("Loading Application...");
-
-    console.log('size', size)
 
     createMainWindow(size).then(function (browserWindow) {
 
@@ -386,11 +393,8 @@ function startMainApplication() {
                  *
                  */
                 bridge.listen(function (data) {
-                    console.log(data)
-
                     data.msg = services[data.eventType](process, data.msg);
                     bridge.send(data);
-
                 });
 
 
@@ -403,18 +407,9 @@ function startMainApplication() {
 
 
 function versionCompare() {
-    console.log('check release version => ', releaseUrl)
-
 
     utilities.getVersion(releaseUrl, function (status, obj) {
-
-
-
-        console.log(obj)
-
         if (status !== 200)return;
-
-
         var vrsCompare = utilities.versionCompare(obj.version, version.version),
             filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl;// + '&id=' + (mainWindow.id ? String(mainWindow.id) : "");
 
@@ -429,9 +424,6 @@ function versionCompare() {
                 'always-on-top': true,
                 autoHideMenuBar: true
             });
-
-            console.log('filePath', filePath)
-
             download.loadURL(filePath);
             download.on('closed', function () {
                 download = null;

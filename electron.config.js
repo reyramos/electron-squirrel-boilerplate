@@ -40,6 +40,7 @@ module.exports = {
     "QA": "https://qa-phoenix.labcorp.com/web-ui/",
     "BETA": "http://dev2-phoenix.labcorp.com/web-ui/?debug=true",
     "RELEASE2": "http://dev2-phoenix.labcorp.com/web-ui/?debug=true",
+    "LOCAL": "http://seed.labcorp.com:8080/",
 
     //hosting server setting and working environment
     //Application will check for version updates host path

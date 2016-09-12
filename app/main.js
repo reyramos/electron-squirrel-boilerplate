@@ -24,7 +24,7 @@ let path = require('path'),
     util = require('util');
 
 
-const DOWNLOAD_DIR = path.join(process.env.HOME, 'Downloads');
+const DOWNLOAD_DIR = path.join(process.env.USERPROFILE, 'Downloads');
 const log_file = fs.existsSync(DOWNLOAD_DIR) ?
     fs.createWriteStream(path.join(DOWNLOAD_DIR, 'phoenix_debugger.log'), {flags: 'w'}) : fs.createWriteStream(path.join(ELECTON_REPO, 'phoenix_debugger.log'));
 

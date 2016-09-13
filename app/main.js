@@ -31,7 +31,12 @@ const log_file = fs.existsSync(DOWNLOAD_DIR) ?
 const log_stdout = process.stdout;
 
 console.log = function () { //
-    var args = [];
+    var args = [],
+        d = new Date(),
+        timeStamp = "\[" + String(d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear() + ":" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds()) + "\]:";
+
+    args.push(timeStamp);
+
     for (var i in arguments) {
         args.push(util.format(arguments[i]));
     }
@@ -108,7 +113,6 @@ app.on('window-all-closed', function () {
         mainWindow.destroy();
     }
 }).on('will-quit', function () {
-    console.log('<====================================>');
     console.log('Goodbye');
     clearTempFiles();
 }).on('ready', displaySplashScreen);
@@ -188,14 +192,14 @@ function createMainWindow(size) {
 
     var appName = parse.scheme === 'file' ? webUrl : utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');
 
-    console.log('appName', appName)
+    console.log('Application Name:', appName)
 
     updateLoadingStatus(appName)
 
-    console.log('createMainWindow => 101');
+    console.log('createMainWindow');
     win.loadURL(webUrl);
 
-    console.log('DONE LOADING => 102');
+    console.log('DONE LOADING');
 
     win.on('closed', function () {
         mainWindow = null;
@@ -203,7 +207,8 @@ function createMainWindow(size) {
 
     return new Promise(function (response, reject) {
         win.webContents.on('did-finish-load', function (e) {
-            console.log('did-finish-load', refresh);
+            console.log('did-finish-load');
+            console.log('refreshing', refresh);
             if (refresh) {
                 refresh = false;
                 win.webContents.reloadIgnoringCache()
@@ -276,7 +281,7 @@ function updateLoadingStatus(msg, stop) {
         insertScript += "stop();";
 
     if (splashScreen) {
-        console.log('=========updateLoadingStatus============\n', msg)
+        console.log('display status =>', msg)
         splashScreen.webContents.executeJavaScript(insertScript);
     }
 
@@ -284,7 +289,7 @@ function updateLoadingStatus(msg, stop) {
 }
 
 function LOAD_APPLICATION() {
-    console.log('LOAD_APPLICATION => 200')
+    console.log('LOAD_APPLICATION');
     updateLoadingStatus(version["startingEnvironment"]);
 
     if (!mainWindow) {
@@ -294,6 +299,8 @@ function LOAD_APPLICATION() {
 }
 
 function startMainApplication() {
+    console.log('startMainApplication');
+
     var loadingSuccess = true;
     // var electronScreen = require('screen');
     const {screen: electronScreen} = require('electron');
@@ -304,7 +311,7 @@ function startMainApplication() {
 
     createMainWindow(size).then(function (browserWindow) {
 
-        console.log('OPENING APPLICATION')
+        console.log('createMainWindow => success')
         setTimeout(versionCompare, 500);
 
         mainWindow = browserWindow;
@@ -374,6 +381,7 @@ function startMainApplication() {
                     }
                 }
                 mainWindow.show();
+                console.log('COMPLETED!!');
             }, 2000);
 
 
@@ -392,7 +400,9 @@ function startMainApplication() {
                  * electron and webview application
                  *
                  */
+
                 bridge.listen(function (data) {
+                    console.log('bridge listen => ', data.eventType);
                     data.msg = services[data.eventType](process, data.msg);
                     bridge.send(data);
                 });
@@ -407,6 +417,9 @@ function startMainApplication() {
 
 
 function versionCompare() {
+
+    console.log('versionCompare =>')
+
 
     utilities.getVersion(releaseUrl, function (status, obj) {
         if (status !== 200)return;

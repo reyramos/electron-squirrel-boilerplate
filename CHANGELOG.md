@@ -1,3 +1,8 @@
+<a name="1.5.7"></a>
+# 1.5.7 Nuclear Detergent 2 - the return (2016-09-13)
+- Added for remove of user/appData folder
+
+
 <a name="1.5.6"></a>
 # 1.5.6 Epsilon Oopsilon (2016-09-13)
 - Added "Whoops" message to main process if it fails to load application.

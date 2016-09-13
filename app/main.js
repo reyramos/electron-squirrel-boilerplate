@@ -61,16 +61,18 @@ const bridge = require('./libs/ng-bridge');
 
 //require('crash-reporter').start();
 app.setAppUserModelId(app.getName());
+//force delete of the user appData
+deleteFolderRecursive(app.getPath('userData'));
 
 /*
  * Append an argument to Chromium’s command line. The argument will be quoted correctly.
  * http://peter.sh/experiments/chromium-command-line-switches/
  */
 app.commandLine.appendSwitch('remote-debugging-port', '32400');
-app.commandLine.appendArgument('--disable-cache');
-//<https://github.com/scramjs/scram-engine/issues/5>
-app.commandLine.appendSwitch('--disable-http-cache');
-app.commandLine.appendSwitch('--disable-https-cache');
+// app.commandLine.appendArgument('--disable-cache');
+// //<https://github.com/scramjs/scram-engine/issues/5>
+// app.commandLine.appendSwitch('--disable-http-cache');
+// app.commandLine.appendSwitch('--disable-https-cache');
 
 //app.setUserTasks([]);
 app.clearRecentDocuments();
@@ -121,7 +123,25 @@ app.on('window-all-closed', function () {
 
 
 function OopsError() {
-    oopsScreen.show();
+    /**
+     * Build the Splash Screen
+     */
+    if (oopsScreen)return;
+    oopsScreen = new BrowserWindow({
+        width: 752,
+        height: 227,
+        resizable: false,
+        frame: false,
+        autoHideMenuBar: true,
+        'always-on-top': true
+    });
+    oopsScreen.loadURL('file://' + __dirname + '/dialogs/oops.html?');
+
+
+    oopsScreen.on('closed', function () {
+        splashScreen = null;
+    });
+
 }
 
 function displaySplashScreen() {
@@ -137,32 +157,6 @@ function displaySplashScreen() {
     });
 
 
-    //create the oopsScreen if needed
-    oopsScreen = function () {
-        /**
-         * Build the Splash Screen
-         */
-        var oopsScreen = new BrowserWindow({
-            width: 752,
-            height: 227,
-            resizable: false,
-            transparent: true,
-            frame: false,
-            show: false,
-            autoHideMenuBar: true,
-            'always-on-top': true
-        });
-        oopsScreen.loadURL('file://' + __dirname + '/dialogs/oops.html?');
-
-
-        oopsScreen.on('closed', function () {
-            splashScreen = null;
-        });
-
-        return oopsScreen;
-    }();
-
-
     /**
      * Build the Splash Screen
      */
@@ -170,7 +164,6 @@ function displaySplashScreen() {
         width: 602,
         height: 502,
         resizable: false,
-        transparent: true,
         frame: false,
         title: app.getName(),
         autoHideMenuBar: true,
@@ -399,21 +392,8 @@ function startMainApplication() {
             }
 
             setTimeout(function () {
-                if (splashScreen) {
-                    splashScreen.close();//no longer needed
-                    if (splashScreen) {
-                        splashScreen.destroy();
-                    }
-                }
-
-                if(oopsScreen){
-                    oopsScreen.close();//no longer needed
-                    if (oopsScreen) {
-                        oopsScreen.destroy();
-                    }
-                }
-
-
+                splashScreen ? splashScreen.close() : splashScreen ? splashScreen.destroy() : false;
+                oopsScreen ? oopsScreen.close() : oopsScreen ? oopsScreen.destroy() : false;
                 mainWindow.show();
                 console.log('COMPLETED!!');
             }, 2000);
@@ -540,3 +520,29 @@ function clearTempFiles() {
     if (fs.existsSync(tempFileRef)) //only delete if file exist
         fs.unlink(tempFileRef);
 }
+
+
+function deleteFolderRecursive(path) {
+    if (fs.existsSync(path)) {
+        console.log('REMOVE DIRECTORY => ', path)
+
+
+        fs.readdirSync(path).forEach(function (file, index) {
+            var curPath = path + "/" + file;
+            if (fs.lstatSync(curPath).isDirectory()) { // recurse
+                deleteFolderRecursive(curPath);
+            } else { // delete file
+                try {
+                    fs.unlinkSync(curPath);
+                } catch (e) {
+                    console.log('error => ', e)
+                }
+            }
+        });
+        try {
+            fs.rmdirSync(path);
+        } catch (e) {
+            console.log('error => ', e)
+        }
+    }
+};

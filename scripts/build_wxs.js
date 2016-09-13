@@ -311,8 +311,8 @@ module.exports = function (grunt) {
                             //'Id=""',
                             'Key="Software\\Microsoft\\' + appName + '"',
                             'ForceCreateOnInstall="yes">',
-                            // '<RegistryValue Type="integer" Name="SomeIntegerValue" Value="1"/>',
-                            // '<RegistryValue Type="string" Value="~WIN7RTM"/>',
+                            '<RegistryValue Type="integer" Name="SomeIntegerValue" Value="1"/>',
+                            '<RegistryValue Type="string" Value="~VISTASP2"/>',
 
                             '</RegistryKey>'].join(" ");
 

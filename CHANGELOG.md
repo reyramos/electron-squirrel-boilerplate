@@ -1,7 +1,7 @@
 <a name="1.5.6"></a>
 # 1.5.6 Epsilon Oopsilon (2016-09-13)
 - Added "Whoops" message to main process if it fails to load application.
-
+- Added new element attribute to wix template for MajorUpgrade, in hopes that it will stop creating multiple version of the application on the user desktop.
 
 
 

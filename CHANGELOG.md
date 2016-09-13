@@ -1,3 +1,10 @@
+<a name="1.5.6"></a>
+# 1.5.6 Epsilon Oopsilon (2016-09-13)
+- Added "Whoops" message to main process if it fails to load application.
+
+
+
+
 <a name="1.5.5"></a>
 # 1.5.5 Lumberjack(2016-09-12)
 - Added log output for desktop application main process

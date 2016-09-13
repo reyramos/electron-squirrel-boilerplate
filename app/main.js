@@ -94,7 +94,8 @@ let webUrl = function () {
 
 // prevent window being GC'd
 let mainWindow = null,
-    splashScreen = null;
+    splashScreen = null,
+    oopsScreen = null;
 
 /**
  * Create the main Electron Application
@@ -110,6 +111,7 @@ app.on('window-all-closed', function () {
     }
 }).on('gpu-process-crashed', function () {
     if (mainWindow) {
+        OopsError();
         mainWindow.destroy();
     }
 }).on('will-quit', function () {
@@ -117,6 +119,30 @@ app.on('window-all-closed', function () {
     clearTempFiles();
 }).on('ready', displaySplashScreen);
 
+
+function OopsError() {
+    /**
+     * Build the Splash Screen
+     */
+    if (!oopsScreen) {
+        oopsScreen = new BrowserWindow({
+            width: 752,
+            height: 227,
+            resizable: false,
+            transparent: true,
+            frame: false,
+            autoHideMenuBar: true,
+            'always-on-top': true
+        });
+        oopsScreen.loadURL('file://' + __dirname + '/dialogs/oops.html?');
+
+    }
+
+    oopsScreen.on('closed', function () {
+        splashScreen = null;
+    });
+
+}
 
 function displaySplashScreen() {
 
@@ -130,16 +156,6 @@ function displaySplashScreen() {
         app.quit();
     });
 
-
-    /*
-     * Remove this globalShortcut, use port debugger to
-     * debug electron application
-     */
-    //globalShortcut.register('ctrl+d', function () {
-    //    if (mainWindow) {
-    //        mainWindow.toggleDevTools()
-    //    }
-    //});
 
     /**
      * Build the Splash Screen
@@ -163,8 +179,8 @@ function displaySplashScreen() {
         console.log('validate => ', version["startingEnvironment"])
         validateURL(webUrl).then(LOAD_APPLICATION, function (e) {
             updateLoadingStatus("Validating Error: " + e.errno, true);
-            setTimeout(app.quit, 5000);
-        })
+            setTimeout(app.quit, 30000);
+        }, OopsError)
     });
 
 }
@@ -179,7 +195,6 @@ function createMainWindow(size) {
         icon: path.join(__dirname, 'icon.ico'),
         title: app.getName(),
         autoHideMenuBar: true,
-        // frame: false,
         webPreferences: {
             webSecurity: false,
             allowDisplayingInsecureContent: true,
@@ -258,9 +273,13 @@ function validateURL(url) {
                 console.log("statusCode: ", res.statusCode);
                 updateLoadingStatus("Status: " + res.statusCode)
 
-                return [500].indexOf(res.statusCode) === -1 ? resolve(url) : reject(url);
+                return [500].indexOf(res.statusCode) === -1 ? resolve(url) : function () {
+                    OopsError();
+                    reject(url);
+                }();
 
             }).on('error', function (e) {
+                OopsError();
                 console.log('error:', e)
                 reject(e);
             });
@@ -412,7 +431,7 @@ function startMainApplication() {
 
             //end of entry
         }
-    });
+    }, OopsError);
 }
 
 

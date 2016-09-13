@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LabCorp Phoenix</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,700i,900,900i" rel="stylesheet">
+
+    <style>
+        .splashscreen {
+            width: 750px;
+            height: 225px;
+            background-color: #ffffff;
+            position: fixed;
+            border: thin solid #c5c5c5;
+
+            -webkit-box-shadow: 1px 3px 6px 0 rgba(0, 0, 0, 0.75);
+            -moz-box-shadow: 1px 3px 6px 0 rgba(0, 0, 0, 0.75);
+            box-shadow: 1px 3px 6px 0 rgba(0, 0, 0, 0.75);
+
+            background: url('./error.png') no-repeat left top;
+            /*background-position: 40px;*/
+        }
+
+        .loader {
+            font-family: 'Roboto', sans-serif;
+            position: absolute;
+            bottom: 2px;
+            height: 13px;
+            top: 10px;
+            right: 10px;
+            width: 485px;
+        }
+
+        h1 {
+            font-weight: 900;
+            margin-bottom: -15px;
+        }
+
+        h2 {
+            font-weight: 700;
+            font-style: italic;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="splashscreen">
+    <div class="loader">
+        <h1>Whoops!</h1>
+        <h2>looks like something went wrong.</h2>
+        <p>The service you're looking for is unavailable at the moment. Please try gain soon. Thanks for your
+            patience!</p>
+    </div>
+</div>
+
+</body>
+</html>

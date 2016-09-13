@@ -121,27 +121,7 @@ app.on('window-all-closed', function () {
 
 
 function OopsError() {
-    /**
-     * Build the Splash Screen
-     */
-    if (!oopsScreen) {
-        oopsScreen = new BrowserWindow({
-            width: 752,
-            height: 227,
-            resizable: false,
-            transparent: true,
-            frame: false,
-            autoHideMenuBar: true,
-            'always-on-top': true
-        });
-        oopsScreen.loadURL('file://' + __dirname + '/dialogs/oops.html?');
-
-    }
-
-    oopsScreen.on('closed', function () {
-        splashScreen = null;
-    });
-
+    oopsScreen.show();
 }
 
 function displaySplashScreen() {
@@ -155,6 +135,32 @@ function displaySplashScreen() {
         clearTempFiles();
         app.quit();
     });
+
+
+    //create the oopsScreen if needed
+    oopsScreen = function () {
+        /**
+         * Build the Splash Screen
+         */
+        var oopsScreen = new BrowserWindow({
+            width: 752,
+            height: 227,
+            resizable: false,
+            transparent: true,
+            frame: false,
+            show: false,
+            autoHideMenuBar: true,
+            'always-on-top': true
+        });
+        oopsScreen.loadURL('file://' + __dirname + '/dialogs/oops.html?');
+
+
+        oopsScreen.on('closed', function () {
+            splashScreen = null;
+        });
+
+        return oopsScreen;
+    }();
 
 
     /**
@@ -399,6 +405,15 @@ function startMainApplication() {
                         splashScreen.destroy();
                     }
                 }
+
+                if(oopsScreen){
+                    oopsScreen.close();//no longer needed
+                    if (oopsScreen) {
+                        oopsScreen.destroy();
+                    }
+                }
+
+
                 mainWindow.show();
                 console.log('COMPLETED!!');
             }, 2000);

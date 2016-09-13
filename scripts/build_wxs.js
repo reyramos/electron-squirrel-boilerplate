@@ -30,6 +30,9 @@ function parseStrinObject(obj) {
     return obj;
 }
 
+//DO NOT CHANGE!!!!!!!
+const UPGRADE_CODE = '8291b2b1-4b33-11e5-975d-29a7531f1924';
+
 
 rceditOpts = parseStrinObject(rceditOpts);
 config.execName = typeof config.execName === 'undefined' ? 'electron.exe' : config.execName;
@@ -116,6 +119,7 @@ module.exports = function (grunt) {
             });
 
             //set the exec name
+            FILE_WXS = FILE_WXS.replace(/{{UPGRADE_CODE}}/g, UPGRADE_CODE);
             FILE_WXS = FILE_WXS.replace(/{{APP_EXE_NAME}}/g, APP_EXE_NAME);
             //replace the APP_CAB
             FILE_WXS = FILE_WXS.replace(/{{APP_CAB}}/g, (APP_CAB).join("") + ".cab");

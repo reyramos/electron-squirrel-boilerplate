@@ -4,7 +4,7 @@
 
     <Product Name='{{APP_NAME}}'
              Id='*'
-             UpgradeCode='8291b2b1-4b33-11e5-975d-29a7531f1924'
+             UpgradeCode='{{UPGRADE_CODE}}'
              Language='1033'
              Version='{{APP_VERSION}}'
              Manufacturer='{{MANUFACTURER}}'>
@@ -12,10 +12,29 @@
 
         <Package Id='*' InstallerVersion='300' Compressed='yes' InstallScope="perMachine"/>
 
-
         <MajorUpgrade
                 Schedule="afterInstallInitialize"
-                DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit."/>
+                AllowDowngrades="no"
+                DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit."
+                AllowSameVersionUpgrades="no"/>
+
+
+        <!--        <Upgrade Id="{{UPGRADE_CODE}}">
+                    &lt;!&ndash; Detect older product versions &ndash;&gt;
+                    <UpgradeVersion OnlyDetect="no" IncludeMinimum="no" IncludeMaximum="no"
+                                    Minimum="0.0.1"
+                                    Maximum="{{APP_VERSION}}"
+                                    Property="PREVIOUSVERSIONSINSTALLED"/>
+                    &lt;!&ndash; Detect newer product versions &ndash;&gt;
+                    <UpgradeVersion OnlyDetect="yes" IncludeMinimum="no" IncludeMaximum="yes"
+                                    Maximum="{{APP_VERSION}}"
+                                    Property="NEWERVERSIONDETECTED"/>
+                </Upgrade>
+
+
+                <InstallExecuteSequence>
+                    <RemoveExistingProducts After="InstallInitialize"/>
+                </InstallExecuteSequence>-->
 
 
         <util:CloseApplication CloseMessage="yes" Description="Close your application before installing"

@@ -7,11 +7,6 @@
   "author": "ramor11",
   "dependencies": {
     "lokijs": "^1.3.19",
-    "rimraf": "^2.5.4",
-    "uglify-js": "^2.6.0",
-    "uuid": "^2.0.2"
-  },
-  "devDependencies": {
-    "node.extend": "^1.1.3"
+    "uglify-js": "^2.6.0"
   }
 }

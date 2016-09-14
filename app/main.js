@@ -420,7 +420,7 @@ function startMainApplication() {
                 var services = {};
 
                 for (var i in arr.files) {
-                    utilities.extend(services, require(path.join(__dirname, 'ipc', arr.files[i])))
+                    Object.assign(services, require(path.join(__dirname, 'ipc', arr.files[i])))
                 }
 
                 /**

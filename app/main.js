@@ -75,7 +75,7 @@ app.commandLine.appendSwitch('remote-debugging-port', '32400');
 
 //app.setUserTasks([]);
 app.clearRecentDocuments();
-
+cleanup();
 
 //This is to refesh the application while loading, to reloadIgnoringCache
 let refresh = true;
@@ -102,7 +102,9 @@ let mainWindow = null,
 function cleanup(){
     clearTempFiles();
     //force delete of the user appData
+    // require('rimraf').sync(app.getPath('userData'));
     deleteFolderRecursive(app.getPath('userData'));
+
 }
 
 /**
@@ -111,7 +113,10 @@ function cleanup(){
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
         cleanup();
+
         app.quit();
+        return true;
+
     }
 }).on('activate-with-no-open-windows', function () {
     if (!mainWindow) {
@@ -120,7 +125,7 @@ app.on('window-all-closed', function () {
 }).on('gpu-process-crashed', function () {
     if (mainWindow) {
         OopsError();
-        cleanup(app);
+        cleanup();
 
         mainWindow.destroy();
     }
@@ -211,6 +216,8 @@ function createMainWindow(size) {
 
     let win = new BrowserWindow(params),
         parse = utilities.parse_url(webUrl);
+
+
 
     var appName = parse.scheme === 'file' ? webUrl : utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');
 
@@ -341,7 +348,6 @@ function startMainApplication() {
         setTimeout(versionCompare, 500);
 
         mainWindow = browserWindow;
-
 
         mainWindow.webContents.on('did-start-loading', function (e) {
             updateLoadingStatus("Loading Application...")

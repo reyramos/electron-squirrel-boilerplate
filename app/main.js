@@ -61,8 +61,7 @@ const bridge = require('./libs/ng-bridge');
 
 //require('crash-reporter').start();
 app.setAppUserModelId(app.getName());
-//force delete of the user appData
-deleteFolderRecursive(app.getPath('userData'));
+
 
 /*
  * Append an argument to Chromium’s command line. The argument will be quoted correctly.
@@ -99,12 +98,19 @@ let mainWindow = null,
     splashScreen = null,
     oopsScreen = null;
 
+
+function cleanup(){
+    clearTempFiles();
+    //force delete of the user appData
+    deleteFolderRecursive(app.getPath('userData'));
+}
+
 /**
  * Create the main Electron Application
  */
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
-        clearTempFiles();
+        cleanup();
         app.quit();
     }
 }).on('activate-with-no-open-windows', function () {
@@ -114,11 +120,13 @@ app.on('window-all-closed', function () {
 }).on('gpu-process-crashed', function () {
     if (mainWindow) {
         OopsError();
+        cleanup(app);
+
         mainWindow.destroy();
     }
 }).on('will-quit', function () {
+    cleanup();
     console.log('Goodbye');
-    clearTempFiles();
 }).on('ready', displaySplashScreen);
 
 
@@ -152,7 +160,7 @@ function displaySplashScreen() {
      * for user install
      */
     ipcMain.on('application-close-message', function (event, arg) {
-        clearTempFiles();
+        cleanup();
         app.quit();
     });
 

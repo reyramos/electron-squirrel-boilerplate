@@ -1,5 +1,5 @@
 {
   "MY_CUSTOM_URL": "http://google.com",
-  "WORKING_ENVIRONMENT": "MY_CUSTOM_URL"
+  "startingEnvironment": "MY_CUSTOM_URL"
 }
 

@@ -7,8 +7,7 @@ String.prototype.capitalize = function () {
 }
 
 
-var extend = require('node.extend'),
-    path = require('path'),
+var  path = require('path'),
     fs = require('fs'),
     child = require('child_process'),
     service = {},
@@ -71,27 +70,34 @@ service.versionCompare = function (v1, v2, options) {
 
 service.getVersion = function (url, callback) {
 
-    require(service.parse_url(url).scheme).get(url, function (res) {
-        var output = '';
-        res.setEncoding('utf8');
 
-        res.on('data', function (chunk) {
-            output += chunk;
-        });
+    if (url && service.parse_url(url).scheme) {
+        try {
+            process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+            require(service.parse_url(url).scheme).get(url, function (res) {
+                var output = '';
+                res.setEncoding('utf8');
 
-        res.on('end', function () {
-            try {
-                var obj = JSON.parse(output);
-                callback(res.statusCode, obj);
-            } catch (e) {
-            }
+                res.on('data', function (chunk) {
+                    output += chunk;
+                });
 
-        });
+                res.on('end', function () {
+                    try {
+                        var obj = JSON.parse(output);
+                        callback(res.statusCode, obj);
+                    } catch (e) {
+                    }
 
-    }).on('error', function (e) {
-        callback(500, e);
-    });
+                });
 
+            }).on('error', function (e) {
+                callback(500, e);
+            });
+        } catch (e) {
+        }
+
+    }
 
 }
 
@@ -160,71 +166,6 @@ function isPlainObject(obj) {
     return true;
 }
 
-
-service.extend = function () {
-    var options, name, src, copy, copyIsArray, clone,
-        target = arguments[0] || {},
-        i = 1,
-        length = arguments.length,
-        deep = false;
-
-    // Handle a deep copy situation
-    if (typeof target === "boolean") {
-        deep = target;
-
-        // Skip the boolean and the target
-        target = arguments[i] || {};
-        i++;
-    }
-
-    // Handle case when target is a string or something (possible in deep copy)
-    if (typeof target !== "object" && !isFunction(target)) {
-        target = {};
-    }
-
-    // Extend jQuery itself if only one argument is passed
-    if (i === length) {
-        target = this;
-        i--;
-    }
-
-    for (; i < length; i++) {
-        // Only deal with non-null/undefined values
-        if ((options = arguments[i]) != null) {
-            // Extend the base object
-            for (name in options) {
-                src = target[name];
-                copy = options[name];
-
-                // Prevent never-ending loop
-                if (target === copy) {
-                    continue;
-                }
-
-                // Recurse if we're merging plain objects or arrays
-                if (deep && copy && ( isPlainObject(copy) || (copyIsArray = Array.isArray(copy)) )) {
-                    if (copyIsArray) {
-                        copyIsArray = false;
-                        clone = src && Array.isArray(src) ? src : [];
-
-                    } else {
-                        clone = src && isPlainObject(src) ? src : {};
-                    }
-
-                    // Never move original objects, clone them
-                    target[name] = service.extend(deep, clone, copy);
-
-                    // Don't bring in undefined values
-                } else if (copy !== undefined) {
-                    target[name] = copy;
-                }
-            }
-        }
-    }
-
-    // Return the modified object
-    return target;
-};
 
 service.parse_url = function (str, component) {
     //       discuss at: http://phpjs.org/functions/parse_url/
@@ -564,25 +505,6 @@ service.inArray = function (obj, array_params) {
 
 
 /**
- * Merge defaults with user options
- * @private
- * @param {Object} defaults Default settings
- * @param {Object} options User options
- * @returns {Object} Merged values of defaults and options
- */
-service.extend = function (boolean, object) {
-    var results = {};
-
-    for (var i = 2 in arguments) {
-        results = extend(boolean, object, arguments[i])
-    }
-
-    return results;
-}
-
-
-
-/**
  * @ngdoc function
  * @name ngDancik.utilities.utilities#utf8_encode
  * @methodOf ngDancik.utilities.utilities
@@ -794,23 +716,23 @@ service.decode = function (input) {
 
 
 service.grep = function (elems, callback, invert) {
-        var callbackInverse,
-            matches = [],
-            i = 0,
-            length = elems.length,
-            callbackExpect = !invert;
+    var callbackInverse,
+        matches = [],
+        i = 0,
+        length = elems.length,
+        callbackExpect = !invert;
 
-        // Go through the array, only saving the items
-        // that pass the validator function
-        for (; i < length; i++) {
-            callbackInverse = !callback(elems[i], i);
-            if (callbackInverse !== callbackExpect) {
-                matches.push(elems[i]);
-            }
+    // Go through the array, only saving the items
+    // that pass the validator function
+    for (; i < length; i++) {
+        callbackInverse = !callback(elems[i], i);
+        if (callbackInverse !== callbackExpect) {
+            matches.push(elems[i]);
         }
-
-        return matches;
     }
+
+    return matches;
+}
 
 /**
  * Simple function to walk into a directory and return the file path

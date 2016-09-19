@@ -30,6 +30,9 @@ function parseStrinObject(obj) {
     return obj;
 }
 
+//DO NOT CHANGE!!!!!!!
+const UPGRADE_CODE = '8291b2b1-4b33-11e5-975d-29a7531f1924';
+
 
 rceditOpts = parseStrinObject(rceditOpts);
 config.execName = typeof config.execName === 'undefined' ? 'electron.exe' : config.execName;
@@ -68,12 +71,7 @@ module.exports = function (grunt) {
 
         var ELECTRON_EXE_DESTINATION = path.join(ELECTRON_PATH, APP_EXE_NAME);
 
-
-        var buildFileName = config.versionFilePath.split('/');
-
-        buildFileName = buildFileName[buildFileName.length - 1];
-
-        const RELEASE = utilities.parse_url(config["VERSION_SERVER"]).scheme + '://' + utilities.parse_url(config["VERSION_SERVER"]).host + path.join(config.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, config['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/');
+        // const RELEASE = config["versionServer"];
 
         if (fs.existsSync(ELECTRON_PATH)) {
             rcedit(ELECTRON_EXE_DESTINATION, rceditOpts, function (error) {
@@ -121,6 +119,7 @@ module.exports = function (grunt) {
             });
 
             //set the exec name
+            FILE_WXS = FILE_WXS.replace(/{{UPGRADE_CODE}}/g, UPGRADE_CODE);
             FILE_WXS = FILE_WXS.replace(/{{APP_EXE_NAME}}/g, APP_EXE_NAME);
             //replace the APP_CAB
             FILE_WXS = FILE_WXS.replace(/{{APP_CAB}}/g, (APP_CAB).join("") + ".cab");
@@ -189,7 +188,7 @@ module.exports = function (grunt) {
                 };
 
             gruntWrite(path.join(filePath, config.app_name + '_' + 'v' + APP_VERSION + '.wxs'), FILE_WXS);
-            gruntWrite(path.join(filePath, buildFileName), JSON.stringify(config));
+            gruntWrite(path.join(filePath, 'build.json'), JSON.stringify(config));
 
             grunt.log.writeln('=============================================================\r\n');
             grunt.log.writeln('Execute the following command to build the msi file\r\n');
@@ -313,7 +312,7 @@ module.exports = function (grunt) {
                             'Key="Software\\Microsoft\\' + appName + '"',
                             'ForceCreateOnInstall="yes">',
                             '<RegistryValue Type="integer" Name="SomeIntegerValue" Value="1"/>',
-                            '<RegistryValue Type="string" Value="~ WIN7RTM"/>',
+                            '<RegistryValue Type="string" Value="~VISTASP2"/>',
 
                             '</RegistryKey>'].join(" ");
 

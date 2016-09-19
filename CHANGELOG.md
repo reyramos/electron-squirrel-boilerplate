@@ -1,3 +1,31 @@
+<a name="1.5.7"></a>
+# 1.5.7 Nuclear Detergent 2 - the return (2016-09-13)
+- Added for remove of user/appData folder
+- Bug fixes
+
+
+<a name="1.5.6"></a>
+# 1.5.6 Epsilon Oopsilon (2016-09-13)
+- Added "Whoops" message to main process if it fails to load application.
+- Added new element attribute to wix template for MajorUpgrade, in hopes that it will stop creating multiple version of the application on the user desktop.
+
+
+
+<a name="1.5.5"></a>
+# 1.5.5 Lumberjack(2016-09-12)
+- Added log output for desktop application main process
+
+
+
+<a name="1.5.4"></a>
+# 1.5.4 supercalifragilisticexpialidocious(2016-09-06)
+- Added addition ignore-cache options per thread
+- Added process node environment to ignore secure certs url
+- Change config files name and reference to make it easier to test and update references
+- Added util/config.js to provide default setting and params types.
+
+
+
 <a name="1.5.3"></a>
 # 1.5.3 Self Five(2016-08-16)
 - Revert previous refresh code on load to reloadIgnoringCache

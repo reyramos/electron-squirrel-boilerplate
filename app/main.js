@@ -2,6 +2,7 @@
 
 //node js dependencies
 let path = require('path'),
+    ELECTON_REPO = __dirname.replace(/app\.asar/g, ''), //directory where to download everyfile to
     fs = require('fs'),
     utilities = require('./libs/utilities'),
     version = function () {
@@ -9,19 +10,43 @@ let path = require('path'),
             return JSON.parse(fs.readFileSync(path, 'utf8'))
         };
         //If the local machine contains a config app, lets load the environment specified, used for developers
-        let userConfig = path.join(__dirname.replace(/app\.asar/g, ''), 'config.json'),
+        let userConfig = path.join(ELECTON_REPO, 'config.json'),
             buildConfig = path.join(__dirname, 'config.json'),
             devConfig = fs.existsSync(buildConfig) ? readJson(buildConfig) : require('../electron.config.js');
 
-        let version = fs.existsSync(userConfig) ? utilities.extend(true, readJson(buildConfig), readJson(userConfig)) : (fs.existsSync(buildConfig) ? readJson(buildConfig) : devConfig);
-        return version;
+        let version = fs.existsSync(userConfig) ? Object.assign({}, readJson(buildConfig), readJson(userConfig)) : (fs.existsSync(buildConfig) ? readJson(buildConfig) : devConfig);
+
+        return Object.assign({}, require('./libs/config'), version);
+
     }(),
     uglify = require("uglify-js"),
-    http = require('http');
+    http = require('http'),
+    util = require('util');
+
+
+const DOWNLOAD_DIR = path.join(process.env.USERPROFILE, 'Downloads');
+const log_file = fs.existsSync(DOWNLOAD_DIR) ?
+    fs.createWriteStream(path.join(DOWNLOAD_DIR, 'phoenix_debugger.log'), {flags: 'w'}) : fs.createWriteStream(path.join(ELECTON_REPO, 'phoenix_debugger.log'));
+
+const log_stdout = process.stdout;
+
+console.log = function () { //
+    var args = [],
+        d = new Date(),
+        timeStamp = "\[" + String(d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear() + ":" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds()) + "\]:";
+
+    args.push(timeStamp);
+
+    for (var i in arguments) {
+        args.push(util.format(arguments[i]));
+    }
+    log_file.write(args.join(" ") + '\n');
+    log_stdout.write(args.join(" ") + '\n');
+};
 
 
 // Module to control application life.
-const {app, remote, BrowserWindow, Menu, MenuItem, Tray, globalShortcut, ipcMain} = require('electron');
+const {app, remote, BrowserWindow, ipcMain} = require('electron');
 
 
 //read the file as string and minify for code injection
@@ -37,16 +62,20 @@ const bridge = require('./libs/ng-bridge');
 //require('crash-reporter').start();
 app.setAppUserModelId(app.getName());
 
+
 /*
  * Append an argument to Chromium’s command line. The argument will be quoted correctly.
  * http://peter.sh/experiments/chromium-command-line-switches/
  */
 app.commandLine.appendSwitch('remote-debugging-port', '32400');
-app.commandLine.appendArgument('--disable-cache');
+// app.commandLine.appendArgument('--disable-cache');
+// //<https://github.com/scramjs/scram-engine/issues/5>
+// app.commandLine.appendSwitch('--disable-http-cache');
+// app.commandLine.appendSwitch('--disable-https-cache');
 
 //app.setUserTasks([]);
 app.clearRecentDocuments();
-
+cleanup();
 
 //This is to refesh the application while loading, to reloadIgnoringCache
 let refresh = true;
@@ -54,38 +83,40 @@ let refresh = true;
 
 //GET THE ENVIRONMENT VARIABLES TO CREATE,
 //This url contains the version that is hosted on the remote server for package control
-let parseVersionServer = utilities.parse_url(version["VERSION_SERVER"]);
-
-const releaseUrl = [parseVersionServer.scheme
-    , '://'
-    , parseVersionServer.host
-    , parseVersionServer.port ? ":" + parseVersionServer.port : ""
-    , path.join(version.versionFilePath.replace(/\[WORKING_ENVIRONMENT\]/g, version['WORKING_ENVIRONMENT'].toLowerCase())).replace(/\\/g, '/')].join("");
-
+const releaseUrl = version["versionServer"];
 
 let webUrl = function () {
-    var string = version[version["WORKING_ENVIRONMENT"]],
+    var string = version[version["startingEnvironment"]],
         re = new RegExp("__dirname", "g"),
         result = String(string).replace(re, __dirname);
     return result;
 }();
 
 
-console.log('releaseUrl', releaseUrl);
-console.log('webUrl', webUrl);
-
-
 // prevent window being GC'd
 let mainWindow = null,
-    splashScreen = null;
+    splashScreen = null,
+    oopsScreen = null;
+
+
+function cleanup(){
+    clearTempFiles();
+    //force delete of the user appData
+    // require('rimraf').sync(app.getPath('userData'));
+    deleteFolderRecursive(app.getPath('userData'));
+
+}
 
 /**
  * Create the main Electron Application
  */
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
-        clearTempFiles();
+        cleanup();
+
         app.quit();
+        return true;
+
     }
 }).on('activate-with-no-open-windows', function () {
     if (!mainWindow) {
@@ -93,14 +124,38 @@ app.on('window-all-closed', function () {
     }
 }).on('gpu-process-crashed', function () {
     if (mainWindow) {
+        OopsError();
+        cleanup();
+
         mainWindow.destroy();
     }
 }).on('will-quit', function () {
-    console.log('<====================================>');
+    cleanup();
     console.log('Goodbye');
-    clearTempFiles();
 }).on('ready', displaySplashScreen);
 
+
+function OopsError() {
+    /**
+     * Build the Splash Screen
+     */
+    if (oopsScreen)return;
+    oopsScreen = new BrowserWindow({
+        width: 752,
+        height: 227,
+        resizable: false,
+        frame: false,
+        autoHideMenuBar: true,
+        'always-on-top': true
+    });
+    oopsScreen.loadURL('file://' + __dirname + '/dialogs/oops.html?');
+
+
+    oopsScreen.on('closed', function () {
+        splashScreen = null;
+    });
+
+}
 
 function displaySplashScreen() {
 
@@ -110,20 +165,10 @@ function displaySplashScreen() {
      * for user install
      */
     ipcMain.on('application-close-message', function (event, arg) {
-        clearTempFiles();
+        cleanup();
         app.quit();
     });
 
-
-    /*
-     * Remove this globalShortcut, use port debugger to
-     * debug electron application
-     */
-    //globalShortcut.register('ctrl+d', function () {
-    //    if (mainWindow) {
-    //        mainWindow.toggleDevTools()
-    //    }
-    //});
 
     /**
      * Build the Splash Screen
@@ -132,7 +177,6 @@ function displaySplashScreen() {
         width: 602,
         height: 502,
         resizable: false,
-        transparent: true,
         frame: false,
         title: app.getName(),
         autoHideMenuBar: true,
@@ -144,11 +188,11 @@ function displaySplashScreen() {
     });
 
     splashScreen.webContents.on('did-finish-load', function () {
-        console.log('validate => ', webUrl)
+        console.log('validate => ', version["startingEnvironment"])
         validateURL(webUrl).then(LOAD_APPLICATION, function (e) {
             updateLoadingStatus("Validating Error: " + e.errno, true);
-            setTimeout(app.quit, 5000);
-        })
+            setTimeout(app.quit, 30000);
+        }, OopsError)
     });
 
 }
@@ -163,7 +207,6 @@ function createMainWindow(size) {
         icon: path.join(__dirname, 'icon.ico'),
         title: app.getName(),
         autoHideMenuBar: true,
-        // frame: false,
         webPreferences: {
             webSecurity: false,
             allowDisplayingInsecureContent: true,
@@ -171,22 +214,21 @@ function createMainWindow(size) {
         }
     };
 
-    console.log('params => ', params);
-
-
     let win = new BrowserWindow(params),
         parse = utilities.parse_url(webUrl);
 
+
+
     var appName = parse.scheme === 'file' ? webUrl : utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');
 
-    console.log('appName', appName)
+    console.log('Application Name:', appName)
 
     updateLoadingStatus(appName)
 
-    console.log('createMainWindow => ', webUrl);
+    console.log('createMainWindow');
     win.loadURL(webUrl);
 
-    console.log('DONE LOADING URL => ', webUrl);
+    console.log('DONE LOADING');
 
     win.on('closed', function () {
         mainWindow = null;
@@ -194,11 +236,12 @@ function createMainWindow(size) {
 
     return new Promise(function (response, reject) {
         win.webContents.on('did-finish-load', function (e) {
-            console.log('did-finish-load', refresh);
+            console.log('did-finish-load');
+            console.log('refreshing', refresh);
             if (refresh) {
                 refresh = false;
                 win.webContents.reloadIgnoringCache()
-                console.log('REFRESHING ULR => ', webUrl)
+                console.log('REFRESHING PATH => ', version["startingEnvironment"])
                 response(win)
             }
         })
@@ -232,10 +275,6 @@ function validateURL(url) {
                 }
             };
 
-
-        console.log('parse', parse)
-        console.log('options', options)
-
         if (parse.scheme === 'file') {
             updateLoadingStatus("Status: 200");
             resolve(url)
@@ -246,13 +285,15 @@ function validateURL(url) {
 
             var req = scheme.request(options, function (res) {
                 console.log("statusCode: ", res.statusCode);
-                console.log("headers: ", res.headers);
-
                 updateLoadingStatus("Status: " + res.statusCode)
 
-                return [500].indexOf(res.statusCode) === -1 ? resolve(url) : reject(url);
+                return [500].indexOf(res.statusCode) === -1 ? resolve(url) : function () {
+                    OopsError();
+                    reject(url);
+                }();
 
             }).on('error', function (e) {
+                OopsError();
                 console.log('error:', e)
                 reject(e);
             });
@@ -273,7 +314,7 @@ function updateLoadingStatus(msg, stop) {
         insertScript += "stop();";
 
     if (splashScreen) {
-        console.log('=========updateLoadingStatus============\n', msg)
+        console.log('display status =>', msg)
         splashScreen.webContents.executeJavaScript(insertScript);
     }
 
@@ -281,8 +322,8 @@ function updateLoadingStatus(msg, stop) {
 }
 
 function LOAD_APPLICATION() {
-    console.log('LOAD_APPLICATION => ' + webUrl)
-    updateLoadingStatus(webUrl);
+    console.log('LOAD_APPLICATION');
+    updateLoadingStatus(version["startingEnvironment"]);
 
     if (!mainWindow) {
         startMainApplication();
@@ -291,6 +332,8 @@ function LOAD_APPLICATION() {
 }
 
 function startMainApplication() {
+    console.log('startMainApplication');
+
     var loadingSuccess = true;
     // var electronScreen = require('screen');
     const {screen: electronScreen} = require('electron');
@@ -299,15 +342,12 @@ function startMainApplication() {
 
     updateLoadingStatus("Loading Application...");
 
-    console.log('size', size)
-
     createMainWindow(size).then(function (browserWindow) {
 
-        console.log('OPENING APPLICATION')
+        console.log('createMainWindow => success')
         setTimeout(versionCompare, 500);
 
         mainWindow = browserWindow;
-
 
         mainWindow.webContents.on('did-start-loading', function (e) {
             updateLoadingStatus("Loading Application...")
@@ -366,13 +406,10 @@ function startMainApplication() {
             }
 
             setTimeout(function () {
-                if (splashScreen) {
-                    splashScreen.close();//no longer needed
-                    if (splashScreen) {
-                        splashScreen.destroy();
-                    }
-                }
+                splashScreen ? splashScreen.close() : splashScreen ? splashScreen.destroy() : false;
+                oopsScreen ? oopsScreen.close() : oopsScreen ? oopsScreen.destroy() : false;
                 mainWindow.show();
+                console.log('COMPLETED!!');
             }, 2000);
 
 
@@ -383,7 +420,7 @@ function startMainApplication() {
                 var services = {};
 
                 for (var i in arr.files) {
-                    utilities.extend(services, require(path.join(__dirname, 'ipc', arr.files[i])))
+                    Object.assign(services, require(path.join(__dirname, 'ipc', arr.files[i])))
                 }
 
                 /**
@@ -391,12 +428,11 @@ function startMainApplication() {
                  * electron and webview application
                  *
                  */
-                bridge.listen(function (data) {
-                    console.log(data)
 
+                bridge.listen(function (data) {
+                    console.log('bridge listen => ', data.eventType);
                     data.msg = services[data.eventType](process, data.msg);
                     bridge.send(data);
-
                 });
 
 
@@ -404,20 +440,17 @@ function startMainApplication() {
 
             //end of entry
         }
-    });
+    }, OopsError);
 }
 
 
 function versionCompare() {
-    console.log('check release version => ', releaseUrl)
+
+    console.log('versionCompare =>')
 
 
     utilities.getVersion(releaseUrl, function (status, obj) {
-
-
         if (status !== 200)return;
-
-
         var vrsCompare = utilities.versionCompare(obj.version, version.version),
             filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl;// + '&id=' + (mainWindow.id ? String(mainWindow.id) : "");
 
@@ -432,9 +465,6 @@ function versionCompare() {
                 'always-on-top': true,
                 autoHideMenuBar: true
             });
-
-            console.log('filePath', filePath)
-
             download.loadURL(filePath);
             download.on('closed', function () {
                 download = null;
@@ -469,6 +499,8 @@ function checkBootstrap(url) {
     var parse = utilities.parse_url(url),
         url = [parse.scheme, "://", parse.host, ":", parse.port, "/", "bootstrap.txt"].join("");
 
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
     require(parse.scheme).get(url, function (res) {
         if (res.statusCode !== 200) {
 
@@ -502,3 +534,29 @@ function clearTempFiles() {
     if (fs.existsSync(tempFileRef)) //only delete if file exist
         fs.unlink(tempFileRef);
 }
+
+
+function deleteFolderRecursive(path) {
+    if (fs.existsSync(path)) {
+        console.log('REMOVE DIRECTORY => ', path)
+
+
+        fs.readdirSync(path).forEach(function (file, index) {
+            var curPath = path + "/" + file;
+            if (fs.lstatSync(curPath).isDirectory()) { // recurse
+                deleteFolderRecursive(curPath);
+            } else { // delete file
+                try {
+                    fs.unlinkSync(curPath);
+                } catch (e) {
+                    console.log('error => ', e)
+                }
+            }
+        });
+        try {
+            fs.rmdirSync(path);
+        } catch (e) {
+            console.log('error => ', e)
+        }
+    }
+};

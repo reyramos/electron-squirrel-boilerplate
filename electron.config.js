@@ -46,7 +46,7 @@ module.exports = {
     //Application will check for version updates host path
     "versionServer": "https://dev-phoenix.labcorp.com/release/prod/build.json", //hosting server for all the build packages
     //environment to build on start up
-    "startingEnvironment": "PROD"
+    "startingEnvironment": "LOCAL"
 
 };
 

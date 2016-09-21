@@ -161,12 +161,22 @@ function OopsError() {
             splashScreen.destroy();
             mainWindow.destroy();
         }catch (e){}
+
+        try{
+            splashScreen.close();
+            mainWindow.close();
+        }catch (e){}
     });
 
     setTimeout(function () {
         try{
             oopsScreen.destroy();
             mainWindow.destroy();
+        }catch (e){}
+
+        try{
+            oopsScreen.close();
+            mainWindow.close();
         }catch (e){}
     }, 1000 * 30)
 

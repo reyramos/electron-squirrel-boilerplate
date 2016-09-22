@@ -157,6 +157,8 @@ function OopsError() {
 
 
     oopsScreen.on('closed', function () {
+        console.log('OopsError => CLOSED');
+        app.quit();
         try{
             splashScreen.destroy();
             mainWindow.destroy();
@@ -562,9 +564,6 @@ function clearTempFiles() {
 
 function deleteFolderRecursive(path) {
     if (fs.existsSync(path)) {
-        console.log('REMOVE DIRECTORY => ', path)
-
-
         fs.readdirSync(path).forEach(function (file, index) {
             var curPath = path + "/" + file;
             if (fs.lstatSync(curPath).isDirectory()) { // recurse
@@ -572,8 +571,9 @@ function deleteFolderRecursive(path) {
             } else { // delete file
                 try {
                     fs.unlinkSync(curPath);
+                    console.log('REMOVE => ', curPath)
                 } catch (e) {
-                    console.log('FAILED TO REMOVE => ', path)
+                    console.log('FAILED TO REMOVE => ', curPath)
 
                     // console.log('error => ', e)
                 }
@@ -581,6 +581,7 @@ function deleteFolderRecursive(path) {
         });
         try {
             fs.rmdirSync(path);
+            console.log('REMOVE DIRECTORY => ', path)
         } catch (e) {
             console.log('FAILED TO REMOVE => ', path)
             // console.log('error => ', e)

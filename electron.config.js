@@ -6,7 +6,7 @@ module.exports = {
      */
     //for every build on msi the numbers will need to increment to update the
     //msi application stored on windows machine
-    "version": "1.5.7",
+    "version": "1.5.8",
 
     "app_name": "LabCorp Phoenix",
     "app_description": "LabCorp Application",

@@ -99,7 +99,14 @@ let mainWindow = null,
     oopsScreen = null;
 
 
-function cleanup(){
+//LISTENING EVENTS
+let DidFailLoad = false,
+    DidFinishLoad = false,
+    DidStartLoading = false,
+    DidFrameFinishLoad = false,
+    DidStopLoading = false;
+
+function cleanup() {
     clearTempFiles();
     //force delete of the user appData
     // require('rimraf').sync(app.getPath('userData'));
@@ -112,11 +119,9 @@ function cleanup(){
  */
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
-        cleanup();
-
+        cleanup()
         app.quit();
         return true;
-
     }
 }).on('activate-with-no-open-windows', function () {
     if (!mainWindow) {
@@ -126,12 +131,12 @@ app.on('window-all-closed', function () {
     if (mainWindow) {
         OopsError();
         cleanup();
-
         mainWindow.destroy();
     }
 }).on('will-quit', function () {
-    cleanup();
+
     console.log('Goodbye');
+    cleanup();
 }).on('ready', displaySplashScreen);
 
 
@@ -152,8 +157,30 @@ function OopsError() {
 
 
     oopsScreen.on('closed', function () {
-        splashScreen = null;
+        console.log('OopsError => CLOSED');
+        app.quit();
+        try{
+            splashScreen.destroy();
+            mainWindow.destroy();
+        }catch (e){}
+
+        try{
+            splashScreen.close();
+            mainWindow.close();
+        }catch (e){}
     });
+
+    setTimeout(function () {
+        try{
+            oopsScreen.destroy();
+            mainWindow.destroy();
+        }catch (e){}
+
+        try{
+            oopsScreen.close();
+            mainWindow.close();
+        }catch (e){}
+    }, 1000 * 30)
 
 }
 
@@ -218,7 +245,6 @@ function createMainWindow(size) {
         parse = utilities.parse_url(webUrl);
 
 
-
     var appName = parse.scheme === 'file' ? webUrl : utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');
 
     console.log('Application Name:', appName)
@@ -238,6 +264,7 @@ function createMainWindow(size) {
         win.webContents.on('did-finish-load', function (e) {
             console.log('did-finish-load');
             console.log('refreshing', refresh);
+            DidFinishLoad = true;
             if (refresh) {
                 refresh = false;
                 win.webContents.reloadIgnoringCache()
@@ -350,22 +377,17 @@ function startMainApplication() {
         mainWindow = browserWindow;
 
         mainWindow.webContents.on('did-start-loading', function (e) {
+            DidStartLoading = true;
             updateLoadingStatus("Loading Application...")
         });
 
         mainWindow.webContents.on('did-fail-load', function (e) {
-            loadingSuccess = false;
-            try {
-                mainWindow.destroy();//no longer needed
-            } catch (e) {
-            }
-
-            try {
-                mainWindow.close();//no longer needed
-            } catch (e) {
-            }
             console.log('did-fail-load')
+            DidFailLoad = true;
+            OopsError();
             updateLoadingStatus("Failed to load ...", true)
+            mainWindow.hide();
+
         });
 
         /**
@@ -373,6 +395,7 @@ function startMainApplication() {
          * without electron interaction, we will re-inject the electronCode
          */
         mainWindow.webContents.on('did-frame-finish-load', function (e) {
+            DidFrameFinishLoad = true;
             console.log('did-frame-finish-load');
             //next event => did-stop-loading will reload the necessary injections
             loadingSuccess = true;
@@ -387,12 +410,13 @@ function startMainApplication() {
 
 
         function onComplete(e) {
-
+            console.log('did-stop-loading:onComplete:');
+            DidStopLoading = true;
             //if it did not failed, lets hide the splashScreen and show the application
-            if (!loadingSuccess)return;
+            if (!loadingSuccess || DidFailLoad)return;
+
 
             loadingSuccess = false;
-            console.log('did-stop-loading');
 
             //insert the electron id indicator
             mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
@@ -439,6 +463,8 @@ function startMainApplication() {
             });
 
             //end of entry
+
+
         }
     }, OopsError);
 }
@@ -538,9 +564,6 @@ function clearTempFiles() {
 
 function deleteFolderRecursive(path) {
     if (fs.existsSync(path)) {
-        console.log('REMOVE DIRECTORY => ', path)
-
-
         fs.readdirSync(path).forEach(function (file, index) {
             var curPath = path + "/" + file;
             if (fs.lstatSync(curPath).isDirectory()) { // recurse
@@ -548,15 +571,20 @@ function deleteFolderRecursive(path) {
             } else { // delete file
                 try {
                     fs.unlinkSync(curPath);
+                    console.log('REMOVE => ', curPath)
                 } catch (e) {
-                    console.log('error => ', e)
+                    console.log('FAILED TO REMOVE => ', curPath)
+
+                    // console.log('error => ', e)
                 }
             }
         });
         try {
             fs.rmdirSync(path);
+            console.log('REMOVE DIRECTORY => ', path)
         } catch (e) {
-            console.log('error => ', e)
+            console.log('FAILED TO REMOVE => ', path)
+            // console.log('error => ', e)
         }
     }
 };

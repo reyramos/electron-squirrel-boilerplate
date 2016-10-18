@@ -68,10 +68,10 @@ app.setAppUserModelId(app.getName());
  * http://peter.sh/experiments/chromium-command-line-switches/
  */
 app.commandLine.appendSwitch('remote-debugging-port', '32400');
-// app.commandLine.appendArgument('--disable-cache');
+app.commandLine.appendArgument('disable-cache');
 // //<https://github.com/scramjs/scram-engine/issues/5>
-// app.commandLine.appendSwitch('--disable-http-cache');
-// app.commandLine.appendSwitch('--disable-https-cache');
+app.commandLine.appendSwitch('disable-http-cache');
+app.commandLine.appendSwitch('disable-https-cache');
 
 //app.setUserTasks([]);
 app.clearRecentDocuments();
@@ -159,27 +159,31 @@ function OopsError() {
     oopsScreen.on('closed', function () {
         console.log('OopsError => CLOSED');
         app.quit();
-        try{
+        try {
             splashScreen.destroy();
             mainWindow.destroy();
-        }catch (e){}
+        } catch (e) {
+        }
 
-        try{
+        try {
             splashScreen.close();
             mainWindow.close();
-        }catch (e){}
+        } catch (e) {
+        }
     });
 
     setTimeout(function () {
-        try{
+        try {
             oopsScreen.destroy();
             mainWindow.destroy();
-        }catch (e){}
+        } catch (e) {
+        }
 
-        try{
+        try {
             oopsScreen.close();
             mainWindow.close();
-        }catch (e){}
+        } catch (e) {
+        }
     }, 1000 * 30)
 
 }
@@ -483,7 +487,7 @@ function versionCompare() {
         if (vrsCompare > 0) {
             var download = new BrowserWindow({
                 width: 402,
-                height: 152,
+                height: 148,
                 resizable: false,
                 alwaysOnTop: true,
                 frame: false,

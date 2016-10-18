@@ -476,9 +476,6 @@ function startMainApplication() {
 
 function versionCompare() {
 
-    console.log('versionCompare =>')
-
-
     utilities.getVersion(releaseUrl, function (status, obj) {
         if (status !== 200)return;
         var vrsCompare = utilities.versionCompare(obj.version, version.version),

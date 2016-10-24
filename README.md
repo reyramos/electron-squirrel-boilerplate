@@ -172,6 +172,12 @@ startMainApplication()
 			did-stop-loading => electronInsertion()
 ```
 	
+	
+## Jenkins Deployment
+* To allow for manual deployment route to [Jenkis](http://bnwphxda:8080/job/electron/view/Pipeline/) and click on RUN link. This will trigger a git pull from master branch and will build. Depending on your credentials the user will have additional superuser actions on Jenkis.
+
+	
+	
 ## RDC
 2UA2300TTV
 2UA2280PC5

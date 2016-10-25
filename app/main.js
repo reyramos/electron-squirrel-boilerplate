@@ -24,8 +24,8 @@ let path = require('path'),
     util = require('util');
 
 
-if(require('electron-squirrel-startup')) return;
 
+if(require('electron-squirrel-startup')) return;
 
 
 const DOWNLOAD_DIR = path.join(process.env.USERPROFILE, 'Downloads');
@@ -48,9 +48,21 @@ console.log = function () { //
     log_stdout.write(args.join(" ") + '\n');
 };
 
+/***********************************************************************************************************************************************
+ * START OF THE FUN
+ **********************************************************************************************************************************************/
 
 // Module to control application life.
-const {app, remote, BrowserWindow, ipcMain} = require('electron');
+const {app, remote, BrowserWindow, ipcMain, autoUpdater} = require('electron');
+
+
+var versionURL = "http://localhost/releases/win/v1.5.8.msi";
+const appVersion = require('./package.json').version;
+const os = require('os').platform();
+
+console.log('appVersion', versionURL)
+autoUpdater.setFeedURL(versionURL);
+
 
 
 //read the file as string and minify for code injection
@@ -88,6 +100,10 @@ let refresh = true;
 //GET THE ENVIRONMENT VARIABLES TO CREATE,
 //This url contains the version that is hosted on the remote server for package control
 const releaseUrl = version["versionServer"];
+
+
+
+
 
 let webUrl = function () {
     var string = version[version["startingEnvironment"]],

@@ -45,7 +45,7 @@ module.exports = {
     //hosting server setting and working environment
     //Application will check for version updates host path
     // "versionServer": "https://dev-phoenix.labcorp.com/release/prod/build.json",
-    "versionServer": "http://localhost/ELECTRON_TEST/build.json",
+    "versionServer": "http://localhost/releases/win/build.json",
     //environment to build on start up
     "startingEnvironment": "PROD"
 

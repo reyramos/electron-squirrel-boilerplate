@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "node \"./scripts/development.js\"",
-    "build": "rimraf dist && npm run exe32",
+    "build": "rimraf build && npm run exe32",
     "exe32": "node \"./scripts/production.js\""
   },
   "dependencies": {
@@ -30,6 +30,7 @@
     "electron-installer-windows": "*",
     "electron-packager": "^7.0.3",
     "electron-prebuilt": "1.2.5",
+    "electron-winstaller": "^2.3.4",
     "grunt": "^0.4.5",
     "grunt-cli": "0.1.13",
     "grunt-contrib-clean": "^0.6.0",

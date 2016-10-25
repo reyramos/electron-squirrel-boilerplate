@@ -1,10 +1,11 @@
 var path = require('path'),
-    config = require("../electron.config.js");
+    config = require("../electron.config.js"),
+    package = require("../package.json");
 
 config['build_date'] = new Date().toJSON();
 
 
-const APP_NAME = config.app_name;
+const APP_NAME = config.app_name ;
 const APP_DESCRIPTION = config.app_description;
 const MANUFACTURER = config.manufacturer;
 const APP_VERSION = String(config.version).trim() || false;

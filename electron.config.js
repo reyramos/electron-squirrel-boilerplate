@@ -26,7 +26,9 @@ module.exports = {
     //currently version 1.2.5 is the only one compatible with electron-printer
 
     //WixToolSet: Identifiers may contain ASCII characters A-Z, a-z, digits, underscores (_), or periods (.).  Every identifier must begin with either a letter or an underscore.
-    "execName": "phoenix.exe",
+    // "execName": "phoenix.exe",
+    "execName": "phoenix",
+
 
     /*************************************************************
      * The following will affect the way the application start

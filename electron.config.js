@@ -4,16 +4,16 @@ module.exports = {
      * set the default values of they dont exist on this file.
      *
      */
-    //for every build on msi the numbers will need to increment to update the
-    //msi application stored on windows machine
-    "version": "1.5.8",
-
-    "app_name": "LabCorp Phoenix",
-    "app_description": "LabCorp Application",
-    "manufacturer": "LabCorp Inc",
+    // //for every build on msi the numbers will need to increment to update the
+    // //msi application stored on windows machine
+    // "version": "1.5.8",
+    //
+    // "app_name": "LabCorp Phoenix",
+    // "app_description": "LabCorp Application",
+    // "manufacturer": "LabCorp Inc",
 
     //location of main.js and source files
-    "source": "app",
+    "source": ".",
 
     //build location
     "distribution": "build",

@@ -15,7 +15,7 @@ let path = require('path'),
 
         let version = fs.existsSync(userConfig) ? Object.assign({}, readJson(buildConfig), readJson(userConfig)) : (fs.existsSync(buildConfig) ? readJson(buildConfig) : devConfig);
 
-        return Object.assign({}, require('./libs/config'), version);
+        return Object.assign({}, version);
 
     }(),
     uglify = require("uglify-js"),
@@ -56,7 +56,7 @@ const {app, remote, BrowserWindow, ipcMain, autoUpdater} = require('electron');
 
 
 var versionURL = "http://localhost/releases/win/v1.5.8.msi";
-const appVersion = require('./package.json').version;
+const appVersion = require('../package.json').version;
 const os = require('os').platform();
 
 console.log('appVersion', versionURL)

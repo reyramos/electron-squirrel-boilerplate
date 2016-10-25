@@ -4,56 +4,58 @@
 let path = require('path'),
     fs = require('fs'),
     config = require("../electron.config.js"),
+    helpers = require("./helpers"),
     shell = require('shelljs');
 
-const APPLICATION_SRC = path.join(path.dirname(__dirname), config.source);
+const APPLICATION_SRC = helpers.root(config.source);
 
-let electron_printer = path.join(APPLICATION_SRC, 'node_modules', 'electron-printer');
 
 let command = "\"./node_modules/.bin/electron\"",
 
 //build the command script based on config files
     _c = [
         command
+        , APPLICATION_SRC
         , "--version=\"" + config.electronVersion + "\""
-        , APPLICATION_SRC //+ "/main.js"
 
     ];
 
-let electronVersion = shell.exec([command, '--version'].join(' '), {silent:true}).stdout.replace(/v/g, '');
+// let electronVersion = shell.exec([command, '--version'].join(' '), {silent:true}).stdout.replace(/v/g, '');
+// let electron_printer = helpers.root(APPLICATION_SRC, 'node_modules', 'electron-printer');
+//
+// if (fs.existsSync(electron_printer)) {
+//     // shell.rm('-rf', path.join(APPLICATION_SRC, 'config.json'));
+//     // shell.cd(electron_printer);
+//     //
+//     //
+//     // let printer_bin = [
+//     //     "node-pre-gyp clean configure build",
+//     //     "--target_arch=" + process.arch, //x64
+//     //     "--target_platform=" + process.platform,
+//     //     "--runtime=electron",
+//     //     "--target=" + electronVersion,
+//     //     "--build-from-source && node-pre-gyp package",
+//     //     "--target_arch=" + process.arch, //x64
+//     //     "--=target_platform=" + process.platform,
+//     //     "--runtime=electron",
+//     //     "--target=" + electronVersion,
+//     //     "--dist-url=https://atom.io/download/atom-shell"
+//     // ].join(" ");
+//     //
+//     //
+//     //
+//     // if (shell.exec(printer_bin).code !== 0) {
+//     //     console.log('Error: Failed to build electron-printer');
+//     // } else {
+//     //     console.log('Build electron-printer');
+//     // }
+//
+// }
 
-
-
-if (fs.existsSync(electron_printer)) {
-    // shell.rm('-rf', path.join(APPLICATION_SRC, 'config.json'));
-    // shell.cd(electron_printer);
-    //
-    //
-    // let printer_bin = [
-    //     "node-pre-gyp clean configure build",
-    //     "--target_arch=" + process.arch, //x64
-    //     "--target_platform=" + process.platform,
-    //     "--runtime=electron",
-    //     "--target=" + electronVersion,
-    //     "--build-from-source && node-pre-gyp package",
-    //     "--target_arch=" + process.arch, //x64
-    //     "--=target_platform=" + process.platform,
-    //     "--runtime=electron",
-    //     "--target=" + electronVersion,
-    //     "--dist-url=https://atom.io/download/atom-shell"
-    // ].join(" ");
-    //
-    //
-    //
-    // if (shell.exec(printer_bin).code !== 0) {
-    //     console.log('Error: Failed to build electron-printer');
-    // } else {
-    //     console.log('Build electron-printer');
-    // }
-
-}
+console.log('COMMAND ==> ', _c.join(" "))
 
 
 //back to root
-shell.cd(path.join(APPLICATION_SRC, '..'));
+// shell.cd(helpers.root());
+
 shell.exec((_c.join(" ")));

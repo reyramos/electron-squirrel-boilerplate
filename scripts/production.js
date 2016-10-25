@@ -13,7 +13,7 @@ var electronInstaller = require('electron-winstaller');
 var npmScripts = typeof (process.argv[2]) === 'undefined';
 
 
-const APP_BUILD_PATH = helpers.root(config.distribution, [config.execName, config.platform, config.arch].join("-"));
+const APP_BUILD_PATH = helpers.root(config.distribution, [package.name, config.platform, config.arch].join("-"));
 
 
 function parseStringCamelCase(string) {
@@ -115,14 +115,14 @@ if (npmScripts) {
     shell.exec(_command, function (code) {
         if (code !== 0)return;
 
-        // let resultPromise = electronInstaller.createWindowsInstaller({
-        //     appDirectory: APP_BUILD_PATH,
-        //     outputDirectory: helpers.root(config.distribution, 'installer32'),
-        //     authors: 'My App Inc.',
-        //     exe: config.execName + '.exe'
-        // });
-        //
-        // resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));
+        let resultPromise = electronInstaller.createWindowsInstaller({
+            appDirectory: APP_BUILD_PATH,
+            outputDirectory: helpers.root(config.distribution, 'installer32'),
+            authors: 'My App Inc.',
+            exe: package.name + '.exe'
+        });
+
+        resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));
     });
 
 

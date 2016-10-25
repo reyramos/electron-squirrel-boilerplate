@@ -48,7 +48,6 @@ let command = "\"./node_modules/.bin/electron-packager\"",
         , "--out=" + config.distribution
         , "--overwrite"
         , "--version=\"" + config.electronVersion + "\""
-        , "--icon app/icon.ico"
     ];
 
 
@@ -67,10 +66,6 @@ Object.keys(versionString).forEach(function (key) {
 
 //ICON PATH
 _c.push("--icon=\"" + rceditOpts['icon'] + "\"");
-//ELECTRON VERSION <https://github.com/electron/electron/releases>
-if (config.electronVersion)
-    _c.push("--version=\"" + config.electronVersion + "\"");
-
 
 /*
  * * All platforms *
@@ -115,25 +110,21 @@ if (npmScripts) {
 
     console.log(_command);
 
-    // fs.writeFile(path.join(APPLICATION_SRC, 'config.json'), JSON.stringify(config), function (err) {
-    //     if (err) return console.log(err);
-    //     shell.exec(_command);
-    //
-    //     //remove the file that we just created
-    //     shell.rm('-rf', path.join(APPLICATION_SRC, 'config.json'));
-    //
-    //     //
-    //     // let resultPromise = electronInstaller.createWindowsInstaller({
-    //     //     appDirectory: APP_BUILD_PATH,
-    //     //     outputDirectory: helpers.root(config.distribution, 'installer32'),
-    //     //     authors: 'My App Inc.',
-    //     //     exe: config.execName + '.exe'
-    //     // });
-    //     //
-    //     // resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));
-    //
-    //
-    // });
+
+    shell.exec(_command, function (code) {
+        if (code !== 0)return;
+
+        let resultPromise = electronInstaller.createWindowsInstaller({
+            appDirectory: APP_BUILD_PATH,
+            outputDirectory: helpers.root(config.distribution, 'installer32'),
+            authors: 'My App Inc.',
+            exe: config.execName + '.exe'
+        });
+
+        resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));
+    });
+
+
 }
 
 

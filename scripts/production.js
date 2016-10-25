@@ -72,7 +72,7 @@ _c.push("--icon=\"" + rceditOpts['icon'] + "\"");
  * * All platforms *
  */
 _c.push("--app-copyright=\"" + rceditOpts['version-string']['LegalCopyright'] + "\"");
-_c.push("--app-version=\"" + rceditOpts['version-string']['FileVersion'] + "\'");
+_c.push("--app-version=\"" + rceditOpts['version-string']['FileVersion'] + "\"");
 _c.push("--build-version=\"" + rceditOpts['version-string']['ProductVersion'] + "\"");
 
 
@@ -118,8 +118,9 @@ if (npmScripts) {
         let resultPromise = electronInstaller.createWindowsInstaller({
             appDirectory: APP_BUILD_PATH,
             outputDirectory: helpers.root(config.distribution, 'installer32'),
-            authors: 'My App Inc.',
-            exe: package.name + '.exe'
+            iconUrl: rceditOpts['icon'],
+            setupIcon: rceditOpts['icon'],
+            // noMsi:true
         });
 
         resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));

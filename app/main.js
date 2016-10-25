@@ -4,7 +4,6 @@
 let path = require('path'),
     ELECTON_REPO = __dirname.replace(/app\.asar/g, ''), //directory where to download everyfile to
     fs = require('fs'),
-    utilities = require('./libs/utilities'),
     version = function () {
         let readJson = function (path) {
             return JSON.parse(fs.readFileSync(path, 'utf8'))
@@ -64,17 +63,6 @@ console.log('appVersion', versionURL)
 autoUpdater.setFeedURL(versionURL);
 
 
-
-//read the file as string and minify for code injection
-const code = uglify.minify([path.join(__dirname, 'libs', 'ng-electron-promise.js')]).code;
-/*
- * bridge to send command from webview to electron application
- * this will allow the webapplication to define electron controlls without the need
- * to apply changes to app/main.js
- */
-const bridge = require('./libs/ng-bridge');
-
-
 //require('crash-reporter').start();
 app.setAppUserModelId(app.getName());
 
@@ -89,9 +77,7 @@ app.commandLine.appendArgument('disable-cache');
 app.commandLine.appendSwitch('disable-http-cache');
 app.commandLine.appendSwitch('disable-https-cache');
 
-//app.setUserTasks([]);
 app.clearRecentDocuments();
-cleanup();
 
 //This is to refesh the application while loading, to reloadIgnoringCache
 let refresh = true;
@@ -100,9 +86,6 @@ let refresh = true;
 //GET THE ENVIRONMENT VARIABLES TO CREATE,
 //This url contains the version that is hosted on the remote server for package control
 const releaseUrl = version["versionServer"];
-
-
-
 
 
 let webUrl = function () {
@@ -126,127 +109,29 @@ let DidFailLoad = false,
     DidFrameFinishLoad = false,
     DidStopLoading = false;
 
-function cleanup() {
-    clearTempFiles();
-    //force delete of the user appData
-    // require('rimraf').sync(app.getPath('userData'));
-    deleteFolderRecursive(app.getPath('userData'));
-
-}
 
 /**
  * Create the main Electron Application
  */
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
-        cleanup()
         app.quit();
         return true;
     }
 }).on('activate-with-no-open-windows', function () {
     if (!mainWindow) {
-        displaySplashScreen();
+        startMainApplication();
     }
 }).on('gpu-process-crashed', function () {
     if (mainWindow) {
-        OopsError();
-        cleanup();
         mainWindow.destroy();
     }
 }).on('will-quit', function () {
-
     console.log('Goodbye');
-    cleanup();
-}).on('ready', displaySplashScreen);
+}).on('ready', startMainApplication);
 
 
-function OopsError() {
-    /**
-     * Build the Splash Screen
-     */
-    if (oopsScreen)return;
-    oopsScreen = new BrowserWindow({
-        width: 752,
-        height: 227,
-        resizable: false,
-        frame: false,
-        autoHideMenuBar: true,
-        'always-on-top': true
-    });
-    oopsScreen.loadURL('file://' + __dirname + '/dialogs/oops.html?');
 
-
-    oopsScreen.on('closed', function () {
-        console.log('OopsError => CLOSED');
-        app.quit();
-        try {
-            splashScreen.destroy();
-            mainWindow.destroy();
-        } catch (e) {
-        }
-
-        try {
-            splashScreen.close();
-            mainWindow.close();
-        } catch (e) {
-        }
-    });
-
-    setTimeout(function () {
-        try {
-            oopsScreen.destroy();
-            mainWindow.destroy();
-        } catch (e) {
-        }
-
-        try {
-            oopsScreen.close();
-            mainWindow.close();
-        } catch (e) {
-        }
-    }, 1000 * 30)
-
-}
-
-function displaySplashScreen() {
-
-    /**
-     * This is used to close the application and rendering process,
-     * It will also terminate the process to allow
-     * for user install
-     */
-    ipcMain.on('application-close-message', function (event, arg) {
-        cleanup();
-        app.quit();
-    });
-
-
-    /**
-     * Build the Splash Screen
-     */
-    splashScreen = new BrowserWindow({
-        width: 602,
-        height: 502,
-        resizable: false,
-        frame: false,
-        title: app.getName(),
-        autoHideMenuBar: true,
-        'always-on-top': true
-    });
-    splashScreen.loadURL('file://' + __dirname + '/dialogs/spash-screen.html?');
-    splashScreen.on('closed', function () {
-        splashScreen = null;
-    });
-
-    splashScreen.webContents.on('did-finish-load', function () {
-        console.log('validate => ', version["startingEnvironment"])
-        validateURL(webUrl).then(LOAD_APPLICATION, function (e) {
-            updateLoadingStatus("Validating Error: " + e.errno, true);
-            setTimeout(app.quit, 30000);
-        }, OopsError)
-    });
-
-}
 
 
 function createMainWindow(size) {
@@ -254,7 +139,6 @@ function createMainWindow(size) {
         width: size.width,
         height: size.height,
         resizable: true,
-        show: false,
         icon: path.join(__dirname, 'icon.ico'),
         title: app.getName(),
         autoHideMenuBar: true,
@@ -265,17 +149,9 @@ function createMainWindow(size) {
         }
     };
 
-    let win = new BrowserWindow(params),
-        parse = utilities.parse_url(webUrl);
+    let win = new BrowserWindow(params);
 
 
-    var appName = parse.scheme === 'file' ? webUrl : utilities.parse_url(webUrl).host.replace(/.labcorp.com/g, '');
-
-    console.log('Application Name:', appName)
-
-    updateLoadingStatus(appName)
-
-    console.log('createMainWindow');
     win.loadURL(webUrl);
 
     console.log('DONE LOADING');
@@ -284,101 +160,9 @@ function createMainWindow(size) {
         mainWindow = null;
     });
 
-    return new Promise(function (response, reject) {
-        win.webContents.on('did-finish-load', function (e) {
-            console.log('did-finish-load');
-            console.log('refreshing', refresh);
-            DidFinishLoad = true;
-            if (refresh) {
-                refresh = false;
-                win.webContents.reloadIgnoringCache()
-                console.log('REFRESHING PATH => ', version["startingEnvironment"])
-                response(win)
-            }
-        })
+    return new Promise(function (response) {
+        response(win)
     });
-
-}
-
-
-function validateURL(url) {
-
-
-    updateLoadingStatus("Validating Path ...")
-
-    /**
-     * Once the Splash Screen finish loading, check the version, start to load the application
-     * in the background
-     */
-
-    return new Promise(function (resolve, reject) {
-        var parse = utilities.parse_url(url),
-            options = {
-                host: parse.host,
-                port: parse.port,
-                method: 'GET',
-                rejectUnauthorized: false,
-                requestCert: true,
-                agent: false,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Content-Length': ''
-                }
-            };
-
-        if (parse.scheme === 'file') {
-            updateLoadingStatus("Status: 200");
-            resolve(url)
-        } else {
-
-
-            let scheme = require(parse.scheme);
-
-            var req = scheme.request(options, function (res) {
-                console.log("statusCode: ", res.statusCode);
-                updateLoadingStatus("Status: " + res.statusCode)
-
-                return [500].indexOf(res.statusCode) === -1 ? resolve(url) : function () {
-                    OopsError();
-                    reject(url);
-                }();
-
-            }).on('error', function (e) {
-                OopsError();
-                console.log('error:', e)
-                reject(e);
-            });
-
-            req.end();
-
-        }
-
-
-    });
-}
-
-
-function updateLoadingStatus(msg, stop) {
-    var insertScript = 'var s = document.querySelector( \'.status-text\' );s.innerHTML="' + msg + '";';
-
-    if (stop)
-        insertScript += "stop();";
-
-    if (splashScreen) {
-        console.log('display status =>', msg)
-        splashScreen.webContents.executeJavaScript(insertScript);
-    }
-
-
-}
-
-function LOAD_APPLICATION() {
-    console.log('LOAD_APPLICATION');
-    updateLoadingStatus(version["startingEnvironment"]);
-
-    if (!mainWindow) {
-        startMainApplication();
-    }
 
 }
 
@@ -391,25 +175,17 @@ function startMainApplication() {
 
     var size = electronScreen.getPrimaryDisplay().workAreaSize;
 
-    updateLoadingStatus("Loading Application...");
-
     createMainWindow(size).then(function (browserWindow) {
-
-        console.log('createMainWindow => success')
-        setTimeout(versionCompare, 500);
 
         mainWindow = browserWindow;
 
         mainWindow.webContents.on('did-start-loading', function (e) {
             DidStartLoading = true;
-            updateLoadingStatus("Loading Application...")
         });
 
         mainWindow.webContents.on('did-fail-load', function (e) {
             console.log('did-fail-load')
             DidFailLoad = true;
-            OopsError();
-            updateLoadingStatus("Failed to load ...", true)
             mainWindow.hide();
 
         });
@@ -436,176 +212,12 @@ function startMainApplication() {
         function onComplete(e) {
             console.log('did-stop-loading:onComplete:');
             DidStopLoading = true;
-            //if it did not failed, lets hide the splashScreen and show the application
-            if (!loadingSuccess || DidFailLoad)return;
-
-
-            loadingSuccess = false;
-
-            //insert the electron id indicator
-            mainWindow.webContents.executeJavaScript("document.documentElement.setAttribute('id','ELECTRON_PARENT_CONTAINER');");
-
-            //insert the electron bridge script
-            electronInsertion();
-
-            if (splashScreen) {
-                updateLoadingStatus("Ready...")
-                splashScreen.webContents.executeJavaScript('setTimeout(complete,1000);');
-            }
-
-            setTimeout(function () {
-                splashScreen ? splashScreen.close() : splashScreen ? splashScreen.destroy() : false;
-                oopsScreen ? oopsScreen.close() : oopsScreen ? oopsScreen.destroy() : false;
-                mainWindow.show();
-                console.log('COMPLETED!!');
-            }, 2000);
-
-
-            /**
-             * Set any IPC communication messages
-             */
-            utilities.walk(path.join(__dirname, 'ipc'), function (arr) {
-                var services = {};
-
-                for (var i in arr.files) {
-                    Object.assign(services, require(path.join(__dirname, 'ipc', arr.files[i])))
-                }
-
-                /**
-                 * This builds the API structure for the IPC communication with
-                 * electron and webview application
-                 *
-                 */
-
-                bridge.listen(function (data) {
-                    console.log('bridge listen => ', data.eventType);
-                    data.msg = services[data.eventType](process, data.msg);
-                    bridge.send(data);
-                });
-
-
-            });
-
-            //end of entry
-
-
-        }
-    }, OopsError);
-}
-
-
-function versionCompare() {
-
-    utilities.getVersion(releaseUrl, function (status, obj) {
-        if (status !== 200)return;
-        var vrsCompare = utilities.versionCompare(obj.version, version.version),
-            filePath = 'file://' + __dirname + '/dialogs/download.html?url=' + releaseUrl;// + '&id=' + (mainWindow.id ? String(mainWindow.id) : "");
-
-        if (vrsCompare > 0) {
-            var download = new BrowserWindow({
-                width: 402,
-                height: 148,
-                resizable: false,
-                alwaysOnTop: true,
-                frame: false,
-                title: app.getName(),
-                'always-on-top': true,
-                autoHideMenuBar: true
-            });
-            download.loadURL(filePath);
-            download.on('closed', function () {
-                download = null;
-            });
         }
     });
 }
 
-/**
- * Function to insert Electron, and Node objects onto the DOM element.
- */
-function electronInsertion() {
 
 
-    var host = utilities.parse_url(mainWindow.webContents.getURL()).host || '',
-        appName = (host).replace(/.labcorp.com/g, '') || null,
-        appName = appName ? ' - ' + appName.toUpperCase() : '';
 
 
-    mainWindow.setTitle(app.getName() + appName);
 
-    let insertScript = '!function(){if(document.querySelector(\'#electron-bridge\'))return; var s = document.createElement( \'script\' );s.id = \'electron-bridge\';var newContent = document.createTextNode(\'' + code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.insertBefore( s, $parent.querySelector(\'script\')); }();';
-    mainWindow.webContents.executeJavaScript(insertScript);
-
-
-    //this will inject the bootstrap if the URL does not have the bootstrap file indicator
-    checkBootstrap(mainWindow.webContents.getURL());
-
-}
-
-function checkBootstrap(url) {
-    var parse = utilities.parse_url(url),
-        url = [parse.scheme, "://", parse.host, ":", parse.port, "/", "bootstrap.txt"].join("");
-
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
-    require(parse.scheme).get(url, function (res) {
-        if (res.statusCode !== 200) {
-
-            /***************************************************************
-             * THIS HOTFIX IS TO BE REMOVE IN FUTURE RELEASES
-             ***************************************************************/
-            let hotFix = uglify.minify([__dirname + '/hotFixInjection.js']);
-
-
-            let insertScript = '!function(){if(document.querySelector(\'#electron-object\'))return;var s = document.createElement( \'script\' );s.id = \'electron-object\';var newContent = document.createTextNode(\'' + hotFix.code + '\'),$parent=document.querySelector(\'body\');s.appendChild(newContent);$parent.appendChild( s ); }();';
-            mainWindow.webContents.executeJavaScript(insertScript);
-            mainWindow.webContents.executeJavaScript('angular.bootstrap(document, ["phxApp"]);');
-            /***************************************************************
-             * THE CODE ABOVE IS TO BE REMOVE IN FUTURE RELEASE OF QA ENVIRONMENT,
-             * IT IS FOR THE INJECTION OF ELECTRON WITHIN THE ENVIRONMENT
-             ***************************************************************/
-        }
-
-    });
-
-}
-
-
-/**
- clears up the temp files
- */
-function clearTempFiles() {
-    var _os = require('os'),
-        tempFileRef = _os.tmpDir() + "/invoice.pdf";
-
-    if (fs.existsSync(tempFileRef)) //only delete if file exist
-        fs.unlink(tempFileRef);
-}
-
-
-function deleteFolderRecursive(path) {
-    if (fs.existsSync(path)) {
-        fs.readdirSync(path).forEach(function (file, index) {
-            var curPath = path + "/" + file;
-            if (fs.lstatSync(curPath).isDirectory()) { // recurse
-                deleteFolderRecursive(curPath);
-            } else { // delete file
-                try {
-                    fs.unlinkSync(curPath);
-                    console.log('REMOVE => ', curPath)
-                } catch (e) {
-                    console.log('FAILED TO REMOVE => ', curPath)
-
-                    // console.log('error => ', e)
-                }
-            }
-        });
-        try {
-            fs.rmdirSync(path);
-            console.log('REMOVE DIRECTORY => ', path)
-        } catch (e) {
-            console.log('FAILED TO REMOVE => ', path)
-            // console.log('error => ', e)
-        }
-    }
-};

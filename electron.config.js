@@ -33,21 +33,12 @@ module.exports = {
      */
 
     //environment
-    "STAGE": "https://stage-phoenix.labcorp.com/web-ui/",
-    "UAT": "https://uat-phoenix.labcorp.com/web-ui/",
-    "PROD": "https://phoenix.labcorp.com/web-ui/",
-    "DEV": "https://dev-phoenix.labcorp.com/web-ui/",
-    "QA": "https://qa-phoenix.labcorp.com/web-ui/",
-    "BETA": "http://dev2-phoenix.labcorp.com/web-ui/?debug=true",
-    "RELEASE2": "http://dev2-phoenix.labcorp.com/web-ui/?debug=true",
-    "LOCAL": "http://seed.labcorp.com:8080/",
-
+    "SITE": "https://reymundoramos.com",
     //hosting server setting and working environment
     //Application will check for version updates host path
-    // "versionServer": "https://dev-phoenix.labcorp.com/release/prod/build.json",
     "versionServer": "http://localhost/releases/win/build.json",
     //environment to build on start up
-    "startingEnvironment": "PROD"
+    "startingEnvironment": "SITE"
 
 };
 

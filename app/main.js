@@ -27,6 +27,9 @@ let path = require('path'),
 if(require('electron-squirrel-startup')) return;
 
 
+
+
+
 const DOWNLOAD_DIR = path.join(process.env.USERPROFILE, 'Downloads');
 const log_file = fs.existsSync(DOWNLOAD_DIR) ?
     fs.createWriteStream(path.join(DOWNLOAD_DIR, 'phoenix_debugger.log'), {flags: 'w'}) : fs.createWriteStream(path.join(ELECTON_REPO, 'phoenix_debugger.log'));
@@ -54,14 +57,22 @@ console.log = function () { //
 // Module to control application life.
 const {app, remote, BrowserWindow, ipcMain, autoUpdater} = require('electron');
 
+const args = require('./args')
+const squirrel = require('./squirrel')
+const cmd = args.parseArguments(app, process.argv.slice(1)).squirrelCommand
+if (process.platform === 'win32' && squirrel.handleCommand(app, cmd)) {
+    return
+}
 
-var versionURL = "http://localhost/releases/win/v1.5.8.msi";
-const appVersion = require('../package.json').version;
-const os = require('os').platform();
 
-console.log('appVersion', versionURL)
-autoUpdater.setFeedURL(versionURL);
 
+// var versionURL = "http://localhost/releases/win/v1.5.8.msi";
+// const appVersion = require('../package.json').version;
+// const os = require('os').platform();
+//
+// console.log('appVersion', versionURL)
+// autoUpdater.setFeedURL(versionURL);
+//
 
 //require('crash-reporter').start();
 app.setAppUserModelId(app.getName());

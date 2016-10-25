@@ -52,9 +52,6 @@ let command = "\"./node_modules/.bin/electron\"",
 //
 // }
 
-console.log('COMMAND ==> ', _c.join(" "))
-
-
 //back to root
 // shell.cd(helpers.root());
 

@@ -3,7 +3,7 @@
 const fs = require('fs-plus')
 const path = require('path')
 const child = require('child_process')
-const pkg = require('../../package.json')
+const pkg = require('../package.json')
 
 const appFolder = path.resolve(process.execPath, '..')
 const rootFolder = path.resolve(appFolder, '..')

@@ -48,6 +48,7 @@ let command = "\"./node_modules/.bin/electron-packager\"",
         , "--out=" + config.distribution
         , "--overwrite"
         , "--version=\"" + config.electronVersion + "\""
+        , "--prune"
     ];
 
 

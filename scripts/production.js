@@ -6,13 +6,13 @@ let path = require('path'),
     config = require("../electron.config.js"),
     helpers = require("./helpers"),
     rceditOpts = require('./rcedit.config.js'),
-    shell = require('shelljs');
-var electronInstaller = require('electron-winstaller');
+    shell = require('shelljs'),
+    package = require("../package.json");
 
+var electronInstaller = require('electron-winstaller');
 var npmScripts = typeof (process.argv[2]) === 'undefined';
 
 
-const APPLICATION_SRC = helpers.root(config.source);
 const APP_BUILD_PATH = helpers.root(config.distribution, [config.execName, config.platform, config.arch].join("-"));
 
 
@@ -40,8 +40,8 @@ let command = "\"./node_modules/.bin/electron-packager\"",
 //build the command script based on config files
     _c = [
         command
-        , APPLICATION_SRC
-        , config.execName
+        , "."
+        , package.name
         , "--platform=" + config.platform
         , "--arch=" + config.arch
         // , "--asar" //cant do asar file on squirrel
@@ -114,14 +114,14 @@ if (npmScripts) {
     shell.exec(_command, function (code) {
         if (code !== 0)return;
 
-        let resultPromise = electronInstaller.createWindowsInstaller({
-            appDirectory: APP_BUILD_PATH,
-            outputDirectory: helpers.root(config.distribution, 'installer32'),
-            authors: 'My App Inc.',
-            exe: config.execName + '.exe'
-        });
-
-        resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));
+        // let resultPromise = electronInstaller.createWindowsInstaller({
+        //     appDirectory: APP_BUILD_PATH,
+        //     outputDirectory: helpers.root(config.distribution, 'installer32'),
+        //     authors: 'My App Inc.',
+        //     exe: config.execName + '.exe'
+        // });
+        //
+        // resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));
     });
 
 

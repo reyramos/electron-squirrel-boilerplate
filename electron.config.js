@@ -4,14 +4,6 @@ module.exports = {
      * set the default values of they dont exist on this file.
      *
      */
-    // //for every build on msi the numbers will need to increment to update the
-    // //msi application stored on windows machine
-    // "version": "1.5.8",
-    //
-    // "app_name": "LabCorp Phoenix",
-    // "app_description": "LabCorp Application",
-    // "manufacturer": "LabCorp Inc",
-
     //location of main.js and source files
     "source": ".",
 
@@ -24,10 +16,6 @@ module.exports = {
     "arch": "ia32", // all, or one or more of: ia32, x64 (comma-delimited if multiple)
     "electronVersion": "1.2.5", // the version of Electron that is being packaged, see https://github.com/electron/electron/releases
     //currently version 1.2.5 is the only one compatible with electron-printer
-
-    //WixToolSet: Identifiers may contain ASCII characters A-Z, a-z, digits, underscores (_), or periods (.).  Every identifier must begin with either a letter or an underscore.
-    // "execName": "phoenix.exe",
-    "execName": "phoenix",
 
 
     /*************************************************************

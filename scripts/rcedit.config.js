@@ -1,12 +1,9 @@
-var path = require('path'),
-    config = require("../electron.config.js"),
+var config = require("../electron.config.js"),
     helpers = require("./helpers"),
     package = require("../package.json");
 
 config['build_date'] = new Date().toJSON();
 
-
-const APPLICATION_SRC = helpers.root(config.source);
 
 const VARIABLES = Object.assign({}, {
     "productName": config.app_name,
@@ -29,6 +26,6 @@ module.exports = {
     },
     'productVersion': VARIABLES.version,
     'fileVersion': VARIABLES.version,
-    'icon': path.join(APPLICATION_SRC, 'app', 'icon.ico')
+    'icon': helpers.root('app', 'icon.ico')
 };
 

@@ -1,13 +1,10 @@
 /**
  * Created by ramor11 on 7/5/2016.
  */
-let path = require('path'),
-    fs = require('fs'),
+let fs = require('fs'),
     config = require("../electron.config.js"),
     helpers = require("./helpers"),
     shell = require('shelljs');
-
-const APPLICATION_SRC = helpers.root(config.source);
 
 
 let command = "\"./node_modules/.bin/electron\"",
@@ -15,7 +12,7 @@ let command = "\"./node_modules/.bin/electron\"",
 //build the command script based on config files
     _c = [
         command
-        , APPLICATION_SRC
+        , "."
         , "--version=\"" + config.electronVersion + "\""
 
     ];

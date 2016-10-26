@@ -120,7 +120,7 @@ if (npmScripts) {
             outputDirectory: helpers.root(config.distribution, 'installer32'),
             iconUrl: rceditOpts['icon'],
             setupIcon: rceditOpts['icon'],
-            // noMsi:true
+            noMsi:true
         });
 
         resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));

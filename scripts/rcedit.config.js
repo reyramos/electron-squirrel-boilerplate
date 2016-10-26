@@ -18,7 +18,7 @@ module.exports = {
         'CompanyName': VARIABLES.productName,
         'LegalCopyright': VARIABLES.author,
         'FileDescription': VARIABLES.description,
-        'OriginalFilename': config.exeName + '.exe',
+        'OriginalFilename': package.name + '.exe',
         'FileVersion': VARIABLES.version,
         'ProductVersion': VARIABLES.version,
         'ProductName': VARIABLES.productName,

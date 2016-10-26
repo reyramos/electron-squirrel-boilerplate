@@ -4,8 +4,6 @@ module.exports = {
      * set the default values of they dont exist on this file.
      *
      */
-    //location of main.js and source files
-    "source": ".",
 
     //build location
     "distribution": "build",

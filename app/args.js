@@ -31,15 +31,15 @@ const parseArguments = function (app, args) {
     .option('squirrel-obsolete', {
       desribe: 'Used by Squirrel to obsolete the app'
     })
-    .argv
+    .argv;
 
   const squirrelCommand = extractSquirrelCommand(options)
 
   return {
     squirrelCommand: squirrelCommand
   }
-}
+};
 
 module.exports = {
   parseArguments: parseArguments
-}
+};

@@ -44,7 +44,6 @@ let command = "\"./node_modules/.bin/electron-packager\"",
         , package.name
         , "--platform=" + config.platform
         , "--arch=" + config.arch
-        // , "--asar" //cant do asar file on squirrel
         , "--out=" + config.distribution
         , "--overwrite"
         , "--version=\"" + config.electronVersion + "\""

@@ -48,9 +48,13 @@ let command = "\"./node_modules/.bin/electron-packager\"",
         , "--out=" + config.distribution
         , "--overwrite"
         , "--version=\"" + config.electronVersion + "\""
-        , "--prune" //this will not include all the devDepedencies from package
+        , "--prune" //this will not include all the devDependencies from package
     ];
 
+
+['.idea', '\\.git(ignore|modules)', 'scripts'].forEach(function (k) {
+    _c.push("--ignore=\"" + k + "\"")
+});
 
 /*
  * * win32 target platform only *
@@ -120,7 +124,7 @@ if (npmScripts) {
             outputDirectory: helpers.root(config.distribution, 'installer32'),
             iconUrl: rceditOpts['icon'],
             setupIcon: rceditOpts['icon'],
-            noMsi:true
+            noMsi: true
         });
 
         resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));

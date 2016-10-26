@@ -19,7 +19,6 @@ let path = require('path'),
 
     }(),
     uglify = require("uglify-js"),
-    helpers = require('../scripts/helpers'),
     http = require('http'),
     util = require('util');
 

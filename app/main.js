@@ -19,13 +19,9 @@ let path = require('path'),
 
     }(),
     uglify = require("uglify-js"),
+    helpers = require('../scripts/helpers'),
     http = require('http'),
     util = require('util');
-
-
-
-if(require('electron-squirrel-startup')) return;
-
 
 
 
@@ -54,16 +50,20 @@ console.log = function () { //
  * START OF THE FUN
  **********************************************************************************************************************************************/
 
-// Module to control application life.
-const {app, remote, BrowserWindow, ipcMain, autoUpdater} = require('electron');
 
 const args = require('./args')
 const squirrel = require('./squirrel')
+
+if (require('electron-squirrel-startup')) return;
+
+// Module to control application life.
+const {app, remote, BrowserWindow, ipcMain, autoUpdater} = require('electron');
+
+
 const cmd = args.parseArguments(app, process.argv.slice(1)).squirrelCommand
 if (process.platform === 'win32' && squirrel.handleCommand(app, cmd)) {
     return
 }
-
 
 
 // var versionURL = "http://localhost/releases/win/v1.5.8.msi";
@@ -140,9 +140,6 @@ app.on('window-all-closed', function () {
 }).on('will-quit', function () {
     console.log('Goodbye');
 }).on('ready', startMainApplication);
-
-
-
 
 
 function createMainWindow(size) {

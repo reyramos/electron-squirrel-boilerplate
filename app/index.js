@@ -4,7 +4,9 @@
 'use strict';
 
 if (require('electron-squirrel-startup')) return;
+
 const pkg = require('../package.json');
+const fs = require('fs');
 
 const appVersion = pkg.version;
 const updateFeed = ["http://localhost:9000/updates/latest/", "?v=", appVersion].join("");
@@ -159,6 +161,7 @@ function startMainApplication() {
 
     var loadingSuccess = true;
 
+    if(fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe')))
     app.checkVersion()
 
     createMainWindow().then(function (browserWindow) {

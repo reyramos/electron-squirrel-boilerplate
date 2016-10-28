@@ -7,6 +7,8 @@ if (require('electron-squirrel-startup')) return;
 
 const pkg = require('../package.json');
 const fs = require('fs');
+const path = require('path');
+const util = require('util');
 
 const appVersion = pkg.version;
 const updateFeed = ["http://localhost:9000/updates/latest/", "?v=", appVersion].join("");
@@ -16,92 +18,56 @@ const args = require('./args');
 const squirrel = require('./squirrel');
 
 
+
+
+const log_stdout = process.stdout;
+// prevent window being GC'd
+let mainWindow = null;
+console.log = function () { //
+    var args = [],
+        d = new Date(),
+        timeStamp = "\[" + String(d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear() + ":" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds()) + "\]:";
+
+    args.push(timeStamp);
+
+    for (var i in arguments) {
+        args.push(util.format(arguments[i]));
+    }
+
+
+    // log_stdout.write(args.join(" ") + '\n');
+    var insertScript = 'var string="' + (args.join(" ") + '\n') + '";console.log(string);';
+    if(mainWindow)
+    mainWindow.webContents.executeJavaScript(insertScript);
+};
+
+
+/***********************************************************************************************************************************************
+ * START OF THE FUN
+ **********************************************************************************************************************************************/
+
+
+
+
 // Module to control application life.
-const {app, remote, BrowserWindow, ipcMain, autoUpdater, electronScreen} = require('electron');
-
-let manualCheck = false;
-let updateAvailable = false;
-let updateReady = false;
+const {app, remote, BrowserWindow, ipcMain, autoUpdater, electronScreen, Menu} = require('electron');
 
 
-app.checkVersion = function (triggerManually) {
-    manualCheck = triggerManually;
+app.commandLine.appendSwitch('remote-debugging-port', '32400');
+
+
+app.checkVersion = function () {
     autoUpdater.checkForUpdates();
 };
 
 autoUpdater.setFeedURL(updateFeed);
+require('./auto-updator')(autoUpdater);
 
-autoUpdater.on('error', function (err) {
-    var msg = "An error has occurred while checking for updates " + err.message;
-    console.log('error =>', msg)
 
-    if (manualCheck) {
-        // if (splashWindow) {
-        //     splashWindow.webContents.send('update-error', msg);
-        // } else if (mainWindow) {
-        //     mainWindow.webContents.send('update-error', msg);
-        // }
-    }
-});
-
-autoUpdater.on('checking-for-update', function () {
-    console.log('checking-for-update');
-});
-
-autoUpdater.on('update-available', function () {
-    console.log('update-available')
-
-    // if(splashWindow) {
-    //     updateAvailable = true;
-    //     isValid = true;
-    //     splashWindow.close();
-    // }
-});
-
-autoUpdater.on('update-not-available', function () {
-    console.log('update-not-available')
-
-    // if (mainWindow && manualCheck) {
-    //     mainWindow.webContents.send('no-update');
-    // } else if(splashWindow) {
-    //     isValid = true;
-    //     splashWindow.close();
-    // }
-});
-
-autoUpdater.on('update-downloaded', function () {
-    console.log('update-downloaded')
-
-    // if(splashWindow) {
-    //     splashWindow.webContents.send('update-ready');
-    // } else if (mainWindow) {
-    //     mainWindow.webContents.send('update-ready');
-    // }
-    updateReady = true;
-});
-
-// ipc.on('install', function() {
-//     updateAvailable = false;
-//     updateReady = false;
-//     autoUpdater.quitAndInstall();
-// });
-
-// autoUpdater.checkForUpdates();
 const cmd = args.parseArguments(app, process.argv.slice(1)).squirrelCommand;
 console.log('cmd', cmd)
 
-// prevent window being GC'd
-let mainWindow = null,
-    splashScreen = null,
-    oopsScreen = null;
 
-
-//LISTENING EVENTS
-let DidFailLoad = false,
-    DidFinishLoad = false,
-    DidStartLoading = false,
-    DidFrameFinishLoad = false,
-    DidStopLoading = false;
 
 /**
  * Create the main Electron Application
@@ -123,86 +89,51 @@ app.on('window-all-closed', function () {
     console.log('Goodbye');
 }).on('ready', startMainApplication);
 
+
 function createMainWindow(size) {
-    return new Promise(function (response) {
 
-        let params = {
-            // width: size.width,
-            // height: size.height,
-            resizable: true,
-            icon: path.join(__dirname, 'icon.ico'),
-            title: app.getName(),
-            autoHideMenuBar: true,
-            webPreferences: {
-                webSecurity: false,
-                allowDisplayingInsecureContent: true,
-                allowRunningInsecureContent: true,
-            }
-        };
+    let params = {
+        icon: path.join(__dirname, 'icon.ico'),
+        title: app.getName()
+    };
 
-        let win = new BrowserWindow(params);
-
-
-        win.loadURL("https://reymundoramos.com/");
-
-        console.log('DONE LOADING');
-
-        win.on('closed', function () {
-            mainWindow = null;
-        });
-
-        response(win)
+    mainWindow = new BrowserWindow(params);
+    mainWindow.loadURL(`file://${__dirname}/index.html`);
+    mainWindow.on('closed', function () {
+        mainWindow = null;
     });
+
 
 }
 
 function startMainApplication() {
+    const {app, Menu} = require('electron')
+
+    const template = [
+        {
+            label: 'About',
+            submenu: [
+                {
+                    label: 'Check for Updates ',
+                    role: 'Check for Updates ',
+                    click (item, focusedWindow) {
+                        app.checkVersion()
+                    }
+                }
+            ]
+        }
+    ];
+
+
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
+
     console.log('startMainApplication');
 
-    var loadingSuccess = true;
+    if (fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe')))
+        app.checkVersion()
 
-    if(fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe')))
-    app.checkVersion()
-
-    createMainWindow().then(function (browserWindow) {
-
-        mainWindow = browserWindow;
-
-        mainWindow.webContents.on('did-start-loading', function (e) {
-            DidStartLoading = true;
-        });
-
-        mainWindow.webContents.on('did-fail-load', function (e) {
-            console.log('did-fail-load')
-            DidFailLoad = true;
-            mainWindow.hide();
-
-        });
-
-        /**
-         * This is broadcast if the frame is refresh within the application
-         * without electron interaction, we will re-inject the electronCode
-         */
-        mainWindow.webContents.on('did-frame-finish-load', function (e) {
-            DidFrameFinishLoad = true;
-            console.log('did-frame-finish-load');
-            //next event => did-stop-loading will reload the necessary injections
-            loadingSuccess = true;
-        });
-
-
-        /**
-         * Once the web Application finish loading, lets inject
-         * the ngElectron component, to be used within the webApp
-         */
-        mainWindow.webContents.on('did-stop-loading', onComplete);
-
-
-        function onComplete(e) {
-            console.log('did-stop-loading:onComplete:');
-            DidStopLoading = true;
-        }
-    });
+    createMainWindow()
 }
 
 

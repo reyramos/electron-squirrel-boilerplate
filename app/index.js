@@ -43,8 +43,6 @@ console.log = function () { //
  * START OF THE FUN
  **********************************************************************************************************************************************/
 
-let mainWindow = null;
-
 
 
 // Module to control application life.
@@ -64,52 +62,73 @@ app.checkVersion = function () {
 autoUpdater.setFeedURL(updateFeed);
 require('./auto-updator')(autoUpdater);
 
-var handleStartupEvent = function() {
-    if (process.platform !== 'win32') {
+// this should be placed at top of main.js to handle setup events quickly
+if (handleSquirrelEvent()) {
+    // squirrel event handled and app will exit in 1000ms, so don't do anything else
+    return;
+}
+
+function handleSquirrelEvent() {
+    if (process.argv.length === 1) {
         return false;
     }
 
-    var squirrelCommand = process.argv[1];
+    const ChildProcess = require('child_process');
+    const path = require('path');
 
-    console.log(squirrelCommand)
+    const appFolder = path.resolve(process.execPath, '..');
+    const rootAtomFolder = path.resolve(appFolder, '..');
+    const updateDotExe = path.resolve(path.join(rootAtomFolder, 'Update.exe'));
+    const exeName = path.basename(process.execPath);
 
-    switch (squirrelCommand) {
+    const spawn = function(command, args) {
+        let spawnedProcess, error;
+
+        try {
+            spawnedProcess = ChildProcess.spawn(command, args, {detached: true});
+        } catch (error) {}
+
+        return spawnedProcess;
+    };
+
+    const spawnUpdate = function(args) {
+        return spawn(updateDotExe, args);
+    };
+
+    const squirrelEvent = process.argv[1];
+    switch (squirrelEvent) {
         case '--squirrel-install':
         case '--squirrel-updated':
-
-
-
             // Optionally do things such as:
-            //
-            // - Install desktop and start menu shortcuts
             // - Add your .exe to the PATH
             // - Write to the registry for things like file associations and
             //   explorer context menus
 
-            // Always quit when done
-            app.quit();
+            // Install desktop and start menu shortcuts
+            spawnUpdate(['--createShortcut', exeName]);
 
+            setTimeout(app.quit, 1000);
             return true;
+
         case '--squirrel-uninstall':
             // Undo anything you did in the --squirrel-install and
             // --squirrel-updated handlers
 
-            // Always quit when done
-            app.quit();
+            // Remove desktop and start menu shortcuts
+            spawnUpdate(['--removeShortcut', exeName]);
 
+            setTimeout(app.quit, 1000);
             return true;
+
         case '--squirrel-obsolete':
             // This is called on the outgoing version of your app before
             // we update to the new version - it's the opposite of
             // --squirrel-updated
+
             app.quit();
             return true;
     }
 };
-
-if (handleStartupEvent()) {
-    return;
-}
 
 /***********************************************************************************************************************************************
  * START OF THE RENDERING PROCESS
@@ -119,64 +138,66 @@ if (handleStartupEvent()) {
 /**
  * Create the main Electron Application
  */
-app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
+var mainWindow = null;
+var updater = require('electron-updater')
+
+app.on('ready', function() {
+    updater.on('ready', function () {
+        mainWindow = new BrowserWindow({width: 800, height: 600})
+        mainWindow.loadURL(`file://${__dirname}/index.html`);
+        mainWindow.openDevTools({detach:true})
+        mainWindow.on('closed', function() {
+            mainWindow = null;
+        })
+    })
+    updater.on('updateRequired', function () {
         app.quit();
-        return true;
-    }
-}).on('activate-with-no-open-windows', function () {
-    if (!mainWindow) {
-        startMainApplication();
-    }
-}).on('gpu-process-crashed', function () {
-    if (mainWindow) {
-        mainWindow.destroy();
-    }
-}).on('will-quit', function () {
-    console.log('Goodbye');
-}).on('ready', startMainApplication);
+    })
+    updater.on('updateAvailable', function () {
+        mainWindow.webContents.send('update-available');
+    })
+    updater.start()
+})
 
-
-function createMainWindow() {
-
-    let params = {
-        icon: path.join(__dirname, 'icon.ico'),
-        title: app.getName()
-    };
-
-    mainWindow = new BrowserWindow(params);
-    mainWindow.loadURL(`file://${__dirname}/index.html`);
-    mainWindow.on('closed', function () {
-        mainWindow = null;
-    });
-
-
-}
-
-function startMainApplication() {
-    const {app, Menu} = require('electron')
-
-    const template = [
-        {
-            label: 'About',
-            submenu: [
-                {
-                    label: 'Check for Updates ',
-                    role: 'Check for Updates ',
-                    click (item, focusedWindow) {
-                        app.checkVersion()
-                    }
-                }
-            ]
-        }
-    ];
-
-
-    const menu = Menu.buildFromTemplate(template)
-    Menu.setApplicationMenu(menu)
-
-    if (fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe')))app.checkVersion();
-
-    createMainWindow();
-}
-
+// function createMainWindow() {
+//
+//     let params = {
+//         icon: path.join(__dirname, 'icon.ico'),
+//         title: app.getName()
+//     };
+//
+//     mainWindow = new BrowserWindow(params);
+//     mainWindow.loadURL(`file://${__dirname}/index.html`);
+//     mainWindow.on('closed', function () {
+//         mainWindow = null;
+//     });
+//
+//
+// }
+//
+// function startMainApplication() {
+//     const {app, Menu} = require('electron')
+//
+//     const template = [
+//         {
+//             label: 'About',
+//             submenu: [
+//                 {
+//                     label: 'Check for Updates ',
+//                     role: 'Check for Updates ',
+//                     click (item, focusedWindow) {
+//                         app.checkVersion()
+//                     }
+//                 }
+//             ]
+//         }
+//     ];
+//
+//
+//     const menu = Menu.buildFromTemplate(template)
+//     Menu.setApplicationMenu(menu)
+//
+//     if (fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe')))app.checkVersion();
+//     createMainWindow();
+// }
+//

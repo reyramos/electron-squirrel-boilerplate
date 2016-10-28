@@ -12,13 +12,13 @@ app.get('/updates/latest/**', (req, res) => {
     const latest = getLatestRelease();
     const clientVersion = req.query.v;
 
-    if (clientVersion === latest) {
-        res.status(204).end();
-    } else {
+    // if (clientVersion === latest) {
+    //     res.status(204).end();
+    // } else {
         res.json({
             url: `${getBaseUrl()}/releases/${latest}/phoenix.zip`
         });
-    }
+    // }
 });
 
 let getLatestRelease = () => {

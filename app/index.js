@@ -81,17 +81,18 @@ function handleSquirrelEvent() {
     const updateDotExe = path.resolve(path.join(rootAtomFolder, 'Update.exe'));
     const exeName = path.basename(process.execPath);
 
-    const spawn = function(command, args) {
+    const spawn = function (command, args) {
         let spawnedProcess, error;
 
         try {
             spawnedProcess = ChildProcess.spawn(command, args, {detached: true});
-        } catch (error) {}
+        } catch (error) {
+        }
 
         return spawnedProcess;
     };
 
-    const spawnUpdate = function(args) {
+    const spawnUpdate = function (args) {
         return spawn(updateDotExe, args);
     };
 
@@ -139,65 +140,19 @@ function handleSquirrelEvent() {
  * Create the main Electron Application
  */
 var mainWindow = null;
-var updater = require('electron-updater')
+// Quit when all windows are closed
+app.on('window-all-closed', function() {
+    app.quit();
+});
 
-app.on('ready', function() {
-    updater.on('ready', function () {
-        mainWindow = new BrowserWindow({width: 800, height: 600})
-        mainWindow.loadURL(`file://${__dirname}/index.html`);
-        mainWindow.openDevTools({detach:true})
-        mainWindow.on('closed', function() {
-            mainWindow = null;
-        })
-    })
-    updater.on('updateRequired', function () {
-        app.quit();
-    })
-    updater.on('updateAvailable', function () {
-        mainWindow.webContents.send('update-available');
-    })
-    updater.start()
+app.on('ready', function () {
+    mainWindow = new BrowserWindow({width: 800, height: 600})
+    mainWindow.loadURL(`file://${__dirname}/index.html`);
+    mainWindow.openDevTools({detach: true})
+    mainWindow.on('closed', function () {
+        mainWindow = null;
+    });
+
+    if (fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe')))app.checkVersion();
 })
 
-// function createMainWindow() {
-//
-//     let params = {
-//         icon: path.join(__dirname, 'icon.ico'),
-//         title: app.getName()
-//     };
-//
-//     mainWindow = new BrowserWindow(params);
-//     mainWindow.loadURL(`file://${__dirname}/index.html`);
-//     mainWindow.on('closed', function () {
-//         mainWindow = null;
-//     });
-//
-//
-// }
-//
-// function startMainApplication() {
-//     const {app, Menu} = require('electron')
-//
-//     const template = [
-//         {
-//             label: 'About',
-//             submenu: [
-//                 {
-//                     label: 'Check for Updates ',
-//                     role: 'Check for Updates ',
-//                     click (item, focusedWindow) {
-//                         app.checkVersion()
-//                     }
-//                 }
-//             ]
-//         }
-//     ];
-//
-//
-//     const menu = Menu.buildFromTemplate(template)
-//     Menu.setApplicationMenu(menu)
-//
-//     if (fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe')))app.checkVersion();
-//     createMainWindow();
-// }
-//

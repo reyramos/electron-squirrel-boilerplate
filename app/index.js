@@ -18,11 +18,13 @@ const args = require('./args');
 const squirrel = require('./squirrel');
 
 
-
+// prevent window being GC'd
+const DOWNLOAD_DIR = path.join(process.env.USERPROFILE, 'Downloads');
+const log_file = fs.existsSync(DOWNLOAD_DIR) ?
+    fs.createWriteStream(path.join(DOWNLOAD_DIR, 'phoenix_debugger.log'), {flags: 'w'}) : fs.createWriteStream(path.join(ELECTON_REPO, 'phoenix_debugger.log'));
 
 const log_stdout = process.stdout;
-// prevent window being GC'd
-let mainWindow = null;
+
 console.log = function () { //
     var args = [],
         d = new Date(),
@@ -33,19 +35,15 @@ console.log = function () { //
     for (var i in arguments) {
         args.push(util.format(arguments[i]));
     }
-
-
-    // log_stdout.write(args.join(" ") + '\n');
-    var insertScript = 'var string="' + (args.join(" ") + '\n') + '";console.log(string);';
-    if(mainWindow)
-    mainWindow.webContents.executeJavaScript(insertScript);
+    log_file.write(args.join(" ") + '\n');
+    log_stdout.write(args.join(" ") + '\n');
 };
-
 
 /***********************************************************************************************************************************************
  * START OF THE FUN
  **********************************************************************************************************************************************/
 
+let mainWindow = null;
 
 
 
@@ -55,6 +53,9 @@ const {app, remote, BrowserWindow, ipcMain, autoUpdater, electronScreen, Menu} =
 
 app.commandLine.appendSwitch('remote-debugging-port', '32400');
 
+/***********************************************************************************************************************************************
+ * START OF THE MAIN PROCESS TO CHECK FOR VERSION
+ **********************************************************************************************************************************************/
 
 app.checkVersion = function () {
     autoUpdater.checkForUpdates();
@@ -63,10 +64,56 @@ app.checkVersion = function () {
 autoUpdater.setFeedURL(updateFeed);
 require('./auto-updator')(autoUpdater);
 
+var handleStartupEvent = function() {
+    if (process.platform !== 'win32') {
+        return false;
+    }
 
-const cmd = args.parseArguments(app, process.argv.slice(1)).squirrelCommand;
-console.log('cmd', cmd)
+    var squirrelCommand = process.argv[1];
 
+    console.log(squirrelCommand)
+
+    switch (squirrelCommand) {
+        case '--squirrel-install':
+        case '--squirrel-updated':
+
+
+
+            // Optionally do things such as:
+            //
+            // - Install desktop and start menu shortcuts
+            // - Add your .exe to the PATH
+            // - Write to the registry for things like file associations and
+            //   explorer context menus
+
+            // Always quit when done
+            app.quit();
+
+            return true;
+        case '--squirrel-uninstall':
+            // Undo anything you did in the --squirrel-install and
+            // --squirrel-updated handlers
+
+            // Always quit when done
+            app.quit();
+
+            return true;
+        case '--squirrel-obsolete':
+            // This is called on the outgoing version of your app before
+            // we update to the new version - it's the opposite of
+            // --squirrel-updated
+            app.quit();
+            return true;
+    }
+};
+
+if (handleStartupEvent()) {
+    return;
+}
+
+/***********************************************************************************************************************************************
+ * START OF THE RENDERING PROCESS
+ **********************************************************************************************************************************************/
 
 
 /**
@@ -90,7 +137,7 @@ app.on('window-all-closed', function () {
 }).on('ready', startMainApplication);
 
 
-function createMainWindow(size) {
+function createMainWindow() {
 
     let params = {
         icon: path.join(__dirname, 'icon.ico'),
@@ -128,18 +175,8 @@ function startMainApplication() {
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
 
-    console.log('startMainApplication');
+    if (fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe')))app.checkVersion();
 
-    if (fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe')))
-        app.checkVersion()
-
-    createMainWindow()
+    createMainWindow();
 }
-
-
-// process.exit(0)
-
-// if (process.platform === 'win32' && squirrel.handleCommand(app, cmd)) {
-//     return
-// }
 

@@ -120,10 +120,9 @@ if (npmScripts) {
 
         let resultPromise = electronInstaller.createWindowsInstaller({
             appDirectory: APP_BUILD_PATH,
-            outputDirectory: helpers.root(config.distribution, 'installer32'),
+            outputDirectory: helpers.root(config.distribution, 'releases', package.version),
             iconUrl: rceditOpts['icon'],
-            setupIcon: rceditOpts['icon'],
-            noMsi: true
+            setupIcon: rceditOpts['icon']
         });
 
         resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));

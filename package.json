@@ -1,6 +1,6 @@
 {
   "name": "phoenix",
-  "version": "1.5.9",
+  "version": "1.6.0",
   "description": "LabCorp Phoenix Desktop Application",
   "productName": "LabCorp Phoenix",
   "author": "Copyright (C) 2016 Laboratory Corporation of America Holdings",
@@ -11,6 +11,7 @@
     "type": "git",
     "url": "git+https://git.labcorp.com/scm/phx/phx-electron.git"
   },
+  "registry": "http://localhost:4873",
   "scripts": {
     "start": "node \"./scripts/development.js\"",
     "build": "rimraf build && npm run exe32",

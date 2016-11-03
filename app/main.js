@@ -63,7 +63,6 @@ app.checkVersion = function () {
         autoUpdater.checkForUpdates();
 };
 if (updateFeed) {
-    console.log('updateFeed', updateFeed)
     autoUpdater.setFeedURL(updateFeed);
     require('./auto-updator')(autoUpdater);
 }

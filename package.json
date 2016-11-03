@@ -6,12 +6,11 @@
   "author": "Copyright (C) 2016 Laboratory Corporation of America Holdings",
   "homepage": "https://git.labcorp.com/projects/PHX/repos/phx-electron/browse/README.md",
   "license": "ISC",
-  "main": "app/index.js",
+  "main": "app/main.js",
   "repository": {
     "type": "git",
     "url": "git+https://git.labcorp.com/scm/phx/phx-electron.git"
   },
-  "registry": "http://localhost:4873",
   "scripts": {
     "start": "node \"./scripts/development.js\"",
     "build": "rimraf build && npm run exe32",

@@ -122,7 +122,8 @@ if (npmScripts) {
             appDirectory: APP_BUILD_PATH,
             outputDirectory: helpers.root(config.distribution, 'releases', package.version),
             iconUrl: rceditOpts['icon'],
-            setupIcon: rceditOpts['icon']
+            setupIcon: rceditOpts['icon'],
+            noMsi:true
         });
 
         resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));

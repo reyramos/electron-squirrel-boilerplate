@@ -1,30 +1,21 @@
+/**
+ * Created by ramor11 on 10/26/2016.
+ */
 'use strict';
 
-//node js dependencies
-let path = require('path'),
-    ELECTON_REPO = __dirname.replace(/app\.asar/g, ''), //directory where to download everyfile to
-    fs = require('fs'),
-    version = function () {
-        let readJson = function (path) {
-            return JSON.parse(fs.readFileSync(path, 'utf8'))
-        };
-        //If the local machine contains a config app, lets load the environment specified, used for developers
-        let userConfig = path.join(ELECTON_REPO, 'config.json'),
-            buildConfig = path.join(__dirname, 'config.json'),
-            devConfig = fs.existsSync(buildConfig) ? readJson(buildConfig) : require('../electron.config.js');
+if (require('electron-squirrel-startup')) return;
 
-        let version = fs.existsSync(userConfig) ? Object.assign({}, readJson(buildConfig), readJson(userConfig)) : (fs.existsSync(buildConfig) ? readJson(buildConfig) : devConfig);
+const pkg = require('../package.json');
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
 
-        return Object.assign({}, version);
-
-    }(),
-    uglify = require("uglify-js"),
-    http = require('http'),
-    util = require('util');
+const appVersion = pkg.version;
+const updateFeed = ["http://localhost:9000/updates/latest/", "?v=", appVersion].join("");
 
 
 
-
+// prevent window being GC'd
 const DOWNLOAD_DIR = path.join(process.env.USERPROFILE, 'Downloads');
 const log_file = fs.existsSync(DOWNLOAD_DIR) ?
     fs.createWriteStream(path.join(DOWNLOAD_DIR, 'phoenix_debugger.log'), {flags: 'w'}) : fs.createWriteStream(path.join(ELECTON_REPO, 'phoenix_debugger.log'));
@@ -50,181 +41,116 @@ console.log = function () { //
  **********************************************************************************************************************************************/
 
 
-const args = require('./args')
-const squirrel = require('./squirrel')
-
-if (require('electron-squirrel-startup')) return;
 
 // Module to control application life.
-const {app, remote, BrowserWindow, ipcMain, autoUpdater} = require('electron');
+const {app, remote, BrowserWindow, ipcMain, autoUpdater, electronScreen, Menu} = require('electron');
 
 
-const cmd = args.parseArguments(app, process.argv.slice(1)).squirrelCommand
-if (process.platform === 'win32' && squirrel.handleCommand(app, cmd)) {
-    return
+app.commandLine.appendSwitch('remote-debugging-port', '32400');
+
+/***********************************************************************************************************************************************
+ * START OF THE MAIN PROCESS TO CHECK FOR VERSION
+ **********************************************************************************************************************************************/
+
+app.checkVersion = function () {
+    autoUpdater.checkForUpdates();
+};
+
+autoUpdater.setFeedURL(updateFeed);
+require('./auto-updator')(autoUpdater);
+
+// this should be placed at top of main.js to handle setup events quickly
+if (handleSquirrelEvent()) {
+    // squirrel event handled and app will exit in 1000ms, so don't do anything else
+    return;
 }
 
+function handleSquirrelEvent() {
+    if (process.argv.length === 1) {
+        return false;
+    }
 
-// var versionURL = "http://localhost/releases/win/v1.5.8.msi";
-// const appVersion = require('../package.json').version;
-// const os = require('os').platform();
-//
-// console.log('appVersion', versionURL)
-// autoUpdater.setFeedURL(versionURL);
-//
+    const ChildProcess = require('child_process');
+    const path = require('path');
 
-//require('crash-reporter').start();
-app.setAppUserModelId(app.getName());
+    const appFolder = path.resolve(process.execPath, '..');
+    const rootAtomFolder = path.resolve(appFolder, '..');
+    const updateDotExe = path.resolve(path.join(rootAtomFolder, 'Update.exe'));
+    const exeName = path.basename(process.execPath);
 
+    const spawn = function (command, args) {
+        let spawnedProcess, error;
 
-/*
- * Append an argument to Chromium’s command line. The argument will be quoted correctly.
- * http://peter.sh/experiments/chromium-command-line-switches/
- */
-app.commandLine.appendSwitch('remote-debugging-port', '32400');
-app.commandLine.appendArgument('disable-cache');
-// //<https://github.com/scramjs/scram-engine/issues/5>
-app.commandLine.appendSwitch('disable-http-cache');
-app.commandLine.appendSwitch('disable-https-cache');
+        try {
+            spawnedProcess = ChildProcess.spawn(command, args, {detached: true});
+        } catch (error) {
+        }
 
-app.clearRecentDocuments();
+        return spawnedProcess;
+    };
 
-//This is to refesh the application while loading, to reloadIgnoringCache
-let refresh = true;
+    const spawnUpdate = function (args) {
+        return spawn(updateDotExe, args);
+    };
 
+    const squirrelEvent = process.argv[1];
+    console.log(squirrelEvent)
+    switch (squirrelEvent) {
+        case '--squirrel-install':
+        case '--squirrel-updated':
+            // Optionally do things such as:
+            // - Add your .exe to the PATH
+            // - Write to the registry for things like file associations and
+            //   explorer context menus
 
-//GET THE ENVIRONMENT VARIABLES TO CREATE,
-//This url contains the version that is hosted on the remote server for package control
-const releaseUrl = version["versionServer"];
+            // Install desktop and start menu shortcuts
+            spawnUpdate(['--createShortcut', exeName]);
 
+            setTimeout(app.quit, 1000);
+            return true;
 
-let webUrl = function () {
-    var string = version[version["startingEnvironment"]],
-        re = new RegExp("__dirname", "g"),
-        result = String(string).replace(re, __dirname);
-    return result;
-}();
+        case '--squirrel-uninstall':
+            // Undo anything you did in the --squirrel-install and
+            // --squirrel-updated handlers
 
+            // Remove desktop and start menu shortcuts
+            spawnUpdate(['--removeShortcut', exeName]);
 
-// prevent window being GC'd
-let mainWindow = null,
-    splashScreen = null,
-    oopsScreen = null;
+            setTimeout(app.quit, 1000);
+            return true;
 
+        case '--squirrel-obsolete':
+            // This is called on the outgoing version of your app before
+            // we update to the new version - it's the opposite of
+            // --squirrel-updated
 
-//LISTENING EVENTS
-let DidFailLoad = false,
-    DidFinishLoad = false,
-    DidStartLoading = false,
-    DidFrameFinishLoad = false,
-    DidStopLoading = false;
+            app.quit();
+            return true;
+    }
+};
+
+/***********************************************************************************************************************************************
+ * START OF THE RENDERING PROCESS
+ **********************************************************************************************************************************************/
 
 
 /**
  * Create the main Electron Application
  */
-app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
-        app.quit();
-        return true;
-    }
-}).on('activate-with-no-open-windows', function () {
-    if (!mainWindow) {
-        startMainApplication();
-    }
-}).on('gpu-process-crashed', function () {
-    if (mainWindow) {
-        mainWindow.destroy();
-    }
-}).on('will-quit', function () {
-    console.log('Goodbye');
-}).on('ready', startMainApplication);
+var mainWindow = null;
+// Quit when all windows are closed
+app.on('window-all-closed', function() {
+    app.quit();
+});
 
-
-function createMainWindow(size) {
-    let params = {
-        width: size.width,
-        height: size.height,
-        resizable: true,
-        icon: path.join(__dirname, 'icon.ico'),
-        title: app.getName(),
-        autoHideMenuBar: true,
-        webPreferences: {
-            webSecurity: false,
-            allowDisplayingInsecureContent: true,
-            allowRunningInsecureContent: true,
-        }
-    };
-
-    let win = new BrowserWindow(params);
-
-
-    win.loadURL(webUrl);
-
-    console.log('DONE LOADING');
-
-    win.on('closed', function () {
+app.on('ready', function () {
+    mainWindow = new BrowserWindow({width: 800, height: 600})
+    mainWindow.loadURL(`file://${__dirname}/index.html`);
+    mainWindow.openDevTools({detach: true})
+    mainWindow.on('closed', function () {
         mainWindow = null;
     });
 
-    return new Promise(function (response) {
-        response(win)
-    });
-
-}
-
-function startMainApplication() {
-    console.log('startMainApplication');
-
-    var loadingSuccess = true;
-    // var electronScreen = require('screen');
-    const {screen: electronScreen} = require('electron');
-
-    var size = electronScreen.getPrimaryDisplay().workAreaSize;
-
-    createMainWindow(size).then(function (browserWindow) {
-
-        mainWindow = browserWindow;
-
-        mainWindow.webContents.on('did-start-loading', function (e) {
-            DidStartLoading = true;
-        });
-
-        mainWindow.webContents.on('did-fail-load', function (e) {
-            console.log('did-fail-load')
-            DidFailLoad = true;
-            mainWindow.hide();
-
-        });
-
-        /**
-         * This is broadcast if the frame is refresh within the application
-         * without electron interaction, we will re-inject the electronCode
-         */
-        mainWindow.webContents.on('did-frame-finish-load', function (e) {
-            DidFrameFinishLoad = true;
-            console.log('did-frame-finish-load');
-            //next event => did-stop-loading will reload the necessary injections
-            loadingSuccess = true;
-        });
-
-
-        /**
-         * Once the web Application finish loading, lets inject
-         * the ngElectron component, to be used within the webApp
-         */
-        mainWindow.webContents.on('did-stop-loading', onComplete);
-
-
-        function onComplete(e) {
-            console.log('did-stop-loading:onComplete:');
-            DidStopLoading = true;
-        }
-    });
-}
-
-
-
-
-
+    if (fs.existsSync(path.resolve(path.dirname(process.execPath), '..', 'update.exe')))app.checkVersion();
+})
 

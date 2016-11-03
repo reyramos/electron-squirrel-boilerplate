@@ -24,7 +24,7 @@ if (electronConfig.remoteReleases) {
 // prevent window being GC'd
 const DOWNLOAD_DIR = path.join(process.env.USERPROFILE, 'Downloads');
 const log_file = fs.existsSync(DOWNLOAD_DIR) ?
-    fs.createWriteStream(path.join(DOWNLOAD_DIR, 'phoenix_debugger.log'), {flags: 'w'}) : fs.createWriteStream(path.join(ELECTON_REPO, 'phoenix_debugger.log'));
+    fs.createWriteStream(path.join(DOWNLOAD_DIR, 'electron_debugger.log'), {flags: 'w'}) : fs.createWriteStream(path.join(ELECTON_REPO, 'electron_debugger.log'));
 
 const log_stdout = process.stdout;
 

@@ -13,7 +13,8 @@ module.exports = {
     "platform": "win32", // all, or one or more of: darwin, linux, mas, win32 (comma-delimited if multiple)
     "arch": "ia32", // all, or one or more of: ia32, x64 (comma-delimited if multiple)
     "electronVersion": "1.2.5", // the version of Electron that is being packaged, see https://github.com/electron/electron/releases
-    //currently version 1.2.5 is the only one compatible with electron-printer
+
+    "remoteReleases": "http://localhost:9000/",
 
 
     /*************************************************************

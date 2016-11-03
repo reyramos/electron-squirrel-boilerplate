@@ -1,17 +1,12 @@
 /**
  * Created by ramor11 on 7/5/2016.
  */
-let path = require('path'),
-    fs = require('fs'),
-    config = require("../electron.config.js"),
+let config = require("../electron.config.js"),
     helpers = require("./helpers"),
     rceditOpts = require('./rcedit.config.js'),
     shell = require('shelljs'),
-    package = require("../package.json");
-
-var electronInstaller = require('electron-winstaller');
-var npmScripts = typeof (process.argv[2]) === 'undefined';
-
+    package = require("../package.json"),
+    electronInstaller = require('electron-winstaller');
 
 const APP_BUILD_PATH = helpers.root(config.distribution, [package.name, config.platform, config.arch].join("-"));
 
@@ -51,7 +46,7 @@ let command = "\"./node_modules/.bin/electron-packager\"",
     ];
 
 
-['.idea', '\\.git(ignore|modules)', 'scripts'].forEach(function (k) {
+['.idea', '\\.git(ignore|modules)', 'scripts', 'server', 'build'].forEach(function (k) {
     _c.push("--ignore=\"" + k + "\"")
 });
 
@@ -79,58 +74,24 @@ _c.push("--app-version=\"" + rceditOpts['version-string']['FileVersion'] + "\"")
 _c.push("--build-version=\"" + rceditOpts['version-string']['ProductVersion'] + "\"");
 
 
-// let electronVersion = shell.exec([command, '--version'].join(' '), {silent:true}).stdout.replace(/v/g, '');
-// let electron_printer = helpers.root(APPLICATION_SRC, 'node_modules', 'electron-printer');
-//
-// if (fs.existsSync(electron_printer)) {
-//     let printer_bin = [
-//         "node-pre-gyp clean configure build",
-//         "--target_arch=" + config.arch,
-//         "--target_platform=" + config.platform,
-//         "--runtime=electron",
-//         "--target=" + config.electronVersion,
-//         "--build-from-source && node-pre-gyp package",
-//         "--target_arch=" + config.arch,
-//         "--target_platform=" + config.platform,
-//         "--runtime=electron",
-//         "--target=" + config.electronVersion,
-//         "--dist-url=https://atom.io/download/atom-shell"
-//     ].join(" ");
-//
-//     if (npmScripts)shell.rm('-rf', path.join(APPLICATION_SRC, 'config.json'));
-//     shell.cd(electron_printer);
-//
-//     if (shell.exec(printer_bin).code !== 0) {
-//         console.log('Error: Failed to build electron-printer');
-//     } else {
-//         console.log('Build electron-printer');
-//     }
-//
-// }
+let _command = _c.join(" ");
 
-if (npmScripts) {
+shell.exec(_command, function (code) {
+    if (code !== 0)return;
 
-    let _command = _c.join(" ");
-
-    console.log(_command);
-
-
-    shell.exec(_command, function (code) {
-        if (code !== 0)return;
-
-        let resultPromise = electronInstaller.createWindowsInstaller({
-            appDirectory: APP_BUILD_PATH,
-            outputDirectory: helpers.root(config.distribution, 'releases', package.version),
-            iconUrl: rceditOpts['icon'],
-            setupIcon: rceditOpts['icon'],
-            noMsi:true
-        });
-
-        resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));
+    let resultPromise = electronInstaller.createWindowsInstaller({
+        appDirectory: APP_BUILD_PATH,
+        outputDirectory: helpers.root(config.distribution, 'releases', package.version),
+        iconUrl: rceditOpts['icon'],
+        setupIcon: rceditOpts['icon'],
+        noMsi: true
     });
 
+    resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));
+});
 
-}
+
+
 
 
 

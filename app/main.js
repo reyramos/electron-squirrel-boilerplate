@@ -6,14 +6,20 @@
 if (require('electron-squirrel-startup')) return;
 
 const pkg = require('../package.json');
+const electronConfig = require('../electron.config');
 const fs = require('fs');
+const url = require('url');
 const path = require('path');
 const util = require('util');
 
 const appVersion = pkg.version;
-const updateFeed = ["http://localhost:9000/updates/latest/", "?v=", appVersion].join("");
+let updateFeed = null;
 
+if (electronConfig.remoteReleases) {
+    var urlobj = url.parse(electronConfig.remoteReleases);
+    updateFeed = url.format([urlobj.protocol, "//", path.join(urlobj.host, "/updates/latest/"), "?v=", appVersion].join(""));
 
+}
 
 // prevent window being GC'd
 const DOWNLOAD_DIR = path.join(process.env.USERPROFILE, 'Downloads');
@@ -53,11 +59,15 @@ app.commandLine.appendSwitch('remote-debugging-port', '32400');
  **********************************************************************************************************************************************/
 
 app.checkVersion = function () {
-    autoUpdater.checkForUpdates();
+    if (updateFeed)
+        autoUpdater.checkForUpdates();
 };
+if (updateFeed) {
+    console.log('updateFeed', updateFeed)
+    autoUpdater.setFeedURL(updateFeed);
+    require('./auto-updator')(autoUpdater);
+}
 
-autoUpdater.setFeedURL(updateFeed);
-require('./auto-updator')(autoUpdater);
 
 // this should be placed at top of main.js to handle setup events quickly
 if (handleSquirrelEvent()) {
@@ -139,7 +149,7 @@ function handleSquirrelEvent() {
  */
 var mainWindow = null;
 // Quit when all windows are closed
-app.on('window-all-closed', function() {
+app.on('window-all-closed', function () {
     app.quit();
 });
 

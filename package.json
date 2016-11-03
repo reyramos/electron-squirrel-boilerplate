@@ -1,10 +1,9 @@
 {
-  "name": "phoenix",
-  "version": "1.5.9",
-  "description": "LabCorp Phoenix Desktop Application",
-  "productName": "LabCorp Phoenix",
-  "author": "Copyright (C) 2016 Laboratory Corporation of America Holdings",
-  "homepage": "https://git.labcorp.com/projects/PHX/repos/phx-electron/browse/README.md",
+  "name": "electron-boilerplate",
+  "version": "1.0.0",
+  "description": "Electron Auto Update Boilerplate",
+  "productName": "Electron Boilerplate",
+  "author": "redroger<reymundo.ramos@gmail.com>",
   "license": "ISC",
   "main": "app/main.js",
   "repository": {

@@ -12,6 +12,7 @@ electron-v*/
 app/node_modules
 app/npm-debug.log
 app/version.json
+lib/
 
 
 app.db //localstorage file

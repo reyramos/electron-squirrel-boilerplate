@@ -19,7 +19,7 @@ app.use(morgan('common'));
 
 app.get('/', asyncHandler(homeCtrl.main));
 app.get('/updates/latest/', asyncHandler(updateCtrl.latest));
-// app.get('/updates/latest/RELEASES', asyncHandler(updateCtrl.latest));
+app.get('/updates/latest/RELEASES', asyncHandler(updateCtrl.release));
 
 
 app.use(errorHandler1);

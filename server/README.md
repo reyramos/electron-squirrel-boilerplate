@@ -1,4 +1,58 @@
-# Example Node Server w/ Babel
+# Electron Updater Server
+
+The Electron's autoUpdator modules provides and interface with Squirrel framework, which it can quickly launch a multi-platform release server for distribution.
+This is a simple node.js server for Squirrel.Windows which uses your local directory /build/releases to serve the needed request from Electron's AutoUpdater module.
+
+The server doesn't do any caching, and it's responses does not include caching headers. 
+
+## Endpoints
+
+### GET /
+
+Sample response:
+
+```
+{
+  "generatedAt": "2016-11-04T14:40:04.576Z",
+  "latest": {
+    "version": "1.6.0",
+    "path": "C:\\Development\\electron\\build\\releases\\1.6.0",
+    "assets": [
+      {
+        "file": "LabCorp PhoenixSetup.exe",
+        "content_type": "application/x-msdownload",
+        "file_full_path": "C:\\Development\\electron\\build\\releases\\1.6.0\\LabCorp PhoenixSetup.exe"
+      },
+      {
+        "file": "phoenix-1.6.0-full.nupkg",
+        "content_type": "application/octet-stream",
+        "file_full_path": "C:\\Development\\electron\\build\\releases\\1.6.0\\phoenix-1.6.0-full.nupkg"
+      },
+      {
+        "file": "RELEASES",
+        "content_type": "application/octet-stream",
+        "file_full_path": "C:\\Development\\electron\\build\\releases\\1.6.0\\RELEASES"
+      }
+    ]
+  }
+}
+
+```
+
+### GET /updates/latest/<file>
+
+It will redirect to the download url for that file. Usage:
+- **Electron's AutoUpdater**: use `/updates/latest`
+
+  The AutoUpdater will request `/updates/latest/RELEASES` when checking for updates, and the server will return the latest `RELEASES` file. It will also request files (e.g. `/updates/latest/phoenix-1.6.0-full.nupkg`), in which case the server will redirect to the correct download url.
+- **Squirrel.Windows Releasify**: use `/updates/latest`
+
+  When it will request packages (e.g. `/updates/latest/phoenix-1.6.0-full.nupkg`), the server will detect the version and redirect to the download url (e.g. `C:\\Development\\electron\\build\\releases\\1.6.0\\phoenix-1.6.0-full.nupkg`)
+
+
+
+
+# Installation Node Server w/ Babel
 
 ### Getting Started
 

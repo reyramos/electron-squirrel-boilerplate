@@ -46,7 +46,7 @@ let command = "\"./node_modules/.bin/electron-packager\"",
     ];
 
 
-['.idea', '\\.git(ignore|modules)', 'scripts', 'server', 'build'].forEach(function (k) {
+['.idea', '\\.git(ignore|modules)', 'scripts', 'server', 'build', 'dist'].forEach(function (k) {
     _c.push("--ignore=\"" + k + "\"")
 });
 
